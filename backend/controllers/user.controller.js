@@ -13,6 +13,7 @@ export const signup = async (req, res) => {
       return res.status(201).json(user);
 
     } catch (err) {
+      console.log(err);
       const message = err.code === 11000 ? 'User already exists' : err.message;
       return res.status(400).json({ message });
     }
@@ -24,14 +25,14 @@ export const login = (req, res) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
       if (!user) {
-        return res.status(401).json({ message: 'User does not exist' });
+        throw new Error('User does not exist');
       }
       fetchedUser = user;
       return bcrypt.compare(req.body.password, user.password);
     })
     .then(result => {
       if (!result) {
-        return res.status(401).json({ message: 'Password does not match' });
+        throw new Error('Password does not match');
       }
       const token = jwt.sign(
         { email: fetchedUser.email, userId: fetchedUser._id },

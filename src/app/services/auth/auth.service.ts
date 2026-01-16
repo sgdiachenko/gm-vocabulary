@@ -16,7 +16,7 @@ export class AuthService {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef)
 
-  authState: WritableSignal<boolean> = signal(false);
+  authState: WritableSignal<boolean> = signal(null);
   authLoadingState: WritableSignal<boolean> = signal(null);
   authError: WritableSignal<Error> = signal(null);
 
@@ -36,7 +36,7 @@ export class AuthService {
       catchError(err => {
         this.toggleAuthLoadingState(false);
         this.authError.set(new Error(err.error?.message ?? err.message));
-        return throwError(err);
+        return throwError(() => err);
       }),
       tap(() => {
         this.toggleAuthState(true);

@@ -3,17 +3,20 @@
 ## Tech Stack
 - Angular CLI v21
 - NgRx SignalStore
-- Node.js / Next.js
+- Node.js / Express.js
 - MongoDB
 - Angular Material UI
 - Tailwind CSS
 
 ## Development server
 
-To start a local development server, connect your mongodb in backend/app.js and run:
+To start a local development and backend servers, connect your mongodb in backend/app.js and run in separate terminals:
 
 ```bash
 ng serve
+```
+```bash
+npm run start:server
 ```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.

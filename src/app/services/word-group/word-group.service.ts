@@ -41,7 +41,7 @@ export class WordGroupService {
       }),
       catchError(err => {
         updateRequestState(new Error(err.error?.message ?? err.message), false)
-        return throwError(err);
+        return throwError(() => err);
       })
     );
   }
@@ -60,7 +60,7 @@ export class WordGroupService {
       }),
       catchError(err => {
         updateRequestState(new Error(err.error?.message ?? err.message), false)
-        return throwError(err);
+        return throwError(() => err);
       })
     );
   }
@@ -79,7 +79,7 @@ export class WordGroupService {
       }),
       catchError(err => {
         updateRequestState(new Error(err.error?.message ?? err.message), false)
-        return throwError(err);
+        return throwError(() => err);
       })
     );
   }
@@ -93,7 +93,7 @@ export class WordGroupService {
       }),
       catchError(err => {
         this.updateRequestState(new Error(err.error?.message ?? err.message), false)
-        return throwError(err);
+        return throwError(() => err);
       })
     );
   }
@@ -107,7 +107,7 @@ export class WordGroupService {
       }),
       catchError(err => {
         this.updateRequestState(new Error(err.error?.message ?? err.message), false)
-        return throwError(err);
+        return throwError(() => err);
       })
     );
   }

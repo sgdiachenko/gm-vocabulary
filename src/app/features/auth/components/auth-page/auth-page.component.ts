@@ -28,6 +28,12 @@ export class AuthPageComponent {
   submit(user: Auth) {
     this.authService.auth(user, !this.isSignupFormActive())
       .pipe(take(1), takeUntilDestroyed(this.destroyRef))
-      .subscribe();
+      .subscribe({
+        next: () => {
+          if (this.isSignupFormActive()) {
+            this.isSignupFormActive.set(false)
+          }
+        }
+      });
   }
 }

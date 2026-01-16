@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 
-import { CollectionsPageComponent } from './features/colections/components/collections-page/collections-page.component';
+import { CollectionsPageComponent } from './features/collections/components/collections-page/collections-page.component';
 import {
   SingleCollectionPageComponent
-} from './features/colections/components/single-collection-page/single-collection-page.component';
+} from './features/collections/components/single-collection-page/single-collection-page.component';
 import { WordsPageComponent } from './features/words/components/words-page/words-page.component';
 import { PageWrapperComponent } from './shared/components/page-wrapper/page-wrapper.component';
 import { AuthPageComponent } from './features/auth/components/auth-page/auth-page.component';

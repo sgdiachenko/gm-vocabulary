@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { SelectComponent } from '../../../../shared/components/select.component/select.component';
+import { SelectComponent } from '../../../../shared/components/select/select.component';
 import { ButtonComponent } from "../../../../shared/components/button/button.component";
 import { TableComponent } from "../../../../shared/components/table/table.component";
 import { DefaultOptionValueEnum } from '../../../../enums/default-option-value.enum';
