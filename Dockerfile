@@ -7,4 +7,5 @@ RUN npm run build
 
 # Serve with nginx
 FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/dist/gm-vocabulary-angular /usr/share/nginx/html
+
