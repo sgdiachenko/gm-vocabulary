@@ -61,12 +61,25 @@
                 }
               ],
               "sourceMap": true
+            },
+            "docker": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.docker.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "allowedHosts": [
+              "host.docker.internal"
+            ]
+          },
           "configurations": {
             "production": {
               "buildTarget": "gm-vocabulary-angular-spa:build:production"
