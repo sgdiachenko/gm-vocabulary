@@ -7,5 +7,5 @@ RUN npm run build --configuration=docker
 
 # Serve with nginx
 FROM nginx:alpine
-COPY --from=build /app/dist/gm-vocabulary-ang,ular-spa /usr/share/nginx/html
+COPY --from=build /app/dist/gm-vocabulary-angular-spa /usr/share/nginx/html
 
