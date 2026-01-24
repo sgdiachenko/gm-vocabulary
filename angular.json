@@ -62,14 +62,6 @@
               ],
               "sourceMap": true
             },
-            "docker": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.docker.ts"
-                }
-              ]
-            },
             "playwright": {
               "fileReplacements": [
                 {
@@ -77,7 +69,8 @@
                   "with": "src/environments/environment.docker.ts"
                 }
               ]
-            },
+            }
+          },
           "defaultConfiguration": "production"
         },
         "serve": {
@@ -94,8 +87,8 @@
             "development": {
               "buildTarget": "gm-vocabulary-angular-spa:build:development"
             },
-            "docker": {
-              "buildTarget": "gm-vocabulary-angular-spa:build:docker"
+            "playwright": {
+              "buildTarget": "gm-vocabulary-angular-spa:build:playwright"
             }
           },
           "defaultConfiguration": "development"
