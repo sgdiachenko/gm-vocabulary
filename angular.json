@@ -88,6 +88,9 @@
             },
             "development": {
               "buildTarget": "gm-vocabulary-angular-spa:build:development"
+            },
+            "docker": {
+              "buildTarget": "gm-vocabulary-angular-spa::build:docker"
             }
           },
           "defaultConfiguration": "development"

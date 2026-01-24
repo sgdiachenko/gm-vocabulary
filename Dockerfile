@@ -1,10 +1,11 @@
 # Build Angular
 FROM node:20 as build
 WORKDIR /app
+COPY package*.json ./
+RUN npm ci
 COPY . .
-RUN npm install
-RUN npm run build:docker
+RUN ng build --configuration docker
 
-# Serve with nginx
+# Serve
 FROM nginx:alpine
 COPY --from=build /app/dist/gm-vocabulary-angular-spa /usr/share/nginx/html
