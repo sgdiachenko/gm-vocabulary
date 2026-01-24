@@ -4,7 +4,7 @@ WORKDIR /app
 COPY . .
 RUN npm install
 
-RUN npm run build:docker
+RUN npm run build
 
 # Serve with nginx
 FROM nginx:alpine
