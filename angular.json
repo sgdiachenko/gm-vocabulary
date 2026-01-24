@@ -69,6 +69,14 @@
                   "with": "src/environments/environment.docker.ts"
                 }
               ]
+            },
+            "docker": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.docker.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -89,6 +97,9 @@
             },
             "playwright": {
               "buildTarget": "gm-vocabulary-angular-spa:build:playwright"
+            },
+            "docker": {
+              "buildTarget": "gm-vocabulary-angular-spa:build:docker"
             }
           },
           "defaultConfiguration": "development"
