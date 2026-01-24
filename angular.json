@@ -71,7 +71,7 @@
               ]
             }
           },
-          "defaultConfiguration": "docker"
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
