@@ -104,7 +104,7 @@
               "buildTarget": "gm-vocabulary-angular-spa:build:docker"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "docker"
         },
         "test": {
           "builder": "@angular/build:unit-test"
