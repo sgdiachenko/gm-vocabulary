@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 4200 --configuration development",
-    "build": "ng build",
+    "build": "ng build --configuration playwright",
     "watch": "ng build --watch --configuration development",
     "start:server": "nodemon backend/server.js",
     "test": "ng test"
