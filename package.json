@@ -3,10 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host 0.0.0.0 --port 4200 --configuration development",
+    "start": "ng serve --host 0.0.0.0 --port 4200",
     "build": "ng build",
-    "build:docker": "ng build --configuration docker",
-    "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "start:server": "nodemon backend/server.js",
     "test": "ng test"

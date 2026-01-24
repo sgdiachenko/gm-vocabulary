@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-RUN ng build --configuration docker
+RUN ng build
 
 # Serve
 FROM nginx:alpine
