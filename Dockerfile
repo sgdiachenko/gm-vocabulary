@@ -1,7 +1,10 @@
-# Dev Angular
-FROM node:20.19.0
+# Build Angular
+FROM node:20 as build
 WORKDIR /app
 COPY . .
 RUN npm install
+RUN npm run build:docker
 
-CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200", "--configuration", "playwright"]
+# Serve with nginx
+FROM nginx:alpine
+COPY --from=build /app/dist/gm-vocabulary-angular-spa /usr/share/nginx/html
