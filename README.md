@@ -38,6 +38,7 @@ This project reflects patterns used in **enterprise SaaS applications**.
 - Persistent sessions with auto-restore
 - Reactive UI powered by Angular Signals
 - HTTP interceptor for centralized auth handling
+- Backend enforces access control, not just the UI layer
 
 ---
 
@@ -106,6 +107,22 @@ JWT-based authentication with full client-server flow:
 - Stateless authentication using JWT
 - Protected endpoints via middleware
 - Authorization via Bearer tokens
+
+## 👥 Domain Logic & Access Control
+
+The application models a multi-user environment with shared and private data:
+
+- Vocabulary collections are **owned by individual users**
+- Users can browse collections created by others
+- Only the **collection owner** can create, update, or delete words within their collections
+
+This ensures proper separation between **read access (shared data)** and **write permissions (owner-restricted)**.
+
+### Data Interaction Flow
+
+- Words are displayed in a structured table for efficient browsing
+- Create / update / delete operations are handled via form-driven modal workflows
+- Backend enforces ownership validation to prevent unauthorized modifications
 
 ### Production considerations
 
