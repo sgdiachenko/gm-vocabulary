@@ -184,6 +184,8 @@ This repo includes a `docker-compose.yml` for local development:
 - Node/Express backend with `nodemon`
 - MongoDB either **local container** or **MongoDB Atlas** via `MONGODB_URI`
 
+### Development
+
 ```bash
 docker compose up -d
 ```
@@ -239,8 +241,11 @@ If you prefer running locally (Node + Angular on your machine), run in two termi
 
 ```bash
 npm install
-ng serve
 npm run start:server
+```
+
+```bash
+npm start
 ```
 
 The frontend will be available at `http://localhost:4200/`.
