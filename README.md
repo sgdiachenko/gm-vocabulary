@@ -177,13 +177,89 @@ This project was built as a **portfolio application** to demonstrate:
 
 ## 🛠 Getting Started
 
-### Development
+## Quick start (recommended): Docker Compose (dev + hot reload)
+
+This repo includes a `docker-compose.yml` for local development:
+- Angular dev server with hot reload
+- Node/Express backend with `nodemon`
+- MongoDB either **local container** or **MongoDB Atlas** via `MONGODB_URI`
 
 ```bash
+docker compose up -d
+```
+
+- **Frontend**: `http://localhost:4200/`
+- **Backend API**: `http://localhost:3000/api`
+
+To follow logs:
+
+```bash
+docker compose logs -f backend
+docker compose logs -f frontend
+```
+
+To stop:
+
+```bash
+docker compose down
+```
+
+## MongoDB configuration
+
+### Option A (default): local MongoDB in Docker
+
+Do nothing. If `MONGODB_URI` is not provided, the backend connects to:
+- `mongodb://mongo:27017/gm-vocabulary` (the `mongo` service in Compose)
+
+### Option B: MongoDB Atlas (recommended for CI/CD & shared envs)
+
+1) Create a local `.env` file (it is ignored by git):
+
+```bash
+cp .env.example .env
+```
+
+2) Put your Atlas connection string into `.env`:
+
+```env
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/<db>?retryWrites=true&w=majority
+```
+
+3) Restart the backend to apply env changes:
+
+```bash
+docker compose up -d --force-recreate backend
+```
+
+In CI/CD (GitHub Actions, GitLab CI, etc.) you should store `MONGODB_URI` as a **secret** and pass it as an environment variable. Do not commit real credentials into the repo.
+
+## Run without Docker (manual dev)
+
+If you prefer running locally (Node + Angular on your machine), run in two terminals:
+
+```bash
+npm install
 ng serve
 npm run start:server
 ```
 
+The frontend will be available at `http://localhost:4200/`.
+
+## Production build: single Docker image
+
+This repo has a multi-stage `Dockerfile` that builds Angular and runs the backend which serves the Angular build.
+
+Build:
+
+```bash
+docker build -t gm-vocabulary:prod .
+```
+
+Run (provide MongoDB URI):
+
+```bash
+docker run --rm -p 3000:3000 -e MONGODB_URI="mongodb+srv://..." gm-vocabulary:prod
+```
 ## Code scaffolding
 
 Angular CLI includes powerful code scaffolding tools. To generate a new component, run:

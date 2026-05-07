@@ -4,6 +4,9 @@ import jwt from 'jsonwebtoken';
 
 export const signup = async (req, res) => {
   bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
+    if (err) {
+      return res.status(500).json({ message: 'Password hashing failed' });
+    }
     try {
       const user = new User({
         email: req.body.email,
@@ -13,9 +16,10 @@ export const signup = async (req, res) => {
       return res.status(201).json(user);
 
     } catch (err) {
-      console.log(err);
-      const message = err.code === 11000 ? 'User already exists' : err.message;
-      return res.status(400).json({ message });
+      if (err?.code === 11000) {
+        return res.status(409).json({ message: 'Email already in use' });
+      }
+      return res.status(400).json({ message: err.message });
     }
   })
 };
