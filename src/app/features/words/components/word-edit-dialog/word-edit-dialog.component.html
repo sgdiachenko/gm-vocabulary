@@ -6,21 +6,21 @@
   <mat-dialog-content>
     <form class="flex flex-col">
       <gm-input
-        [field]="wordForm[wordParameterEnum.WORD]"
+        [formField]="wordForm[wordParameterEnum.WORD]"
         [fieldLabel]="wordParameterDisplayNameEnum.WORD"
         [fieldPlaceholder]="wordParameterDisplayNameEnum.WORD"
         [fieldErrors]="wordForm[wordParameterEnum.WORD]().dirty() ? getFormFieldErrors(wordForm[wordParameterEnum.WORD]().errors() || []) : []"
       ></gm-input>
 
       <gm-input
-        [field]="wordForm[wordParameterEnum.TRANSLATION]"
+        [formField]="wordForm[wordParameterEnum.TRANSLATION]"
         [fieldLabel]="wordParameterDisplayNameEnum.TRANSLATION"
         [fieldPlaceholder]="wordParameterDisplayNameEnum.TRANSLATION"
         [fieldErrors]="wordForm[wordParameterEnum.TRANSLATION]().dirty() ? getFormFieldErrors(wordForm[wordParameterEnum.TRANSLATION]().errors() || []) : []"
       ></gm-input>
 
       <gm-autocomplete
-        [field]="wordForm[wordParameterEnum.GROUP_ID]"
+        [formField]="wordForm[wordParameterEnum.GROUP_ID]"
         [fieldLabel]="wordParameterDisplayNameEnum.WORD_GROUP"
         [fieldPlaceholder]="wordParameterDisplayNameEnum.WORD_GROUP"
         [fieldErrors]="wordForm[wordParameterEnum.GROUP_ID]().dirty() ? getFormFieldErrors(wordForm[wordParameterEnum.GROUP_ID]().errors() || []) : []"

@@ -2,7 +2,7 @@ import { ValidationErrors } from '@angular/forms';
 import { computed, Injectable, Signal } from '@angular/core';
 
 import { FormFieldValidationMessagesConst } from '../../const/form-field-validation-messages.const';
-import { FieldTree, WithField } from '@angular/forms/signals';
+import { FieldTree } from '@angular/forms/signals';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class FormFieldValidationService {
     })
   }
 
-  getSignalFormFieldErrorMessages(errors: WithField<any>[]): string[] {
+  getSignalFormFieldErrorMessages(errors: any[]): string[] {
     return errors.map(error => error.message);
   }
 }

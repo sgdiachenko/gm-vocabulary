@@ -6,7 +6,7 @@
   <mat-dialog-content>
     <form class="flex flex-col">
       <gm-input
-        [field]="wordGroupForm[wordGroupParameterEnum.NAME]"
+        [formField]="wordGroupForm[wordGroupParameterEnum.NAME]"
         [fieldLabel]="wordGroupParameterDisplayNameEnum.NAME"
         [fieldPlaceholder]="wordGroupParameterDisplayNameEnum.NAME"
         [fieldErrors]="
@@ -16,7 +16,7 @@
         "
       ></gm-input>
 
-      <mat-slide-toggle [field]="wordGroupForm[wordGroupParameterEnum.IS_SHARED]">
+      <mat-slide-toggle [formField]="wordGroupForm[wordGroupParameterEnum.IS_SHARED]">
         {{wordGroupParameterDisplayNameEnum.IS_SHARED}}
       </mat-slide-toggle>
     </form>

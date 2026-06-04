@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, Signal, signal, WritableSignal } from '@angular/core';
-import { disabled, Field, FieldTree, form, required } from '@angular/forms/signals'
+import { disabled, FieldTree, form, required, FormField } from '@angular/forms/signals'
 import { defer, iif, of, switchMap } from 'rxjs';
 import {
   MAT_DIALOG_DATA,
@@ -34,11 +34,11 @@ import { WordForm } from './word-form';
     MatDialogTitle,
     ButtonComponent,
     MatDialogActions,
-    Field,
     InputComponent,
     DataLoadingWrapperComponent,
     AutocompleteComponent,
-  ],
+    FormField
+],
   templateUrl: './word-edit-dialog.component.html',
   styleUrl: './word-edit-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

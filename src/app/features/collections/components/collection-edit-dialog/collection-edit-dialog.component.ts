@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, WritableSignal } from '@angular/core';
-import { Field, FieldTree, form, required } from '@angular/forms/signals';
+import { FieldTree, form, required, FormField } from '@angular/forms/signals';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { defer, iif } from 'rxjs';
@@ -33,8 +33,8 @@ import { WordGroup } from '../../../../interfaces/word-group';
     MatDialogActions,
     MatDialogContent,
     MatDialogTitle,
-    Field,
     MatSlideToggle,
+    FormField
   ],
   templateUrl: './collection-edit-dialog.component.html',
   styleUrl: './collection-edit-dialog.component.scss',
