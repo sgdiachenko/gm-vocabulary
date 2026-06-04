@@ -34,7 +34,7 @@
     "@angular/material": "^22.0.0",
     "@angular/platform-browser": "^22.0.0",
     "@angular/router": "^22.0.0",
-    "@ngrx/signals": "^21.0.1",
+    "@ngrx/signals": "^21.1.0",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.1",
     "express": "^5.1.0",

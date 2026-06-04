@@ -1,10 +1,10 @@
 # ---------- Build Angular ----------
-    FROM node:22-alpine AS frontend-build
+    FROM node:24-alpine AS frontend-build
 
     WORKDIR /app
     
     COPY package*.json ./
-    RUN npm ci
+    RUN npm ci --legacy-peer-deps
     
     COPY angular.json ./
     COPY tsconfig*.json ./
@@ -14,18 +14,18 @@
     
     
     # ---------- Backend deps (root package-lock) ----------
-    FROM node:22-alpine AS backend-build
+    FROM node:24-alpine AS backend-build
     
     WORKDIR /app
     
     COPY package*.json ./
-    RUN npm ci --omit=dev
+    RUN npm ci --omit=dev  --legacy-peer-deps
     
     COPY backend ./backend
     
     
     # ---------- Production ----------
-    FROM node:22-alpine
+    FROM node:24-alpine
     
     WORKDIR /app
     
