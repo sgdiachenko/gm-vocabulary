@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { SelectComponent } from '../../../../shared/components/select/select.component';
@@ -19,7 +19,6 @@ import { WordsTableRow } from './words-table-row';
   ],
   templateUrl: './words-table.component.html',
   styleUrl: './words-table.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WordsTableComponent {
 

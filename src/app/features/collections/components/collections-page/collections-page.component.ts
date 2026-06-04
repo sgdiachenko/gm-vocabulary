@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  
   Component,
   DestroyRef,
   inject,
@@ -41,7 +41,6 @@ import { WordGroup } from '../../../../interfaces/word-group';
   ],
   templateUrl: './collections-page.component.html',
   styleUrl: './collections-page.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollectionsPageComponent implements OnInit, OnDestroy {
 

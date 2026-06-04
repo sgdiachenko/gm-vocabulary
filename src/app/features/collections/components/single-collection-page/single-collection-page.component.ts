@@ -9,7 +9,6 @@ import { switchMap } from 'rxjs/operators';
 import { NgClass } from '@angular/common';
 import { tap } from 'rxjs';
 import {
-  ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
@@ -54,7 +53,6 @@ import { Word } from '../../../../interfaces/word';
   ],
   templateUrl: './single-collection-page.component.html',
   styleUrl: './single-collection-page.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SingleCollectionPageComponent implements OnInit, OnDestroy {
   private readonly authService: AuthService = inject(AuthService);

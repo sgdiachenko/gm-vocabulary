@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatCheckbox } from '@angular/material/checkbox';
 import {
@@ -33,7 +33,6 @@ import { TableColumn } from './table-column';
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TableComponent {
   columns = input<TableColumn[]>([]);

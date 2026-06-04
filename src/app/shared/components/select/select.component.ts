@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, Self } from '@angular/core';
+import { Component, DestroyRef, inject, input, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl, UntypedFormControl } from '@angular/forms';
 import { DefaultOptionValueEnum } from '../../../enums/default-option-value.enum';
 import { MatFormField, MatLabel } from '@angular/material/input';
@@ -16,7 +16,6 @@ import { SelectOption } from '../../interfaces/select-option';
   ],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelectComponent implements ControlValueAccessor {
   private readonly destroyRef = inject(DestroyRef);

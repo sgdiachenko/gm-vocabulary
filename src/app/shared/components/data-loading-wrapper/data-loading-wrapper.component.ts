@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject, input, OnChanges, SimpleChanges } from '@angular/core';
 
 import { SpinnerComponent } from "../spinner/spinner.component";
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -10,7 +10,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   ],
   templateUrl: './data-loading-wrapper.component.html',
   styleUrl: './data-loading-wrapper.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataLoadingWrapperComponent implements OnChanges {
 

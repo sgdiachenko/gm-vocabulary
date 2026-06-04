@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, WritableSignal } from '@angular/core';
+import { Component, DestroyRef, inject, signal, WritableSignal } from '@angular/core';
 import { FieldTree, form, required, FormField } from '@angular/forms/signals';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -38,7 +38,6 @@ import { WordGroup } from '../../../../interfaces/word-group';
   ],
   templateUrl: './collection-edit-dialog.component.html',
   styleUrl: './collection-edit-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollectionEditDialogComponent {
   private dialogRef = inject(MatDialogRef<WordGroup | void>);

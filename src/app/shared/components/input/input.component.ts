@@ -1,5 +1,5 @@
 import { ControlValueAccessor, NgControl, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, Self } from '@angular/core';
+import { Component, DestroyRef, inject, input, Self } from '@angular/core';
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LowerCasePipe } from '@angular/common';
@@ -16,7 +16,6 @@ import { LowerCasePipe } from '@angular/common';
   ],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InputComponent implements ControlValueAccessor {
   private readonly destroyRef = inject(DestroyRef);

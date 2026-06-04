@@ -13,7 +13,6 @@ import {
 } from '@angular/material/autocomplete';
 import { map } from 'rxjs';
 import {
-  ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
@@ -50,7 +49,6 @@ import { SelectOption } from '../../interfaces/select-option';
   ],
   templateUrl: './chip-grid.component.html',
   styleUrl: './chip-grid.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChipGridComponent implements ControlValueAccessor, OnChanges {
   private readonly destroyRef = inject(DestroyRef);

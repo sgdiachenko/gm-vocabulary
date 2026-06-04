@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, WritableSignal } from '@angular/core';
+import { Component, inject, WritableSignal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatToolbar } from '@angular/material/toolbar';
@@ -21,7 +21,6 @@ import { AuthService } from '../../../services/auth/auth.service';
   ],
   templateUrl: './page-wrapper.component.html',
   styleUrl: './page-wrapper.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PageWrapperComponent {
   private authService = inject(AuthService);

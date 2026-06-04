@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, Signal, WritableSignal } from '@angular/core';
+import { Component, DestroyRef, inject, signal, Signal, WritableSignal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { take } from 'rxjs';
 
@@ -15,7 +15,6 @@ import { Auth } from '../../../../services/auth-api/auth';
   ],
   templateUrl: './auth-page.component.html',
   styleUrl: './auth-page.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuthPageComponent {
   private authService = inject(AuthService);

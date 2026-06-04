@@ -5,7 +5,6 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { LowerCasePipe, NgClass } from '@angular/common';
 import { map } from 'rxjs';
 import {
-  ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
@@ -38,7 +37,6 @@ import { SelectOption } from '../../interfaces/select-option';
   ],
   templateUrl: './autocomplete.component.html',
   styleUrl: './autocomplete.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AutocompleteComponent implements ControlValueAccessor, OnChanges {
   private readonly destroyRef = inject(DestroyRef);

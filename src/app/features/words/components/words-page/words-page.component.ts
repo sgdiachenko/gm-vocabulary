@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnDestroy, OnInit, Signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnDestroy, OnInit, Signal } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
@@ -28,8 +28,7 @@ import { Word } from '../../../../interfaces/word';
     DataLoadingWrapperComponent,
   ],
   templateUrl: './words-page.component.html',
-  styleUrl: './words-page.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrl: './words-page.component.scss'
 })
 export class WordsPageComponent implements OnInit, OnDestroy {
   private readonly wordsService = inject(WordsService);

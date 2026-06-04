@@ -1,5 +1,5 @@
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'gm-spinner',
@@ -8,7 +8,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   ],
   templateUrl: './spinner.component.html',
   styleUrl: './spinner.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpinnerComponent {
 }

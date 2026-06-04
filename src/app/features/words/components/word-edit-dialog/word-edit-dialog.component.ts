@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Signal, signal, WritableSignal } from '@angular/core';
+import { Component, inject, Signal, signal, WritableSignal } from '@angular/core';
 import { disabled, FieldTree, form, required, FormField } from '@angular/forms/signals'
 import { defer, iif, of, switchMap } from 'rxjs';
 import {
@@ -41,7 +41,6 @@ import { WordForm } from './word-form';
 ],
   templateUrl: './word-edit-dialog.component.html',
   styleUrl: './word-edit-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WordEditDialogComponent {
   private dialogRef = inject(MatDialogRef<WordEditDialogData>);

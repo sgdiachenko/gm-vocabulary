@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, OnChanges, output, SimpleChanges } from '@angular/core';
+import { Component, inject, input, OnChanges, output, SimpleChanges } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 
@@ -19,7 +19,6 @@ import { Auth } from '../../../../services/auth-api/auth';
   ],
   templateUrl: './auth-form.component.html',
   styleUrl: './auth-form.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuthFormComponent implements OnChanges {
   isSignupFormActive = input(false);
