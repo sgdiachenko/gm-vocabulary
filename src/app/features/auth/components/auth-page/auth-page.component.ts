@@ -4,8 +4,8 @@ import { take } from 'rxjs';
 
 import { DataLoadingWrapperComponent } from '../../../../shared/components/data-loading-wrapper/data-loading-wrapper.component';
 import { AuthFormComponent } from '../auth-form/auth-form.component';
-import { AuthService } from '../../../../services/auth/auth.service';
-import { Auth } from '../../../../services/auth-api/auth';
+import { AuthService } from '../../services/auth.service';
+import { Auth } from '../../interfaces/auth';
 
 @Component({
   selector: 'gm-auth-page',

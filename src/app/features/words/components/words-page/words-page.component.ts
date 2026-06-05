@@ -9,17 +9,18 @@ import {
   DataLoadingWrapperComponent
 } from '../../../../shared/components/data-loading-wrapper/data-loading-wrapper.component';
 import { WordEditDialogComponent } from '../word-edit-dialog/word-edit-dialog.component';
-import { WordGroupService } from '../../../../services/word-group/word-group.service';
-import { WordsTableService } from '../../services/words-table/words-table.service';
+import { WordGroupService } from '../../../word-sets/services/word-group.service';
 import { WordEditDialogData } from '../word-edit-dialog/word-edit-dialog-data';
 import { TableColumn } from '../../../../shared/components/table/table-column';
 import { WordsTableColumns } from '../words-table/words-table-columns.const';
 import { WordsTableComponent } from '../words-table/words-table.component';
 import { SelectOption } from '../../../../shared/interfaces/select-option';
-import { WordParameterEnum } from '../../../../enums/word.parameter.enum';
-import { WordsService } from '../../../../services/words/words.service';
+import { WordsTableService } from '../../services/words-table.service';
+import { WordParameterEnum } from '../../enums/word.parameter.enum';
 import { WordsTableRow } from '../words-table/words-table-row';
-import { Word } from '../../../../interfaces/word';
+import { WordsService } from '../../services/words.service';
+import { Word } from '../../interfaces/word';
+
 
 @Component({
   selector: 'gm-words-page',

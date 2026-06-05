@@ -7,7 +7,7 @@ import {
 } from '../../../../shared/services/form-field-validation/form-field-validation.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
-import { Auth } from '../../../../services/auth-api/auth';
+import { Auth } from '../../interfaces/auth';
 
 @Component({
   selector: 'gm-auth-form',

@@ -10,7 +10,8 @@ import {
 } from '@angular/material/dialog';
 
 import { AutocompleteComponent } from '../../../../shared/components/autocomplete/autocomplete.component';
-import { WordParameterDisplayNameEnum } from '../../../../enums/word-parameter-display-name.enum';
+import { WordParameterDisplayNameEnum } from '../../enums/word-parameter-display-name.enum';
+import { WordGroupParameterEnum } from '../../../word-sets/enums/word-group.parameter.enum';
 import {
   DataLoadingWrapperComponent
 } from '../../../../shared/components/data-loading-wrapper/data-loading-wrapper.component';
@@ -18,13 +19,12 @@ import {
   FormFieldValidationService
 } from '../../../../shared/services/form-field-validation/form-field-validation.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
-import { WordGroupService } from '../../../../services/word-group/word-group.service';
 import { InputComponent } from '../../../../shared/components/input/input.component';
-import { WordGroupParameterEnum } from '../../../../enums/word-group.parameter.enum';
-import { WordParameterEnum } from '../../../../enums/word.parameter.enum';
-import { WordsService } from '../../../../services/words/words.service';
-import { WordGroup } from '../../../../interfaces/word-group';
+import { WordGroupService } from '../../../word-sets/services/word-group.service';
+import { WordGroup } from '../../../../features/word-sets/interfaces/word-group';
+import { WordParameterEnum } from '../../enums/word.parameter.enum';
 import { WordEditDialogData } from './word-edit-dialog-data';
+import { WordsService } from '../../services/words.service';
 import { WordForm } from './word-form';
 
 @Component({

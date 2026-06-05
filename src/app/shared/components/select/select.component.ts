@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, input, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl, UntypedFormControl } from '@angular/forms';
-import { DefaultOptionValueEnum } from '../../../enums/default-option-value.enum';
+import { DefaultOptionValueEnum } from '../../enums/default-option-value.enum';
 import { MatFormField, MatLabel } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';

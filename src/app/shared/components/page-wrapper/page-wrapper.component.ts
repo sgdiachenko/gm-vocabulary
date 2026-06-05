@@ -7,7 +7,7 @@ import { MatButton } from '@angular/material/button';
 import { DataLoadingWrapperComponent } from '../data-loading-wrapper/data-loading-wrapper.component';
 import { SubmitDialogComponent } from '../submit-dialog/submit-dialog.component';
 import { SubmitDialogData } from '../submit-dialog/submit-dialog-data';
-import { AuthService } from '../../../services/auth/auth.service';
+import { AuthService } from '../../../features/auth/services/auth.service';
 
 @Component({
   selector: 'gm-page-wrapper',

@@ -1,6 +1,6 @@
-import { WordParameterEnum } from '../../enums/word.parameter.enum';
+import { WordParameterEnum } from "../enums/word.parameter.enum";
 
-export interface WordForm {
+export interface WordRequest {
   [WordParameterEnum.WORD]: string;
   [WordParameterEnum.TRANSLATION]: string;
   [WordParameterEnum.GROUP_ID]: string;
