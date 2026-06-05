@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { computed, inject, Service, signal, Signal, WritableSignal } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 
 import { WordGroupsApiService } from '../word-groups-api/word-groups-api.service';
@@ -8,9 +8,7 @@ import { SelectOption } from '../../shared/interfaces/select-option';
 import { WordGroupsStore } from '../../store/word-groups.store';
 import { WordGroup } from '../../interfaces/word-group';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class WordGroupService {
   private wordsApiService = inject(WordGroupsApiService);
   private wordGroupsStore = inject(WordGroupsStore);

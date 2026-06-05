@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -6,9 +6,7 @@ import { environment } from '../../../environments/environment';
 import { WordRequest } from '../../interfaces/word-request';
 import { Word } from '../../interfaces/word';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class WordsApiService {
 
   private http = inject(HttpClient);

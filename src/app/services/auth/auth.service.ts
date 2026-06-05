@@ -1,4 +1,4 @@
-import { DestroyRef, inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { DestroyRef, inject, Service, signal, WritableSignal } from '@angular/core';
 import { catchError, defer, iif, map, Observable, take, tap, throwError } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
@@ -8,9 +8,7 @@ import { AuthApiService } from '../auth-api/auth-api.service';
 import { LoginResponse } from '../auth-api/login-response';
 import { Auth } from '../auth-api/auth';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class AuthService {
   private readonly authApiService = inject(AuthApiService);
   private readonly router = inject(Router);

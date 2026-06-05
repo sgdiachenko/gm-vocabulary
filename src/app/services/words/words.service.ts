@@ -1,4 +1,4 @@
-import { inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { inject, Service, signal, Signal, WritableSignal } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 
 import { WordParameterEnum } from '../../enums/word.parameter.enum';
@@ -7,9 +7,7 @@ import { WordRequest } from '../../interfaces/word-request';
 import { WordsStore } from '../../store/words.store';
 import { Word } from '../../interfaces/word';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class WordsService {
   private readonly wordsApiService = inject(WordsApiService);
   private readonly wordsStore = inject(WordsStore);

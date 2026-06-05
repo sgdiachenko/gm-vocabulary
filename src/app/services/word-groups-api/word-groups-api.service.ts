@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -6,9 +6,7 @@ import { WordGroupRequest } from '../../interfaces/word-group-request';
 import { environment } from '../../../environments/environment';
 import { WordGroup } from '../../interfaces/word-group';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class WordGroupsApiService {
   private readonly http = inject(HttpClient);
 
