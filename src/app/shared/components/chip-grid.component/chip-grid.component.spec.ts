@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgControl } from '@angular/forms';
 
 import { ChipGridComponent } from './chip-grid.component';
 
@@ -9,6 +10,13 @@ describe('ChipGridComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ChipGridComponent]
+    })
+    .overrideComponent(ChipGridComponent, {
+      add: {
+        providers: [
+          { provide: NgControl, useValue: { valueAccessor: null } }
+        ]
+      }
     })
     .compileComponents();
 
