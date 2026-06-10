@@ -2,6 +2,73 @@
 
 > Full-stack Angular application demonstrating scalable frontend architecture, modern state management, and secure authentication patterns.
 
+## ⚙️ Tech Stack
+
+### Frontend
+- Angular v22
+- NgRx SignalStore
+- Angular Material
+- Tailwind CSS
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+
+### Testing
+- Vitest (Unit Testing)
+- Playwright (End-to-End Testing)
+
+---
+
+## 🧪 Development Commands
+
+### Start application
+
+Using Docker:
+
+```bash
+npm run dev
+```
+
+Stop Docker:
+```bash
+npm run dev:stop
+```
+
+Using local environment:
+
+```bash
+npm run start:server
+npm start
+```
+Run unit tests
+
+```bash
+npm test
+```
+Run e2e tests
+
+```bash
+npm run test:e2e
+```
+Run e2e tests with UI mode
+
+```bash
+npm run test:e2e:ui
+```
+Run end-to-end tests in headed mode
+
+```bash
+npm run test:e2e:headed
+```
+
+Build production version:
+
+```bash
+npm run build
+```
 ---
 
 ## 🚀 Overview
@@ -129,22 +196,6 @@ This ensures proper separation between **read access (shared data)** and **write
 - Move JWT secret to environment variables
 - Implement refresh tokens
 - Consider HttpOnly cookies (XSS mitigation)
-
----
-
-## ⚙️ Tech Stack
-
-### Frontend
-- Angular v21
-- NgRx SignalStore
-- Angular Material
-- Tailwind CSS
-
-### Backend
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
 
 ---
 
@@ -288,22 +339,6 @@ ng build
 ```
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 

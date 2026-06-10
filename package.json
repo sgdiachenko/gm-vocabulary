@@ -3,13 +3,18 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "dev": "docker compose up -d",
+    "dev:stop": "docker compose down",
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 4200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "server": "node backend/server.js",
     "start:server": "nodemon backend/server.js",
-    "test": "ng test"
+    "test": "ng test",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:headed": "playwright test --headed"
   },
   "prettier": {
     "printWidth": 100,
@@ -48,7 +53,9 @@
     "@angular/build": "^22.0.0",
     "@angular/cli": "^22.0.0",
     "@angular/compiler-cli": "^22.0.0",
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4.1.12",
+    "@types/node": "^25.9.2",
     "jsdom": "^27.1.0",
     "nodemon": "^3.1.11",
     "postcss": "^8.5.3",
