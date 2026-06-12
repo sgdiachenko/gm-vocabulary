@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { SelectComponent } from '../../../../shared/components/select/select.component';
+import { SelectComponent } from '../../../../shared/components/form-fields/select/select.component';
 import { ButtonComponent } from "../../../../shared/components/button/button.component";
 import { TableComponent } from "../../../../shared/components/table/table.component";
 import { DefaultOptionValueEnum } from '../../../../shared/enums/default-option-value.enum';

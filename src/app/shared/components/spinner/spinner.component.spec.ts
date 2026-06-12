@@ -20,4 +20,11 @@ describe('SpinnerComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should render Material spinner', async () => {
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('mat-spinner')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('svg')).toBeTruthy();
+  });
 });

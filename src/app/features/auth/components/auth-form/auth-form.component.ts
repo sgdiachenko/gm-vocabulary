@@ -6,7 +6,7 @@ import {
   FormFieldValidationService
 } from '../../../../shared/services/form-field-validation/form-field-validation.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
-import { InputComponent } from '../../../../shared/components/input/input.component';
+import { InputComponent } from '../../../../shared/components/form-fields/input/input.component';
 import { Auth } from '../../interfaces/auth';
 
 

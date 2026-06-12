@@ -4,7 +4,7 @@ import { signal } from '@angular/core';
 import { of } from 'rxjs';
 
 import { CollectionEditDialogComponent } from './collection-edit-dialog.component';
-import { WordGroupService } from '../../services/word-group.service';
+import { WordGroupService } from '../../services/word-group/word-group.service';
 
 describe('CollectionEditDialogComponent', () => {
   let component: CollectionEditDialogComponent;

@@ -9,7 +9,7 @@ import {
   MatDialogTitle
 } from '@angular/material/dialog';
 
-import { AutocompleteComponent } from '../../../../shared/components/autocomplete/autocomplete.component';
+import { AutocompleteComponent } from '../../../../shared/components/form-fields/autocomplete/autocomplete.component';
 import { WordParameterDisplayNameEnum } from '../../enums/word-parameter-display-name.enum';
 import { WordGroupParameterEnum } from '../../../word-sets/enums/word-group.parameter.enum';
 import {
@@ -19,12 +19,12 @@ import {
   FormFieldValidationService
 } from '../../../../shared/services/form-field-validation/form-field-validation.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
-import { InputComponent } from '../../../../shared/components/input/input.component';
-import { WordGroupService } from '../../../word-sets/services/word-group.service';
+import { InputComponent } from '../../../../shared/components/form-fields/input/input.component';
+import { WordGroupService } from '../../../word-sets/services/word-group/word-group.service';
 import { WordGroup } from '../../../../features/word-sets/interfaces/word-group';
 import { WordParameterEnum } from '../../enums/word.parameter.enum';
 import { WordEditDialogData } from './word-edit-dialog-data';
-import { WordsService } from '../../services/words.service';
+import { WordsService } from '../../services/words/words.service';
 import { WordForm } from './word-form';
 
 @Component({

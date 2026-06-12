@@ -4,8 +4,8 @@ import { signal } from '@angular/core';
 import { of } from 'rxjs';
 
 import { WordEditDialogComponent } from './word-edit-dialog.component';
-import { WordsService } from '../../services/words.service';
-import { WordGroupService } from '../../../word-sets/services/word-group.service';
+import { WordsService } from '../../services/words/words.service';
+import { WordGroupService } from '../../../word-sets/services/word-group/word-group.service';
 
 describe('WordEditDialogComponent', () => {
   let component: WordEditDialogComponent;

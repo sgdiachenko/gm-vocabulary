@@ -29,7 +29,7 @@ export class DataLoadingWrapperComponent implements OnChanges {
     }
 
     if (changes['successMessage'] != null) {
-      if (this.error() == null) {
+      if (this.successMessage() == null) {
         this._snackBar.dismiss();
       } else {
         this._snackBar.open(this.successMessage(), 'Close');

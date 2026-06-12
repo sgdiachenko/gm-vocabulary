@@ -11,17 +11,17 @@ import {
 } from '@angular/material/dialog';
 
 import { DataLoadingWrapperComponent } from '../../../../shared/components/data-loading-wrapper/data-loading-wrapper.component';
-import { SlideToggleComponent } from '../../../../shared/components/slide-toggle/slide-toggle.component';
+import { SlideToggleComponent } from '../../../../shared/components/form-fields/slide-toggle/slide-toggle.component';
 import { WordGroupParameterDisplayNameEnum } from '../../enums/word-group-parameter-display-name.enum';
 import { WordEditDialogData } from '../../../words/components/word-edit-dialog/word-edit-dialog-data';
 import {
   FormFieldValidationService
 } from '../../../../shared/services/form-field-validation/form-field-validation.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
-import { InputComponent } from '../../../../shared/components/input/input.component';
+import { InputComponent } from '../../../../shared/components/form-fields/input/input.component';
 import { WordGroupParameterEnum } from '../../enums/word-group.parameter.enum';
 import { WordGroupRequest } from '../../interfaces/word-group-request';
-import { WordGroupService } from '../../services/word-group.service';
+import { WordGroupService } from '../../services/word-group/word-group.service';
 import { WordGroup } from '../../interfaces/word-group';
 
 @Component({
