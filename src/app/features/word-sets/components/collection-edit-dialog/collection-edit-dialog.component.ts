@@ -1,6 +1,5 @@
 import { Component, DestroyRef, inject, signal, WritableSignal } from '@angular/core';
 import { FieldTree, form, required, FormField } from '@angular/forms/signals';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { defer, iif } from 'rxjs';
 import {
@@ -12,6 +11,7 @@ import {
 } from '@angular/material/dialog';
 
 import { DataLoadingWrapperComponent } from '../../../../shared/components/data-loading-wrapper/data-loading-wrapper.component';
+import { SlideToggleComponent } from '../../../../shared/components/slide-toggle/slide-toggle.component';
 import { WordGroupParameterDisplayNameEnum } from '../../enums/word-group-parameter-display-name.enum';
 import { WordEditDialogData } from '../../../words/components/word-edit-dialog/word-edit-dialog-data';
 import {
@@ -33,7 +33,7 @@ import { WordGroup } from '../../interfaces/word-group';
     MatDialogActions,
     MatDialogContent,
     MatDialogTitle,
-    MatSlideToggle,
+    SlideToggleComponent,
     FormField
   ],
   templateUrl: './collection-edit-dialog.component.html',

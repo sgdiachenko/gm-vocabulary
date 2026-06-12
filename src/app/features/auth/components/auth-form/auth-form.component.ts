@@ -1,5 +1,5 @@
-import { Component, inject, input, OnChanges, output, SimpleChanges } from '@angular/core';
-import { ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { Component, effect, inject, input, output } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 
 import {
@@ -8,6 +8,7 @@ import {
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { Auth } from '../../interfaces/auth';
+
 
 @Component({
   selector: 'gm-auth-form',
@@ -20,51 +21,88 @@ import { Auth } from '../../interfaces/auth';
   templateUrl: './auth-form.component.html',
   styleUrl: './auth-form.component.scss',
 })
-export class AuthFormComponent implements OnChanges {
+export class AuthFormComponent {
   isSignupFormActive = input(false);
   submitForm = output<Auth>();
   toggleView = output<boolean>();
 
   private formFieldValidationService = inject(FormFieldValidationService);
+  private fb = inject(FormBuilder);
 
   readonly emailControlName = 'email';
   readonly passwordControlName = 'password';
   readonly repeatPasswordControlName = 'repeatPassword';
 
-  formGroup: UntypedFormGroup;
+  formGroup: FormGroup<{
+    email: FormControl<string>;
+    password: FormControl<string>;
+    repeatPassword?: FormControl<string>;
+  }>;
 
-  constructor(private fb: UntypedFormBuilder) {
-    this.formGroup = this.fb.group({
+  constructor() {
+    this.formGroup = this.fb.nonNullable.group({
       [this.emailControlName]: ['', [Validators.required, Validators.email]],
       [this.passwordControlName]: ['', [Validators.required]],
+    }, {
+      validators: this.passwordsMatch(this.passwordControlName, this.repeatPasswordControlName),
+    });
+
+    effect(() => {
+      this.toggleRepeatPasswordField(this.isSignupFormActive());
     });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    const isSignupFormActive = changes['isSignupFormActive']?.currentValue;
-    if (isSignupFormActive != null && !changes['isSignupFormActive'].isFirstChange()) {
-      this.toggleRepeatPasswordField(isSignupFormActive);
-    }
-  }
+  getControlErrorsMessages(controlName: string): string[] | null {
+    const control = this.formGroup.get(controlName);
 
-  getControlErrorsMessages(controlName: string): string[] {
-    return this.formGroup.get(controlName)?.dirty
-      ? this.formFieldValidationService.getErrorsMessages(this.formGroup.get(controlName)?.errors)
-      : null;
+    if (!control?.dirty) {
+      return null;
+    }
+
+    const shouldShowPasswordsMismatch =
+      this.formGroup.hasError('passwordsMismatch') &&
+      (controlName === this.repeatPasswordControlName ||
+        controlName === this.passwordControlName &&
+        this.formGroup.get(this.repeatPasswordControlName)?.dirty);
+
+    if (shouldShowPasswordsMismatch) {
+      return this.formFieldValidationService.getErrorsMessages({ passwordsMismatch: true });
+    }
+
+    return this.formFieldValidationService.getErrorsMessages(control.errors);
   }
 
   submitBtnClicked(): void {
-    this.submitForm.emit({
-      email: this.formGroup.value.email,
-      password: this.formGroup.value.password
-    });
+    const { email, password } = this.formGroup.getRawValue();
+
+    this.submitForm.emit({ email, password });
   }
 
-  private toggleRepeatPasswordField(showRepeatPassword: boolean) {
-    if (showRepeatPassword) {
-      this.formGroup.addControl(this.repeatPasswordControlName, this.fb.control('', [Validators.required]));
-    } else {
+  private toggleRepeatPasswordField(showRepeatPassword: boolean): void {
+    const hasRepeatPasswordControl = this.formGroup.contains(this.repeatPasswordControlName);
+
+    if (showRepeatPassword && !hasRepeatPasswordControl) {
+      this.formGroup.addControl(
+        this.repeatPasswordControlName,
+        this.fb.nonNullable.control('', [Validators.required]),
+      );
+    }
+
+    if (!showRepeatPassword && hasRepeatPasswordControl) {
       this.formGroup.removeControl(this.repeatPasswordControlName);
     }
+  }
+
+  private passwordsMatch(passwordControlName: string, confirmPasswordControlName: string): ValidatorFn {
+    return (formGroup: AbstractControl): ValidationErrors | null => {
+      const password = formGroup.get(passwordControlName)?.value;
+      const confirmPassword = formGroup.get(confirmPasswordControlName)?.value;
+
+      if (!confirmPassword) {
+        return null;
+      }
+
+      return password === confirmPassword ? null : { passwordsMismatch: true };
+    };
   }
 }

@@ -1,7 +1,7 @@
 <gm-data-loading-wrapper
   [loadingState]="updateIsLoading()"
   [error]="updateError()">
-  <h2 mat-dialog-title> {{ data != null ? 'Edit' : 'Add' }} word</h2>
+  <h2 mat-dialog-title> {{ data != null ? 'Edit' : 'Add' }} collection</h2>
 
   <mat-dialog-content>
     <form class="flex flex-col">
@@ -16,9 +16,9 @@
         "
       ></gm-input>
 
-      <mat-slide-toggle [formField]="wordGroupForm[wordGroupParameterEnum.IS_SHARED]">
+      <gm-slide-toggle [formField]="wordGroupForm[wordGroupParameterEnum.IS_SHARED]">
         {{wordGroupParameterDisplayNameEnum.IS_SHARED}}
-      </mat-slide-toggle>
+      </gm-slide-toggle>
     </form>
   </mat-dialog-content>
 

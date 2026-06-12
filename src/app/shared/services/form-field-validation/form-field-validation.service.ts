@@ -7,7 +7,9 @@ import { FieldTree } from '@angular/forms/signals';
 @Service()
 export class FormFieldValidationService {
   getErrorsMessages(errors: ValidationErrors | null): string[] {
-    return errors != null ? Object.keys(errors).map((key: string) => FormFieldValidationMessagesConst[key]): [];
+    return errors != null ? Object.keys(errors).map((key: string) => {
+      return FormFieldValidationMessagesConst[key] || 'Unknown error';
+    }): [];
   }
 
   isSignalFormValid<T>(form: FieldTree<T>): Signal<boolean> {

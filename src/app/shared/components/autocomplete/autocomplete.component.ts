@@ -1,4 +1,4 @@
-import { ControlValueAccessor, FormsModule, NgControl, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import { ControlValueAccessor, FormControl, FormsModule, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
@@ -10,12 +10,8 @@ import {
   DestroyRef,
   inject,
   input,
-  OnChanges,
   Self,
-  signal,
   Signal,
-  SimpleChanges,
-  WritableSignal
 } from '@angular/core';
 
 import { SelectOption } from '../../interfaces/select-option';
@@ -38,61 +34,61 @@ import { SelectOption } from '../../interfaces/select-option';
   templateUrl: './autocomplete.component.html',
   styleUrl: './autocomplete.component.scss',
 })
-export class AutocompleteComponent implements ControlValueAccessor, OnChanges {
+export class AutocompleteComponent implements ControlValueAccessor {
   private readonly destroyRef = inject(DestroyRef);
 
-  fieldLabel = input<string>(null);
-  fieldPlaceholder = input<string>(null);
+  fieldLabel = input<string | null>(null);
+  fieldPlaceholder = input<string | null>(null);
   fieldErrors = input<string[]>([]);
   options = input<SelectOption[]>([]);
   allowCustomValue = input<boolean>(false);
 
-  inputControl: UntypedFormControl;
-  onTouch: () => void;
+  inputControl = new FormControl<string>('', { nonNullable: true });
+  onTouch: () => void = () => {};
 
   private readonly inputControlValue: Signal<string>;
-  private readonly initialOptions: WritableSignal<SelectOption[]> = signal([]);
-  filteredOptions: Signal<SelectOption[]>;
+  private readonly normalizedOptions = computed(() => this.options() ?? []);
+  private readonly optionNameById = computed(() =>
+    new Map(this.normalizedOptions().map(({ id, name }) => [id, name])),
+  );
+  private readonly optionIdByName = computed(() =>
+    new Map(this.normalizedOptions().map(({ id, name }) => [name, id])),
+  );
+  filteredOptions: Signal<SelectOption[]> = computed(() =>
+    this.getFilteredOptions(this.inputControlValue(), this.normalizedOptions()),
+  );
 
   constructor(@Self() public controlDir: NgControl) {
     controlDir.valueAccessor = this;
-    this.inputControl = new UntypedFormControl();
-    this.inputControlValue = toSignal(this.inputControl.valueChanges, {initialValue: ''});
-    this.filteredOptions = computed(() => this.getFilteredOptions(this.inputControlValue(), this.initialOptions()));
+    this.inputControlValue = toSignal(this.inputControl.valueChanges, { initialValue: '' });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['options']?.currentValue) {
-      this.initialOptions.set(this.options());
-      if (this.inputControl.value != null && this.inputControl.value !== '') {
-        this.inputControl.setValue(this.getOptionNameById(this.inputControl.value), {emitEvent: false});
-      }
-    }
+  writeValue(id: string | null): void {
+    this.inputControl.setValue(this.getOptionNameById(id) || id || '', { emitEvent: false });
   }
 
-  writeValue(id: string) {
-    this.inputControl.setValue(this.options?.length > 0 ? this.getOptionNameById(id) || id : id, {emitEvent: false});
-  }
-
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: string) => void): void {
     this.inputControl.valueChanges
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        map((value: string) => {
-          console.log(this.options?.length > 0 ? this.getOptionIdByName(value) || value : value)
-          return this.options?.length > 0 ? this.getOptionIdByName(value) || value : value
-        })
+        map((value: string) => this.getOptionIdByName(value) || value),
       )
       .subscribe(fn);
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouch = fn;
   }
 
   setDisabledState(isDisabled: boolean): void {
-    isDisabled ? this.inputControl.disable({emitEvent: false, onlySelf: true}) :
-      this.inputControl.enable({emitEvent: false, onlySelf: true});
+    const options = { emitEvent: false, onlySelf: true };
+
+    if (isDisabled) {
+      this.inputControl.disable(options);
+      return;
+    }
+
+    this.inputControl.enable(options);
   }
 
   private getFilteredOptions(value: string, options: SelectOption[]): SelectOption[] {
@@ -108,23 +104,23 @@ export class AutocompleteComponent implements ControlValueAccessor, OnChanges {
     }
 
     if (this.allowCustomValue() && value != '') {
-      const isUniqueValue = filteredOptions.length === 0 || filteredOptions.findIndex((option: SelectOption) => option.name.toLowerCase() === filterValue) === -1
+      const isUniqueValue = filteredOptions.every(
+        (option: SelectOption) => option.name.toLowerCase() !== filterValue,
+      );
+
       if (isUniqueValue) {
-        filteredOptions.unshift({id: null, name: value, isCustom: true});
+        filteredOptions.unshift({ id: value, name: value, isCustom: true });
       }
     }
+
     return filteredOptions;
   }
 
-  private getOptionNameById(id: string): string {
-    return this.findOption('id', id)?.name;
+  private getOptionNameById(id: string | null): string | undefined {
+    return id == null ? undefined : this.optionNameById().get(id);
   }
 
-  private getOptionIdByName(name: string): string {
-    return this.findOption('name', name)?.id;
-  }
-
-  private findOption(parameter: string, value: string): SelectOption {
-    return this.options()?.find(option => option[parameter] === value);
+  private getOptionIdByName(name: string): string | undefined {
+    return this.optionIdByName().get(name);
   }
 }

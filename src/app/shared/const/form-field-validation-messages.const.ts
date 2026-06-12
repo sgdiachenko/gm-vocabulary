@@ -1,4 +1,5 @@
 export const FormFieldValidationMessagesConst: {[key: string]: string} = {
-  required: 'Field is required',
-  email: 'Invalid email',
+  required: 'This field is required',
+  email: 'Email is not valid',
+  passwordsMismatch: 'Passwords do not match'
 }

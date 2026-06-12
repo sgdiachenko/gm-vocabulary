@@ -3,7 +3,7 @@
   [ngClass]="{'mat-mdc-form-field_disabled': inputControl.disabled}">
   <mat-label>{{fieldLabel()}}</mat-label>
   <input [formControl]="inputControl"
-         type="string"
+         type="text"
          [placeholder]="fieldPlaceholder() || 'Enter ' + (fieldLabel() | lowercase)"
          matInput
          [matAutocomplete]="auto">
