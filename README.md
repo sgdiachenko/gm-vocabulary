@@ -28,6 +28,18 @@
 
 Using Docker:
 
+#### MongoDB connection
+
+By default, Docker Compose starts MongoDB automatically, so no extra setup is required.
+
+Before running the app, create your own local `.env` file only if you want to use MongoDB Atlas or another external database:
+
+```env
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/<db>?retryWrites=true&w=majority
+```
+
+If you change `.env` after containers are already running, restart the backend/container so the new environment variable is applied.
+
 ```bash
 npm run dev
 ```
@@ -36,18 +48,6 @@ Stop Docker:
 ```bash
 npm run dev:stop
 ```
-
-### MongoDB connection
-
-By default, Docker Compose starts MongoDB automatically, so no extra setup is required.
-
-To use MongoDB Atlas or another external database, create your own local `.env` file and set:
-
-```env
-MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/<db>?retryWrites=true&w=majority
-```
-
-Then restart the backend/container so the new environment variable is applied.
 
 Using local environment:
 
