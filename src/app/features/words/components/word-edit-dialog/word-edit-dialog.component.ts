@@ -1,5 +1,6 @@
-import { Component, inject, Signal, signal, WritableSignal } from '@angular/core';
-import { disabled, FieldTree, form, required, FormField } from '@angular/forms/signals'
+import { Component, DestroyRef, inject, Signal, signal, WritableSignal } from '@angular/core';
+import { disabled, FieldTree, form, FormField, required } from '@angular/forms/signals';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { defer, iif, of, switchMap } from 'rxjs';
 import {
   MAT_DIALOG_DATA,
@@ -10,6 +11,8 @@ import {
 } from '@angular/material/dialog';
 
 import { AutocompleteComponent } from '../../../../shared/components/form-fields/autocomplete/autocomplete.component';
+import { InputComponent } from '../../../../shared/components/form-fields/input/input.component';
+import { WordGroupService } from '../../../word-sets/services/word-group/word-group.service';
 import { WordParameterDisplayNameEnum } from '../../enums/word-parameter-display-name.enum';
 import { WordGroupParameterEnum } from '../../../word-sets/enums/word-group.parameter.enum';
 import {
@@ -19,12 +22,10 @@ import {
   FormFieldValidationService
 } from '../../../../shared/services/form-field-validation/form-field-validation.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
-import { InputComponent } from '../../../../shared/components/form-fields/input/input.component';
-import { WordGroupService } from '../../../word-sets/services/word-group/word-group.service';
 import { WordGroup } from '../../../../features/word-sets/interfaces/word-group';
 import { WordParameterEnum } from '../../enums/word.parameter.enum';
-import { WordEditDialogData } from './word-edit-dialog-data';
 import { WordsService } from '../../services/words/words.service';
+import { WordEditDialogData } from './word-edit-dialog-data';
 import { WordForm } from './word-form';
 
 @Component({
@@ -43,8 +44,9 @@ import { WordForm } from './word-form';
   styleUrl: './word-edit-dialog.component.scss',
 })
 export class WordEditDialogComponent {
-  private dialogRef = inject(MatDialogRef<WordEditDialogData>);
-  data: WordEditDialogData = inject<WordEditDialogData>(MAT_DIALOG_DATA);
+  private readonly dialogRef = inject(MatDialogRef<WordEditDialogComponent>);
+  private readonly destroyRef = inject(DestroyRef);
+  readonly data: WordEditDialogData = inject<WordEditDialogData>(MAT_DIALOG_DATA);
 
   private readonly wordsService = inject(WordsService);
   private readonly wordGroupService = inject(WordGroupService);
@@ -57,22 +59,26 @@ export class WordEditDialogComponent {
   wordsUpdateIsLoading: Signal<boolean> = this.wordsService.updateIsLoading;
   wordsUpdateErr: Signal<Error> = this.wordsService.updateError;
 
-  private wordModel: WritableSignal<WordForm> = signal<WordForm>({
+  private readonly wordModel: WritableSignal<WordForm> = signal<WordForm>({
     [WordParameterEnum.WORD]: this.data?.[WordParameterEnum.WORD] ?? '',
     [WordParameterEnum.TRANSLATION]: this.data?.[WordParameterEnum.TRANSLATION] ?? '',
     [WordParameterEnum.GROUP_ID]: this.data?.[WordParameterEnum.GROUP_ID] ?? ''
   });
 
-  wordForm: FieldTree<WordForm> = form(this.wordModel,  (schemaPath) => {
-    required(schemaPath[WordParameterEnum.WORD], { message: 'Word is required' })
-    required(schemaPath[WordParameterEnum.TRANSLATION], { message: 'Translation is required' })
-    disabled(schemaPath[WordParameterEnum.GROUP_ID], () => this.data.disableGroupSelection)
+  readonly wordForm: FieldTree<WordForm> = form(this.wordModel, (schemaPath) => {
+    required(schemaPath[WordParameterEnum.WORD], { message: 'Word is required' });
+    required(schemaPath[WordParameterEnum.TRANSLATION], { message: 'Translation is required' });
+    disabled(schemaPath[WordParameterEnum.GROUP_ID], () => this.data.disableGroupSelection);
   });
 
-  isWordFormValid = this.formFieldValidationService.isSignalFormValid<WordForm>(this.wordForm);
-  getFormFieldErrors = this.formFieldValidationService.getSignalFormFieldErrorMessages;
+  readonly isWordFormValid = this.formFieldValidationService.isSignalFormValid<WordForm>(this.wordForm);
+  readonly getFormFieldErrors = this.formFieldValidationService.getSignalFormFieldErrorMessages;
 
   apply(): void {
+    if (!this.isWordFormValid()) {
+      return;
+    }
+
     const selectedGroupId = this.wordModel()[WordParameterEnum.GROUP_ID]?.trim();
     const isNewGroupSelected = selectedGroupId != null && selectedGroupId !== ''
       && this.wordGroups().findIndex(({_id}) => _id === selectedGroupId) === -1;
@@ -102,11 +108,13 @@ export class WordEditDialogComponent {
           }
         );
       })
-    ).subscribe({
-      next: () => {
-        this.close();
-      }
-    });
+    )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.close();
+        }
+      });
   }
 
   close(): void {
