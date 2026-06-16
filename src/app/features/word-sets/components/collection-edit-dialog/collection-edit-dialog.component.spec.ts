@@ -82,9 +82,9 @@ describe('CollectionEditDialogComponent', () => {
     createComponent();
 
     expect(component.isWordGroupFormValid()).toBe(false);
-    expect(component.getFormFieldErrors(component.wordGroupForm[WordGroupParameterEnum.NAME]().errors())).toEqual([
+    expect(component.wordGroupForm[WordGroupParameterEnum.NAME]().getError('required')?.message).toBe(
       'Name is required',
-    ]);
+    );
   });
 
   it('should not submit when the signal form is invalid', () => {

@@ -6,24 +6,21 @@
   <mat-dialog-content>
     <form class="flex flex-col">
       <gm-input
-        [formField]="wordForm[wordParameterEnum.WORD]"
+        [field]="wordForm[wordParameterEnum.WORD]"
         [fieldLabel]="wordParameterDisplayNameEnum.WORD"
         [fieldPlaceholder]="wordParameterDisplayNameEnum.WORD"
-        [fieldErrors]="wordForm[wordParameterEnum.WORD]().dirty() ? getFormFieldErrors(wordForm[wordParameterEnum.WORD]().errors() || []) : []"
       ></gm-input>
 
       <gm-input
-        [formField]="wordForm[wordParameterEnum.TRANSLATION]"
+        [field]="wordForm[wordParameterEnum.TRANSLATION]"
         [fieldLabel]="wordParameterDisplayNameEnum.TRANSLATION"
         [fieldPlaceholder]="wordParameterDisplayNameEnum.TRANSLATION"
-        [fieldErrors]="wordForm[wordParameterEnum.TRANSLATION]().dirty() ? getFormFieldErrors(wordForm[wordParameterEnum.TRANSLATION]().errors() || []) : []"
       ></gm-input>
 
       <gm-autocomplete
-        [formField]="wordForm[wordParameterEnum.GROUP_ID]"
+        [field]="wordForm[wordParameterEnum.GROUP_ID]"
         [fieldLabel]="wordParameterDisplayNameEnum.WORD_GROUP"
         [fieldPlaceholder]="wordParameterDisplayNameEnum.WORD_GROUP"
-        [fieldErrors]="wordForm[wordParameterEnum.GROUP_ID]().dirty() ? getFormFieldErrors(wordForm[wordParameterEnum.GROUP_ID]().errors() || []) : []"
         [options]="data.wordGroups"
         [allowCustomValue]="true"
       ></gm-autocomplete>

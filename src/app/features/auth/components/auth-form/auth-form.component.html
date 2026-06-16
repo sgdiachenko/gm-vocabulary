@@ -1,31 +1,28 @@
 <h1 class="text-2xl text-center pb-8">{{isSignupFormActive() ? 'Signup' : 'Login'}}</h1>
-<form [formGroup]="formGroup" (submit)="submitBtnClicked()">
+<form [formRoot]="authForm">
   <gm-input
     fieldLabel="Email"
-    [formControlName]="emailControlName"
+    [field]="authForm.email"
     fieldType="email"
-    [fieldErrors]="getControlErrorsMessages(emailControlName)"
   ></gm-input>
 
   <gm-input
     fieldLabel="Password"
-    [formControlName]="passwordControlName"
+    [field]="authForm.password"
     fieldType="password"
-    [fieldErrors]="getControlErrorsMessages(passwordControlName)"
   ></gm-input>
 
   @if (isSignupFormActive()) {
     <gm-input
       fieldLabel="Repeat Password"
       fieldPlaceholder="Repeat Password"
-      [formControlName]="repeatPasswordControlName"
+      [field]="authForm.repeatPassword"
       fieldType="password"
-      [fieldErrors]="getControlErrorsMessages(repeatPasswordControlName)"
     ></gm-input>
   }
 
   <div class="flex justify-center gap-4 pt-4">
     <a matButton (click)="toggleView.emit(!isSignupFormActive())">{{isSignupFormActive() ? 'Login' : 'Signup'}}</a>
-    <gm-button [isDisabled]="formGroup && (formGroup.pristine || formGroup.invalid)" [isSubmit]="true">Submit</gm-button>
+    <gm-button [isDisabled]="!isAuthFormSubmittable()" [isSubmit]="true">Submit</gm-button>
   </div>
 </form>

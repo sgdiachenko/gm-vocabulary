@@ -1,39 +1,29 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgControl } from '@angular/forms';
+import { signal } from '@angular/core';
+import { Field, disabled, form } from '@angular/forms/signals';
+import { MatSelect } from '@angular/material/select';
 
 import { SelectComponent } from './select.component';
 
 describe('SelectComponent', () => {
   let component: SelectComponent;
   let fixture: ComponentFixture<SelectComponent>;
-  let ngControl: { valueAccessor: unknown };
+  let field: Field<string>;
 
   beforeEach(async () => {
-    ngControl = { valueAccessor: null };
-
     await TestBed.configureTestingModule({
       imports: [SelectComponent]
-    })
-    .overrideComponent(SelectComponent, {
-      add: {
-        providers: [
-          { provide: NgControl, useValue: ngControl }
-        ]
-      }
-    })
-    .compileComponents();
+    }).compileComponents();
 
+    field = createField();
     fixture = TestBed.createComponent(SelectComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('field', field);
     await fixture.whenStable();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should register itself as the control value accessor', () => {
-    expect(ngControl.valueAccessor).toBe(component);
   });
 
   it('should render the field label', async () => {
@@ -47,46 +37,63 @@ describe('SelectComponent', () => {
     expect(component.defaultOptionValue).toBe('ALL');
   });
 
-  it('should write values without notifying registered change handlers', () => {
-    const onChangeSpy = vi.fn();
-    component.registerOnChange(onChangeSpy);
+  it('should bind the Material select value to the signal form field', async () => {
+    field().value.set('collection-id');
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-    component.writeValue('collection-id');
-
-    expect(component.inputControl.value).toBe('collection-id');
-    expect(onChangeSpy).not.toHaveBeenCalled();
+    expect(getMatSelect().value).toBe('collection-id');
   });
 
-  it('should notify registered change handlers when the control changes', () => {
-    const onChangeSpy = vi.fn();
-    component.registerOnChange(onChangeSpy);
+  it('should render the provided options', async () => {
+    fixture.componentRef.setInput('options', [
+      { id: 'animals', name: 'Animals' },
+      { id: 'food', name: 'Food' },
+    ]);
+    await fixture.whenStable();
 
-    component.inputControl.setValue('collection-id');
+    getMatSelect().open();
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-    expect(onChangeSpy).toHaveBeenCalledWith('collection-id');
+    const optionTexts = Array.from(document.querySelectorAll('mat-option')).map((option) =>
+      (option as HTMLElement).textContent?.trim(),
+    );
+
+    expect(optionTexts).toEqual(['All', 'Animals', 'Food']);
   });
 
-  it('should store registered touch handler', () => {
-    const onTouchSpy = vi.fn();
+  it('should emit value changes when selection changes', () => {
+    const valueChangeSpy = vi.fn();
+    component.valueChange.subscribe(valueChangeSpy);
 
-    component.registerOnTouched(onTouchSpy);
-    component.onTouch();
+    getMatSelect().selectionChange.emit({
+      source: getMatSelect(),
+      value: 'collection-id',
+    });
 
-    expect(onTouchSpy).toHaveBeenCalledOnce();
+    expect(valueChangeSpy).toHaveBeenCalledWith('collection-id');
   });
 
-  it('should toggle disabled state without notifying registered change handlers', () => {
-    const onChangeSpy = vi.fn();
-    component.registerOnChange(onChangeSpy);
+  it('should disable the Material select when the signal form field is disabled', async () => {
+    field = createField({ isDisabled: true });
+    fixture.componentRef.setInput('field', field);
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-    component.setDisabledState(true);
-
-    expect(component.inputControl.disabled).toBe(true);
-    expect(onChangeSpy).not.toHaveBeenCalled();
-
-    component.setDisabledState(false);
-
-    expect(component.inputControl.enabled).toBe(true);
-    expect(onChangeSpy).not.toHaveBeenCalled();
+    expect(getMatSelect().disabled).toBe(true);
   });
+
+  function createField(options: { isDisabled?: boolean } = {}): Field<string> {
+    return TestBed.runInInjectionContext(() =>
+      form(signal('ALL'), (schemaPath) => {
+        disabled(schemaPath, { when: () => options.isDisabled === true });
+      }),
+    );
+  }
+
+  function getMatSelect(): MatSelect {
+    return fixture.debugElement.query((debugElement) => debugElement.componentInstance instanceof MatSelect)
+      .componentInstance;
+  }
 });

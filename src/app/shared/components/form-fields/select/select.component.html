@@ -1,8 +1,8 @@
 <mat-form-field>
   <mat-label>{{ fieldLabel() }}</mat-label>
-  <mat-select [value]="inputControl.value" (selectionChange)="inputControl.setValue($event.value)">
+  <mat-select [formField]="field()" (selectionChange)="valueChange.emit($event.value)">
     <mat-option [value]="defaultOptionValue">All</mat-option>
-    @for (option of options(); track option) {
+    @for (option of options(); track option.id) {
       <mat-option [value]="option.id">{{option.name}}</mat-option>
     }
   </mat-select>

@@ -1,5 +1,5 @@
-import { Component, DestroyRef, inject, Signal, signal, WritableSignal } from '@angular/core';
-import { disabled, FieldTree, form, FormField, required } from '@angular/forms/signals';
+import { Component, computed, DestroyRef, inject, Signal, signal, WritableSignal } from '@angular/core';
+import { disabled, FieldTree, form, required } from '@angular/forms/signals';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { defer, iif, of, switchMap } from 'rxjs';
 import {
@@ -18,9 +18,6 @@ import { WordGroupParameterEnum } from '../../../word-sets/enums/word-group.para
 import {
   DataLoadingWrapperComponent
 } from '../../../../shared/components/data-loading-wrapper/data-loading-wrapper.component';
-import {
-  FormFieldValidationService
-} from '../../../../shared/services/form-field-validation/form-field-validation.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { WordGroup } from '../../../../features/word-sets/interfaces/word-group';
 import { WordParameterEnum } from '../../enums/word.parameter.enum';
@@ -38,7 +35,6 @@ import { WordForm } from './word-form';
     InputComponent,
     DataLoadingWrapperComponent,
     AutocompleteComponent,
-    FormField
 ],
   templateUrl: './word-edit-dialog.component.html',
   styleUrl: './word-edit-dialog.component.scss',
@@ -50,7 +46,6 @@ export class WordEditDialogComponent {
 
   private readonly wordsService = inject(WordsService);
   private readonly wordGroupService = inject(WordGroupService);
-  private readonly formFieldValidationService = inject(FormFieldValidationService);
   private readonly wordGroups: Signal<WordGroup[]> = this.wordGroupService.groups;
 
   readonly wordParameterEnum = WordParameterEnum;
@@ -68,11 +63,12 @@ export class WordEditDialogComponent {
   readonly wordForm: FieldTree<WordForm> = form(this.wordModel, (schemaPath) => {
     required(schemaPath[WordParameterEnum.WORD], { message: 'Word is required' });
     required(schemaPath[WordParameterEnum.TRANSLATION], { message: 'Translation is required' });
-    disabled(schemaPath[WordParameterEnum.GROUP_ID], () => this.data.disableGroupSelection);
+    disabled(schemaPath[WordParameterEnum.GROUP_ID], {
+      when: () => this.data.disableGroupSelection === true
+    });
   });
 
-  readonly isWordFormValid = this.formFieldValidationService.isSignalFormValid<WordForm>(this.wordForm);
-  readonly getFormFieldErrors = this.formFieldValidationService.getSignalFormFieldErrorMessages;
+  readonly isWordFormValid = computed(() => this.wordForm().valid());
 
   apply(): void {
     if (!this.isWordFormValid()) {

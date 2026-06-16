@@ -1,30 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgControl } from '@angular/forms';
+import { signal } from '@angular/core';
+import { Field, disabled, form } from '@angular/forms/signals';
 
 import { SlideToggleComponent } from './slide-toggle.component';
 
 describe('SlideToggleComponent', () => {
   let component: SlideToggleComponent;
   let fixture: ComponentFixture<SlideToggleComponent>;
-  let ngControl: { valueAccessor: unknown };
+  let field: Field<boolean>;
 
   beforeEach(async () => {
-    ngControl = { valueAccessor: null };
-
     await TestBed.configureTestingModule({
       imports: [SlideToggleComponent],
-    })
-    .overrideComponent(SlideToggleComponent, {
-      add: {
-        providers: [
-          { provide: NgControl, useValue: ngControl },
-        ],
-      },
-    })
-    .compileComponents();
+    }).compileComponents();
 
+    field = createField();
     fixture = TestBed.createComponent(SlideToggleComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('field', field);
     await fixture.whenStable();
   });
 
@@ -32,80 +25,40 @@ describe('SlideToggleComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should register itself as the control value accessor', () => {
-    expect(ngControl.valueAccessor).toBe(component);
-  });
-
-  it('should render a Material slide toggle', async () => {
-    await fixture.whenStable();
-
+  it('should render a Material slide toggle', () => {
     expect(getSlideToggle()).toBeTruthy();
   });
 
-  it('should write boolean values without notifying registered change handlers', async () => {
-    const onChangeSpy = vi.fn();
-    component.registerOnChange(onChangeSpy);
-
-    component.writeValue(true);
+  it('should bind the Material slide toggle checked state to the signal form field', async () => {
+    field().value.set(true);
+    fixture.detectChanges();
     await fixture.whenStable();
 
-    expect(component.inputControl.value).toBe(true);
     expect(getSlideToggle().getAttribute('aria-checked')).toBe('true');
-    expect(onChangeSpy).not.toHaveBeenCalled();
   });
 
-  it('should write false when the incoming value is null', async () => {
-    component.writeValue(true);
+  it('should update the signal form field when the toggle changes', async () => {
+    getSlideToggle().click();
     await fixture.whenStable();
 
-    component.writeValue(null);
-    await fixture.whenStable();
-
-    expect(component.inputControl.value).toBe(false);
-    expect(getSlideToggle().getAttribute('aria-checked')).toBe('false');
+    expect(field().value()).toBe(true);
   });
 
-  it('should notify registered change handlers when the input control changes', () => {
-    const onChangeSpy = vi.fn();
-    component.registerOnChange(onChangeSpy);
-
-    component.inputControl.setValue(true);
-
-    expect(onChangeSpy).toHaveBeenCalledWith(true);
-  });
-
-  it('should toggle disabled state without notifying registered change handlers', async () => {
-    const onChangeSpy = vi.fn();
-    component.registerOnChange(onChangeSpy);
-
-    component.setDisabledState(true);
+  it('should disable the Material slide toggle when the signal form field is disabled', async () => {
+    field = createField({ isDisabled: true });
+    fixture.componentRef.setInput('field', field);
+    fixture.detectChanges();
     await fixture.whenStable();
 
-    expect(component.inputControl.disabled).toBe(true);
     expect(getSlideToggle().disabled).toBe(true);
-    expect(onChangeSpy).not.toHaveBeenCalled();
-
-    component.setDisabledState(false);
-    await fixture.whenStable();
-
-    expect(component.inputControl.enabled).toBe(true);
-    expect(getSlideToggle().disabled).toBe(false);
-    expect(onChangeSpy).not.toHaveBeenCalled();
   });
 
-  it('should call registered touch handler on blur', async () => {
-    const onTouchSpy = vi.fn();
-    component.registerOnTouched(onTouchSpy);
-    await fixture.whenStable();
-
-    getMaterialSlideToggle().dispatchEvent(new FocusEvent('blur'));
-    await fixture.whenStable();
-
-    expect(onTouchSpy).toHaveBeenCalled();
-  });
-
-  function getMaterialSlideToggle(): HTMLElement {
-    return fixture.nativeElement.querySelector('mat-slide-toggle');
+  function createField(options: { isDisabled?: boolean } = {}): Field<boolean> {
+    return TestBed.runInInjectionContext(() =>
+      form(signal({ value: false }), (schemaPath) => {
+        disabled(schemaPath.value, { when: () => options.isDisabled === true });
+      }).value,
+    );
   }
 
   function getSlideToggle(): HTMLButtonElement {

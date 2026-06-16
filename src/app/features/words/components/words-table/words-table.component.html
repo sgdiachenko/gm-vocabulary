@@ -20,10 +20,9 @@
       <gm-select
         class="ml-auto"
         fieldLabel="Select Collection"
+        [field]="selectedGroupField"
         [options]="groups()"
-        [ngModel]="selectedGroupId()"
-        [ngModelOptions]="{standalone: true}"
-        (ngModelChange)="selectGroup.emit($event)"
+        (valueChange)="selectGroup.emit($event)"
       ></gm-select>
     }
   </div>

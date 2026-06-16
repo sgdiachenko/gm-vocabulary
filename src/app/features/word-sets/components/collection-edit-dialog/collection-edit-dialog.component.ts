@@ -1,5 +1,5 @@
-import { Component, DestroyRef, inject, signal, Signal, WritableSignal } from '@angular/core';
-import { FieldTree, form, FormField, required } from '@angular/forms/signals';
+import { Component, computed, DestroyRef, inject, signal, Signal, WritableSignal } from '@angular/core';
+import { FieldTree, form, required } from '@angular/forms/signals';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
 import {
@@ -13,14 +13,11 @@ import {
 import { DataLoadingWrapperComponent } from '../../../../shared/components/data-loading-wrapper/data-loading-wrapper.component';
 import { SlideToggleComponent } from '../../../../shared/components/form-fields/slide-toggle/slide-toggle.component';
 import { WordGroupParameterDisplayNameEnum } from '../../enums/word-group-parameter-display-name.enum';
-import {
-  FormFieldValidationService
-} from '../../../../shared/services/form-field-validation/form-field-validation.service';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { InputComponent } from '../../../../shared/components/form-fields/input/input.component';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { WordGroupService } from '../../services/word-group/word-group.service';
 import { WordGroupParameterEnum } from '../../enums/word-group.parameter.enum';
 import { WordGroupRequest } from '../../interfaces/word-group-request';
-import { WordGroupService } from '../../services/word-group/word-group.service';
 import { WordGroup } from '../../interfaces/word-group';
 
 @Component({
@@ -33,7 +30,6 @@ import { WordGroup } from '../../interfaces/word-group';
     MatDialogContent,
     MatDialogTitle,
     SlideToggleComponent,
-    FormField
   ],
   templateUrl: './collection-edit-dialog.component.html',
   styleUrl: './collection-edit-dialog.component.scss',
@@ -44,7 +40,6 @@ export class CollectionEditDialogComponent {
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly wordGroupService = inject(WordGroupService);
-  private readonly formFieldValidationService = inject(FormFieldValidationService);
 
   readonly updateIsLoading: Signal<boolean> = this.wordGroupService.updateIsLoading;
   readonly updateError: Signal<Error | null> = this.wordGroupService.updateError;
@@ -61,8 +56,7 @@ export class CollectionEditDialogComponent {
     required(schemaPath[WordGroupParameterEnum.NAME], { message: 'Name is required' });
   });
 
-  readonly isWordGroupFormValid = this.formFieldValidationService.isSignalFormValid<WordGroupRequest>(this.wordGroupForm);
-  readonly getFormFieldErrors = this.formFieldValidationService.getSignalFormFieldErrorMessages;
+  readonly isWordGroupFormValid = computed(() => this.wordGroupForm().valid());
 
   apply(): void {
     if (!this.isWordGroupFormValid()) {

@@ -2,15 +2,7 @@
   <mat-label>{{fieldLabel()}}</mat-label>
   <input
     matInput
-    [formControl]="inputControl"
+    [formField]="field()"
     [type]="fieldType()"
     [placeholder]="fieldPlaceholder() || 'Enter ' + (fieldLabel() | lowercase)">
 </mat-form-field>
-
-@if (fieldErrors() != null && fieldErrors().length > 0) {
-  <div class="field-errors">
-    @for (error of fieldErrors(); track $index) {
-      <mat-error>{{error}}</mat-error>
-    }
-  </div>
-}

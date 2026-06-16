@@ -1,9 +1,9 @@
-import { Component, DestroyRef, inject, input, Self } from '@angular/core';
-import { ControlValueAccessor, NgControl, UntypedFormControl } from '@angular/forms';
-import { DefaultOptionValueEnum } from '../../../enums/default-option-value.enum';
 import { MatFormField, MatLabel } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Field, FormField } from '@angular/forms/signals';
+import { Component, input, output } from '@angular/core';
+
+import { DefaultOptionValueEnum } from '../../../enums/default-option-value.enum';
 import { SelectOption } from '../../../interfaces/select-option';
 
 @Component({
@@ -12,42 +12,17 @@ import { SelectOption } from '../../../interfaces/select-option';
     MatFormField,
     MatLabel,
     MatSelect,
-    MatOption
+    MatOption,
+    FormField
   ],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
 })
-export class SelectComponent implements ControlValueAccessor {
-  private readonly destroyRef = inject(DestroyRef);
+export class SelectComponent {
   readonly defaultOptionValue = DefaultOptionValueEnum.ALL;
 
-  fieldLabel = input(null);
+  field = input.required<Field<string>>();
+  fieldLabel = input<string | null>(null);
   options = input<SelectOption[]>([]);
-
-  inputControl: UntypedFormControl;
-  onTouch: () => void;
-
-  constructor(@Self() public controlDir: NgControl) {
-    controlDir.valueAccessor = this;
-    this.inputControl = new UntypedFormControl();
-  }
-
-  writeValue(id: string) {
-    this.inputControl.setValue(id, {emitEvent: false});
-  }
-
-  registerOnChange(fn: any): void {
-    this.inputControl.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef),)
-      .subscribe(fn);
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouch = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    isDisabled ? this.inputControl.disable({emitEvent: false, onlySelf: true}) :
-      this.inputControl.enable({emitEvent: false, onlySelf: true});
-  }
+  valueChange = output<string>();
 }

@@ -89,12 +89,10 @@ describe('WordEditDialogComponent', () => {
     createComponent();
 
     expect(component.isWordFormValid()).toBe(false);
-    expect(component.getFormFieldErrors(component.wordForm[WordParameterEnum.WORD]().errors())).toEqual([
-      'Word is required',
-    ]);
-    expect(component.getFormFieldErrors(component.wordForm[WordParameterEnum.TRANSLATION]().errors())).toEqual([
+    expect(component.wordForm[WordParameterEnum.WORD]().getError('required')?.message).toBe('Word is required');
+    expect(component.wordForm[WordParameterEnum.TRANSLATION]().getError('required')?.message).toBe(
       'Translation is required',
-    ]);
+    );
   });
 
   it('should disable the group field when group selection is locked', () => {

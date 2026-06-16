@@ -1,5 +1,9 @@
-export const FormFieldValidationMessagesConst: {[key: string]: string} = {
-  required: 'This field is required',
-  email: 'Email is not valid',
-  passwordsMismatch: 'Passwords do not match'
-}
+import {
+  FormFieldValidationMessageKeyEnum
+} from '../enums/form-field-validation-message-key.enum';
+
+export const FormFieldValidationMessagesConst: Record<FormFieldValidationMessageKeyEnum, string> = {
+  [FormFieldValidationMessageKeyEnum.REQUIRED]: 'This field is required',
+  [FormFieldValidationMessageKeyEnum.EMAIL]: 'Email is not valid',
+  [FormFieldValidationMessageKeyEnum.PASSWORDS_MISMATCH]: 'Passwords do not match',
+};

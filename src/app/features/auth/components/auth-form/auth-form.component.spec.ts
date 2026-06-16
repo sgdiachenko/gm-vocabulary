@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import {
+  FormFieldValidationMessageKeyEnum
+} from '../../../../shared/enums/form-field-validation-message-key.enum';
+import { FormFieldValidationMessagesConst } from '../../../../shared/const/form-field-validation-messages.const';
 import { AuthFormComponent } from './auth-form.component';
 import { Auth } from '../../interfaces/auth';
 
@@ -25,7 +29,7 @@ describe('AuthFormComponent', () => {
     await fixture.whenStable();
 
     expect(getHeading().textContent).toContain('Login');
-    expect(component.formGroup.contains(component.repeatPasswordControlName)).toBe(false);
+    expect(component.authForm.repeatPassword().required()).toBe(false);
     expect(getInputByLabel('Repeat Password')).toBeNull();
     expect(getToggleLink().textContent).toContain('Signup');
   });
@@ -35,8 +39,8 @@ describe('AuthFormComponent', () => {
     await fixture.whenStable();
 
     expect(getHeading().textContent).toContain('Signup');
-    expect(component.formGroup.contains(component.repeatPasswordControlName)).toBe(true);
-    expect(component.formGroup.get(component.repeatPasswordControlName)?.hasError('required')).toBe(true);
+    expect(component.authForm.repeatPassword().required()).toBe(true);
+    expect(component.authForm.repeatPassword().getError('required')).toBeTruthy();
     expect(getInputByLabel('Repeat Password')).not.toBeNull();
     expect(getToggleLink().textContent).toContain('Login');
   });
@@ -48,7 +52,7 @@ describe('AuthFormComponent', () => {
     fixture.componentRef.setInput('isSignupFormActive', false);
     await fixture.whenStable();
 
-    expect(component.formGroup.contains(component.repeatPasswordControlName)).toBe(false);
+    expect(component.authForm.repeatPassword().required()).toBe(false);
     expect(getInputByLabel('Repeat Password')).toBeNull();
   });
 
@@ -76,14 +80,16 @@ describe('AuthFormComponent', () => {
     setControlValue(component.emailControlName, 'not-an-email');
     setControlValue(component.passwordControlName, 'secret');
     await fixture.whenStable();
+    fixture.detectChanges();
 
-    expect(component.formGroup.invalid).toBe(true);
+    expect(component.isAuthFormValid()).toBe(false);
     expect(getSubmitButton().disabled).toBe(true);
 
     setControlValue(component.emailControlName, 'test@example.com');
     await fixture.whenStable();
+    fixture.detectChanges();
 
-    expect(component.formGroup.valid).toBe(true);
+    expect(component.isAuthFormValid()).toBe(true);
     expect(getSubmitButton().disabled).toBe(false);
   });
 
@@ -103,22 +109,56 @@ describe('AuthFormComponent', () => {
     });
   });
 
+  it('should mark fields as touched when an invalid form is submitted', async () => {
+    getForm().requestSubmit();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(component.authForm.email().touched()).toBe(true);
+    expect(component.authForm.password().touched()).toBe(true);
+    expect(getErrorsText()).toContain(
+      FormFieldValidationMessagesConst[FormFieldValidationMessageKeyEnum.REQUIRED],
+    );
+  });
+
+  it('should disable submit while the signal form is submitting', async () => {
+    setControlValue(component.emailControlName, 'test@example.com');
+    setControlValue(component.passwordControlName, 'secret');
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(component.isAuthFormSubmittable()).toBe(true);
+
+    getForm().requestSubmit();
+    fixture.detectChanges();
+
+    expect(component.authForm().submitting()).toBe(true);
+    expect(getSubmitButton().disabled).toBe(true);
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(component.authForm().submitting()).toBe(false);
+  });
+
   it('should show validation messages only after the control is dirty', async () => {
-    expect(component.getControlErrorsMessages(component.emailControlName)).toBeNull();
+    expect(getErrorsText()).not.toContain(
+      FormFieldValidationMessagesConst[FormFieldValidationMessageKeyEnum.REQUIRED],
+    );
 
     setControlValue(component.emailControlName, '');
     await fixture.whenStable();
 
-    expect(component.getControlErrorsMessages(component.emailControlName)).toEqual([
-      'This field is required',
-    ]);
+    expect(getErrorsText()).toContain(
+      FormFieldValidationMessagesConst[FormFieldValidationMessageKeyEnum.REQUIRED],
+    );
 
     setControlValue(component.emailControlName, 'not-an-email');
     await fixture.whenStable();
 
-    expect(component.getControlErrorsMessages(component.emailControlName)).toEqual([
-      'Email is not valid',
-    ]);
+    expect(getErrorsText()).toContain(
+      FormFieldValidationMessagesConst[FormFieldValidationMessageKeyEnum.EMAIL],
+    );
   });
 
   it('should show passwords mismatch error in signup mode', async () => {
@@ -129,22 +169,46 @@ describe('AuthFormComponent', () => {
     setControlValue(component.passwordControlName, 'secret');
     setControlValue(component.repeatPasswordControlName, 'different');
     await fixture.whenStable();
+    fixture.detectChanges();
 
-    expect(component.formGroup.hasError('passwordsMismatch')).toBe(true);
-    expect(getErrorsText()).toContain('Passwords do not match');
+    expect(
+      component.authForm.repeatPassword().getError(FormFieldValidationMessageKeyEnum.PASSWORDS_MISMATCH),
+    ).toBeTruthy();
+    expect(getErrorsText()).toContain(
+      FormFieldValidationMessagesConst[FormFieldValidationMessageKeyEnum.PASSWORDS_MISMATCH],
+    );
 
     setControlValue(component.repeatPasswordControlName, 'secret');
     await fixture.whenStable();
+    fixture.detectChanges();
 
-    expect(component.formGroup.hasError('passwordsMismatch')).toBe(false);
-    expect(getErrorsText()).not.toContain('Passwords do not match');
+    expect(
+      component.authForm.repeatPassword().getError(FormFieldValidationMessageKeyEnum.PASSWORDS_MISMATCH),
+    ).toBeFalsy();
+    expect(getErrorsText()).not.toContain(
+      FormFieldValidationMessagesConst[FormFieldValidationMessageKeyEnum.PASSWORDS_MISMATCH],
+    );
   });
 
   function setControlValue(controlName: string, value: string): void {
-    const control = component.formGroup.get(controlName);
+    const field = getField(controlName);
 
-    control?.setValue(value);
-    control?.markAsDirty();
+    field().value.set(value);
+    field().markAsDirty();
+    fixture.detectChanges();
+  }
+
+  function getField(controlName: string) {
+    switch (controlName) {
+      case component.emailControlName:
+        return component.authForm.email;
+      case component.passwordControlName:
+        return component.authForm.password;
+      case component.repeatPasswordControlName:
+        return component.authForm.repeatPassword;
+      default:
+        throw new Error(`Unknown control: ${controlName}`);
+    }
   }
 
   function getForm(): HTMLFormElement {
