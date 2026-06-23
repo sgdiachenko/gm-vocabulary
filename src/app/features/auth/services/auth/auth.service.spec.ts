@@ -112,6 +112,23 @@ describe('AuthService', () => {
     expect(service.authState()).toBe(true);
   });
 
+  it('should clear expired local storage auth data', () => {
+    localStorage.setItem(AuthParameterEnum.TOKEN, 'expired-token');
+    localStorage.setItem(AuthParameterEnum.USER_ID, 'stored-user');
+    localStorage.setItem(
+      AuthParameterEnum.EXPIRES_IN,
+      new Date(Date.now() - 60_000).toISOString(),
+    );
+
+    service.autoAuthUser();
+
+    expect(service.authState()).toBeNull();
+    expect(service.token()).toBeNull();
+    expect(localStorage.getItem(AuthParameterEnum.TOKEN)).toBeNull();
+    expect(localStorage.getItem(AuthParameterEnum.EXPIRES_IN)).toBeNull();
+    expect(localStorage.getItem(AuthParameterEnum.USER_ID)).toBeNull();
+  });
+
   it('should logout, clear store, clear local storage, and navigate to auth page', () => {
     authStore.setAuthState(true);
     authStore.setAuthData('token-1', 'user-1');

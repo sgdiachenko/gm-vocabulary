@@ -74,14 +74,18 @@ export class AuthService {
   autoAuthUser(): void {
     const authData = this.getAuthData();
     if (!authData) {
+      this.clearAuthData();
       return
     }
     const expiresIn = authData.expiresIn.getTime() - new Date().getTime();
-    if (expiresIn > 0) {
-      this.updateAuthStore(authData.token, authData.userId);
-      this.toggleAuthState(true);
-      this.setAuthTimer(expiresIn / 1000);
+    if (!Number.isFinite(expiresIn) || expiresIn <= 0) {
+      this.clearAuthData();
+      return;
     }
+
+    this.updateAuthStore(authData.token, authData.userId);
+    this.toggleAuthState(true);
+    this.setAuthTimer(expiresIn / 1000);
   }
 
   private updateAuthStore(token: string | null, userId: string | null): void {
