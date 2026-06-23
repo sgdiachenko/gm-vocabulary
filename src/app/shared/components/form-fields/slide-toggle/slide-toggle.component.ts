@@ -1,4 +1,5 @@
 import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { MatError } from '@angular/material/input';
 import { Field, FormField } from '@angular/forms/signals';
 import { Component, input } from '@angular/core';
 
@@ -9,6 +10,7 @@ import { createSignalFormFieldState } from '../../../utils/signal-form-field-sta
   imports: [
     MatSlideToggle,
     FormField,
+    MatError,
   ],
   templateUrl: './slide-toggle.component.html',
   styleUrl: './slide-toggle.component.scss',

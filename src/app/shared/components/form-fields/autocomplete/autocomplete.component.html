@@ -23,7 +23,7 @@
 @if (showErrors()) {
   <div class="field-errors">
     @for (error of errors(); track $index) {
-      <mat-error>{{error.message}}</mat-error>
+      <mat-error>{{ error.message }}</mat-error>
     }
   </div>
 }

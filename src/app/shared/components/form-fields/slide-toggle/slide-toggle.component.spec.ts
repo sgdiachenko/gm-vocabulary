@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
-import { Field, disabled, form } from '@angular/forms/signals';
+import { Field, disabled, form, required } from '@angular/forms/signals';
 
 import { SlideToggleComponent } from './slide-toggle.component';
 
@@ -53,9 +53,25 @@ describe('SlideToggleComponent', () => {
     expect(getSlideToggle().disabled).toBe(true);
   });
 
+  it('should render field errors after the field is touched', async () => {
+    field().markAsTouched();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(getErrorTexts()).toContain('This field is required');
+  });
+
+  it('should hide errors while the field is untouched', async () => {
+    await fixture.whenStable();
+
+    expect(field().errors().length).toBeGreaterThan(0);
+    expect(getErrorTexts()).toEqual([]);
+  });
+
   function createField(options: { isDisabled?: boolean } = {}): Field<boolean> {
     return TestBed.runInInjectionContext(() =>
       form(signal({ value: false }), (schemaPath) => {
+        required(schemaPath.value, { message: 'This field is required' });
         disabled(schemaPath.value, { when: () => options.isDisabled === true });
       }).value,
     );
@@ -63,5 +79,11 @@ describe('SlideToggleComponent', () => {
 
   function getSlideToggle(): HTMLButtonElement {
     return fixture.nativeElement.querySelector('button[role="switch"]');
+  }
+
+  function getErrorTexts(): string[] {
+    return Array.from(fixture.nativeElement.querySelectorAll('.field-errors mat-error')).map((error) =>
+      (error as HTMLElement).textContent?.trim() ?? '',
+    );
   }
 });

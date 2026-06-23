@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
-import { Field, disabled, form } from '@angular/forms/signals';
+import { Field, disabled, form, required } from '@angular/forms/signals';
 import { MatSelect } from '@angular/material/select';
 
 import { SelectComponent } from './select.component';
@@ -84,9 +84,28 @@ describe('SelectComponent', () => {
     expect(getMatSelect().disabled).toBe(true);
   });
 
+  it('should render field errors after the field is dirty', async () => {
+    field().value.set('');
+    field().markAsDirty();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(getErrorTexts()).toEqual(['This field is required']);
+  });
+
+  it('should hide errors while the field is clean', async () => {
+    field().value.set('');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(field().errors().length).toBeGreaterThan(0);
+    expect(getErrorTexts()).toEqual([]);
+  });
+
   function createField(options: { isDisabled?: boolean } = {}): Field<string> {
     return TestBed.runInInjectionContext(() =>
       form(signal('ALL'), (schemaPath) => {
+        required(schemaPath, { message: 'This field is required' });
         disabled(schemaPath, { when: () => options.isDisabled === true });
       }),
     );
@@ -95,5 +114,11 @@ describe('SelectComponent', () => {
   function getMatSelect(): MatSelect {
     return fixture.debugElement.query((debugElement) => debugElement.componentInstance instanceof MatSelect)
       .componentInstance;
+  }
+
+  function getErrorTexts(): string[] {
+    return Array.from(fixture.nativeElement.querySelectorAll('mat-error')).map((error) =>
+      (error as HTMLElement).textContent?.trim() ?? '',
+    );
   }
 });
