@@ -244,7 +244,7 @@ This project was built as a **portfolio application** to demonstrate:
 
 This repo includes a `docker-compose.yml` for local development:
 - Angular dev server with hot reload
-- Node/Express backend with `nodemon`
+- NestJS backend with watch mode
 - MongoDB either **local container** or **MongoDB Atlas** via `MONGODB_URI`
 
 ### Development

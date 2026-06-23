@@ -8,29 +8,35 @@ services:
       - mongo_data:/data/db
 
   backend:
-    image: node:24-alpine
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: development
     container_name: gm-vocab-backend
+    restart: unless-stopped
     working_dir: /app
     depends_on:
       - mongo
     environment:
       NODE_ENV: development
       PORT: "3000"
-      # Uses .env (not committed). Falls back to local compose Mongo.
-      MONGODB_URI: ${MONGODB_URI:-mongodb://mongo:27017/gm-vocabulary}
-      CHOKIDAR_USEPOLLING: "true"
+      MONGODB_URI: mongodb://mongo:27017/gm-vocabulary
+      JWT_SECRET: ${JWT_SECRET:-long_secret_string}
     ports:
       - "3000:3000"
     volumes:
-      - ./:/app
+      - ./backend:/app
       - backend_node_modules:/app/node_modules
     command: >
-      sh -lc "npm install --legacy-peer-deps && npx nodemon backend/server.js"
+      sh -lc "npm ci && npm run start:dev"
 
   frontend:
     image: node:24-alpine
     container_name: gm-vocab-frontend
+    restart: unless-stopped
     working_dir: /app
+    depends_on:
+      - backend
     environment:
       NODE_ENV: development
       CHOKIDAR_USEPOLLING: "true"
@@ -42,10 +48,9 @@ services:
       - ./:/app
       - frontend_node_modules:/app/node_modules
     command: >
-      sh -lc "npm install --legacy-peer-deps && npm run start"
+      sh -lc "npm ci --legacy-peer-deps && npm run start"
 
 volumes:
   mongo_data:
   backend_node_modules:
   frontend_node_modules:
-
