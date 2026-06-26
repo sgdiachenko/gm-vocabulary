@@ -21,7 +21,7 @@ services:
       NODE_ENV: development
       PORT: "3000"
       MONGODB_URI: mongodb://mongo:27017/gm-vocabulary
-      JWT_SECRET: ${JWT_SECRET:-long_secret_string}
+      JWT_SECRET: JWT_SECRET
     ports:
       - "3000:3000"
     volumes:

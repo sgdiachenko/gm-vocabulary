@@ -34,13 +34,15 @@ export class UserService {
   }
 
   async login(credentials: CreateUserDto) {
-    const user = await this.userModel.findOne({ email: credentials.email });
-    if (!user) {
-      throw new UnauthorizedException('User does not exist');
+    const jwtSecret = process.env.JWT_SECRET;
+
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET is not configured');
     }
 
-    if (!(await compare(credentials.password, user.password))) {
-      throw new UnauthorizedException('Password does not match');
+    const user = await this.userModel.findOne({ email: credentials.email });
+    if (!user || !(await compare(credentials.password, user.password))) {
+      throw new UnauthorizedException('Invalid email or password');
     }
 
     const expiresInSeconds = 3600;
@@ -48,7 +50,7 @@ export class UserService {
     const token = await this.jwtService.signAsync(
       { email: user.email, userId },
       {
-        secret: process.env.JWT_SECRET ?? 'long_secret_string',
+        secret: jwtSecret,
         expiresIn: expiresInSeconds,
       },
     );

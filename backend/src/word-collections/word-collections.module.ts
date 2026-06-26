@@ -6,7 +6,7 @@ import {
   WordCollection,
   WordCollectionSchema,
 } from './entities/word-collection.entity';
-import { UserModule } from '../user/user.module';
+import { AuthModule } from '../auth/auth.module';
 import { Word, WordSchema } from '../words/entities/word.entity';
 
 @Module({
@@ -15,7 +15,7 @@ import { Word, WordSchema } from '../words/entities/word.entity';
       { name: WordCollection.name, schema: WordCollectionSchema },
       { name: Word.name, schema: WordSchema },
     ]),
-    UserModule,
+    AuthModule,
   ],
   controllers: [WordCollectionsController],
   providers: [WordCollectionsService],
