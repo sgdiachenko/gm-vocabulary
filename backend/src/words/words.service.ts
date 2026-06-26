@@ -1,0 +1,58 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
+import { CreateWordDto } from './dto/create-word.dto';
+import { UpdateWordDto } from './dto/update-word.dto';
+import { Word, WordDocument } from './entities/word.entity';
+
+@Injectable()
+export class WordsService {
+  constructor(
+    @InjectModel(Word.name) private readonly wordModel: Model<WordDocument>,
+  ) {}
+
+  create(createWordDto: CreateWordDto, userId: string) {
+    return this.wordModel.create({
+      ...createWordDto,
+      groupId: createWordDto.groupId
+        ? new Types.ObjectId(createWordDto.groupId)
+        : null,
+      userId: new Types.ObjectId(userId),
+    });
+  }
+
+  findAll(userId: string) {
+    return this.wordModel.find({ userId: new Types.ObjectId(userId) }).exec();
+  }
+
+  async update(
+    id: Types.ObjectId,
+    updateWordDto: UpdateWordDto,
+    userId: string,
+  ): Promise<void> {
+    const update = {
+      ...updateWordDto,
+      ...(updateWordDto.groupId !== undefined && {
+        groupId: updateWordDto.groupId
+          ? new Types.ObjectId(updateWordDto.groupId)
+          : null,
+      }),
+    };
+    const result = await this.wordModel
+      .updateOne({ _id: id, userId: new Types.ObjectId(userId) }, update)
+      .exec();
+    if (result.matchedCount === 0) {
+      throw new NotFoundException('Word not found');
+    }
+  }
+
+  async remove(ids: string[], userId: string) {
+    const result = await this.wordModel
+      .deleteMany({
+        _id: { $in: ids.map((id) => new Types.ObjectId(id)) },
+        userId: new Types.ObjectId(userId),
+      })
+      .exec();
+    return { message: 'Words deleted', deletedCount: result.deletedCount };
+  }
+}
