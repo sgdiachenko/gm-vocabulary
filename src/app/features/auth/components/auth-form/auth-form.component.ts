@@ -1,5 +1,5 @@
 import { Component, computed, input, output, Signal, signal, WritableSignal } from '@angular/core';
-import { email, FieldTree, form, FormRoot, required, submit, validate } from '@angular/forms/signals';
+import { FieldTree, form, FormRoot, required, submit, validate } from '@angular/forms/signals';
 import { MatButton } from '@angular/material/button';
 
 import {
@@ -8,6 +8,7 @@ import {
 import { FormFieldValidationMessagesConst } from '../../../../shared/const/form-field-validation-messages.const';
 import { InputComponent } from '../../../../shared/components/form-fields/input/input.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { isStrictEmail } from '../../../../shared/utils/strict-email-validator.util';
 import { AuthForm } from '../../interfaces/auth-form';
 import { Auth } from '../../interfaces/auth';
 
@@ -43,8 +44,17 @@ export class AuthFormComponent {
       required(schemaPath.email, {
         message: FormFieldValidationMessagesConst[FormFieldValidationMessageKeyEnum.REQUIRED]
       });
-      email(schemaPath.email, {
-        message: FormFieldValidationMessagesConst[FormFieldValidationMessageKeyEnum.EMAIL]
+      validate(schemaPath.email, ({ value }) => {
+        const emailValue = value();
+
+        if (!emailValue || isStrictEmail(emailValue)) {
+          return undefined;
+        }
+
+        return {
+          kind: FormFieldValidationMessageKeyEnum.EMAIL,
+          message: FormFieldValidationMessagesConst[FormFieldValidationMessageKeyEnum.EMAIL]
+        };
       });
       required(schemaPath.password, {
         message: FormFieldValidationMessagesConst[FormFieldValidationMessageKeyEnum.REQUIRED]

@@ -161,6 +161,18 @@ describe('AuthFormComponent', () => {
     );
   });
 
+  it('should require an email domain suffix', async () => {
+    setControlValue(component.emailControlName, 'test@example');
+    setControlValue(component.passwordControlName, 'secret');
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(component.isAuthFormValid()).toBe(false);
+    expect(getErrorsText()).toContain(
+      FormFieldValidationMessagesConst[FormFieldValidationMessageKeyEnum.EMAIL],
+    );
+  });
+
   it('should show passwords mismatch error in signup mode', async () => {
     fixture.componentRef.setInput('isSignupFormActive', true);
     await fixture.whenStable();
