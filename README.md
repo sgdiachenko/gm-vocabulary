@@ -12,7 +12,7 @@
 
 ### Backend
 - Node.js
-- Express.js
+- NestJS
 - MongoDB
 - Mongoose
 
@@ -102,9 +102,9 @@ This project reflects patterns used in **enterprise SaaS applications**.
 
 - Signal-based state management (NgRx SignalStore)
 - JWT authentication with auto-login / auto-logout
-- Fully protected API with middleware validation
+- Protected collection and word APIs with JWT guards and DTO validation
 - Interceptor-driven HTTP architecture
-- Modular backend (Express.js + Mongoose)
+- Modular backend (NestJS + Mongoose)
 - Clean and scalable UI architecture (Angular + Tailwind + Material)
 
 ---
@@ -148,12 +148,14 @@ The application follows a **scalable Angular architecture**:
 
 ### Backend
 
-The backend follows a **modular Express architecture**:
+The backend follows a **modular NestJS architecture**:
 
-- Route → Controller → Middleware separation
-- Authentication middleware for request validation
+- Feature modules for users, collections, words, and authentication
+- Controller → Service separation with dependency injection
+- JWT guard and a custom current-user decorator for protected endpoints
+- DTO validation through a global `ValidationPipe`
 - Mongoose-based data modeling
-- Scalable API structure for domain-driven expansion
+- Custom pipes for request parameter validation
 
 ---
 
@@ -172,7 +174,7 @@ JWT-based authentication with full client-server flow:
 1. User logs in → backend returns JWT  
 2. Token is stored in localStorage  
 3. Interceptor attaches token to requests  
-4. Backend middleware validates JWT  
+4. NestJS `JwtAuthGuard` validates the JWT and attaches the authenticated user to the request
 5. App restores session on reload  
 
 📄 Detailed flow documentation:  
@@ -184,7 +186,7 @@ JWT-based authentication with full client-server flow:
 
 - Password hashing with bcrypt
 - Stateless authentication using JWT
-- Protected endpoints via middleware
+- Protected endpoints via `JwtAuthGuard`
 - Authorization via Bearer tokens
 
 ## 👥 Domain Logic & Access Control
