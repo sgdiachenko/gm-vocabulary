@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  vocabularyApiUrl: 'http://localhost:3000/api'
+  vocabularyApiUrl: 'https://vocabulary-angular-api.onrender.com/api'
 };

@@ -13,9 +13,10 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  app.enableCors({
-    origin: 'http://localhost:4200',
-  });
+  app.enableCors([
+    'http://localhost:4200',
+    'https://vocabulary-angular.vercel.app'
+  ]);
 
   await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
