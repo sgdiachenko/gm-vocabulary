@@ -1,0 +1,102 @@
+:host {
+  display: block;
+}
+
+.mat-mdc-dialog-container-with-actions mat-dialog-content.mat-mdc-dialog-content {
+  padding: 0;
+}
+
+mat-dialog-content {
+  width: min(42rem, 80vw);
+}
+
+.carousel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  min-height: 20rem;
+}
+
+.word-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.word-field {
+  position: relative;
+  padding: 1rem 0;
+  min-height: 5rem;
+  overflow: hidden;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 0.75rem;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.field-label,
+.field-value {
+  padding: 0 1rem;
+}
+
+.word-field p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--mat-sys-surface-container-high);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease;
+}
+
+.cover_visible {
+  opacity: 1;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.visibility-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.75rem;
+}
+
+@media (max-width: 40rem) {
+  mat-dialog-content {
+    width: 85vw;
+    &.mat-mdc-dialog-content.mdc-dialog__content {
+      width: min(42rem, 80vw);
+      padding: 0 0.25rem;
+    }
+  }
+
+  .carousel {
+    gap: 0.25rem;
+  }
+
+  mat-dialog-actions {
+    align-items: flex-end;
+  }
+
+  .visibility-controls {
+    flex-direction: column;
+  }
+}

@@ -40,6 +40,10 @@ import { SelectOption } from '../../../../shared/interfaces/select-option';
 import { WordsService } from '../../../words/services/words/words.service';
 import { AuthService } from '../../../auth/services/auth/auth.service';
 import { Word } from '../../../words/interfaces/word';
+import {
+  WordsPreviewDialog,
+  WordsPreviewDialogData,
+} from '../../../words/components/words-preview-dialog/words-preview-dialog';
 
 
 @Component({
@@ -83,6 +87,7 @@ export class SingleCollectionPageContainer implements OnInit, OnDestroy {
   private wordEditDialogRef!: MatDialogRef<WordEditDialogComponent>;
   private wordsDeleteDialogRef!: MatDialogRef<SubmitDialogComponent>;
   private wordGroupDialogRef: MatDialogRef<CollectionEditDialogComponent>;
+  private wordsPreviewDialogRef: MatDialogRef<WordsPreviewDialog>;
 
   readonly wordsTableColumns: Signal<TableColumn[]> = computed(() => {
     return WordsTableColumns.filter(column => {
@@ -138,10 +143,21 @@ export class SingleCollectionPageContainer implements OnInit, OnDestroy {
     });
   }
 
+  previewWords(words: Word[]): void {
+    this.wordsPreviewDialogRef = this.dialog.open<WordsPreviewDialog, WordsPreviewDialogData>(
+      WordsPreviewDialog,
+      {
+        data: { words },
+        maxWidth: '95vw',
+      },
+    );
+  }
+
   ngOnDestroy(): void {
     this.wordEditDialogRef?.close();
     this.wordsDeleteDialogRef?.close();
     this.wordGroupDialogRef?.close();
+    this.wordsPreviewDialogRef?.close();
     this.wordsService.resetStore();
     this.wordGroupService.resetStore();
   }

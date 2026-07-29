@@ -1,6 +1,6 @@
-@if (allowEdit()) {
-  <div class="flex gap-4 pb-4 items-center">
-    <div class="flex gap-4 grow-1">
+<div class="flex gap-4 pb-4 items-center">
+  <div class="flex gap-4 grow-1">
+    @if (allowEdit()) {
       <gm-button (btnClick)="addWord.emit()">Add</gm-button>
 
       <gm-button
@@ -11,22 +11,28 @@
 
       <gm-button
         (btnClick)="deleteWords.emit(selectedWords)"
-        [isDisabled]="!selectedWords || selectedWords.length === 0">
+        [isDisabled]="selectedWords.length === 0">
         Delete
       </gm-button>
-    </div>
-
-    @if (allowSwitchGroup()) {
-      <gm-select
-        class="ml-auto hidden md:block"
-        fieldLabel="Select Collection"
-        [field]="selectedGroupField"
-        [options]="groups()"
-        (valueChange)="selectGroup.emit($event)"
-      ></gm-select>
     }
+
+    <gm-button
+      (btnClick)="previewWords.emit(selectedWords)"
+      [isDisabled]="selectedWords.length === 0">
+      View
+    </gm-button>
   </div>
-}
+
+  @if (allowSwitchGroup()) {
+    <gm-select
+      class="ml-auto hidden md:block"
+      fieldLabel="Select Collection"
+      [field]="selectedGroupField"
+      [options]="groups()"
+      (valueChange)="selectGroup.emit($event)"
+    ></gm-select>
+  }
+</div>
 
 @if (dataSource()?.length > 0) {
   <gm-table

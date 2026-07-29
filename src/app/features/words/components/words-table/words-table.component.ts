@@ -31,10 +31,11 @@ export class WordsTableComponent {
   addWord = output();
   editWord = output<WordsTableRow>();
   deleteWords = output<WordsTableRow[]>();
+  previewWords = output<WordsTableRow[]>();
   selectGroup = output<string>();
 
   readonly defaultOptionValue = DefaultOptionValueEnum.ALL;
   private readonly selectedGroupModel = linkedSignal<string>(() => this.selectedGroupId() ?? this.defaultOptionValue);
   readonly selectedGroupField: Field<string> = form(this.selectedGroupModel);
-  selectedWords: WordsTableRow[];
+  selectedWords: WordsTableRow[] = [];
 }

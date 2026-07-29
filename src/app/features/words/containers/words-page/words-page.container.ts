@@ -20,6 +20,10 @@ import { WordParameterEnum } from '../../enums/word.parameter.enum';
 import { WordsTableRow } from '../../components/words-table/words-table-row';
 import { WordsService } from '../../services/words/words.service';
 import { Word } from '../../interfaces/word';
+import {
+  WordsPreviewDialog,
+  WordsPreviewDialogData,
+} from '../../components/words-preview-dialog/words-preview-dialog';
 
 
 @Component({
@@ -49,6 +53,7 @@ export class WordsPageContainer implements OnInit, OnDestroy {
 
   private wordEditDialogRef!: MatDialogRef<any>;
   private wordsDeleteDialogRef!: MatDialogRef<any>;
+  private wordsPreviewDialogRef!: MatDialogRef<WordsPreviewDialog>;
 
   ngOnInit(): void {
     forkJoin([
@@ -87,9 +92,20 @@ export class WordsPageContainer implements OnInit, OnDestroy {
     });
   }
 
+  previewWords(words: Word[]): void {
+    this.wordsPreviewDialogRef = this.dialog.open<WordsPreviewDialog, WordsPreviewDialogData>(
+      WordsPreviewDialog,
+      {
+        data: { words },
+        maxWidth: '95vw',
+      },
+    );
+  }
+
   ngOnDestroy(): void {
     this.wordEditDialogRef?.close();
     this.wordsDeleteDialogRef?.close();
+    this.wordsPreviewDialogRef?.close();
     this.wordsService.resetStore();
     this.wordGroupService.resetStore();
   }

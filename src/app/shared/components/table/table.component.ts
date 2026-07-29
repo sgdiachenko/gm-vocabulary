@@ -1,6 +1,5 @@
 import { Component, input, output } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatCheckbox } from '@angular/material/checkbox';
 import {
   MatCell,
   MatCellDef,
@@ -15,6 +14,7 @@ import {
 } from '@angular/material/table';
 
 import { TableColumn } from './table-column';
+import { Checkbox } from '../form-fields/checkbox/checkbox';
 
 @Component({
   selector: 'gm-table',
@@ -29,7 +29,7 @@ import { TableColumn } from './table-column';
     MatRow,
     MatHeaderRowDef,
     MatRowDef,
-    MatCheckbox,
+    Checkbox,
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',

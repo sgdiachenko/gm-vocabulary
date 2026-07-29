@@ -1,7 +1,12 @@
-.mat-mdc-header-cell, .mat-mdc-footer-cell, .mat-mdc-cell {
-    min-width: 120px;
+.mat-mdc-header-cell,
+.mat-mdc-footer-cell,
+.mat-mdc-cell {
+  min-width: 120px;
+  vertical-align: top;
+  padding: 10px;
 }
 
 .mat-mdc-cell_checkbox {
-    min-width: 0;
+  min-width: 0;
+  padding: 0;
 }
