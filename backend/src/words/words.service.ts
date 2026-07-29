@@ -31,7 +31,9 @@ export class WordsService {
     userId: string,
   ): Promise<void> {
     const update = {
-      ...updateWordDto,
+      word: updateWordDto.word,
+      translation: updateWordDto.translation,
+      description: updateWordDto.description,
       ...(updateWordDto.groupId !== undefined && {
         groupId: updateWordDto.groupId
           ? new Types.ObjectId(updateWordDto.groupId)

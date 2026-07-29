@@ -96,9 +96,9 @@ export class WordEditDialogComponent {
         const wordRequest: WordRequest = {
           ...this.wordModel(),
           [WordParameterEnum.TRANSLATION]:
-            this.wordModel()[WordParameterEnum.TRANSLATION] || undefined,
+            this.wordModel()[WordParameterEnum.TRANSLATION] || null,
           [WordParameterEnum.DESCRIPTION]:
-            this.wordModel()[WordParameterEnum.DESCRIPTION] || undefined,
+            this.wordModel()[WordParameterEnum.DESCRIPTION] || null,
           [WordParameterEnum.GROUP_ID]: groupId
         };
 
