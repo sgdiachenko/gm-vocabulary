@@ -5,11 +5,15 @@ export class CreateWordDto {
   @IsNotEmpty()
   word!: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  translation!: string;
+  translation?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
 
   @IsOptional()
   @IsMongoId()
-  groupId?: string | null;
+  groupId?: string;
 }

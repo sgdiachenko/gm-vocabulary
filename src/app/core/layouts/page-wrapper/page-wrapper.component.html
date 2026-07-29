@@ -1,7 +1,7 @@
 <gm-data-loading-wrapper
-  class="gm-data-loading-wrapper_page-wrapper"
+  class="flex flex-col"
   [loadingState]="authLoadingState()">
-  <mat-toolbar class="flex justify-between">
+  <mat-toolbar class="flex justify-between shrink-0">
     <span routerLink="/">GM Vocabulary</span>
     <div class="flex">
       <button
@@ -24,7 +24,7 @@
     </div>
   </mat-toolbar>
 
-  <div class="grow">
+  <div class="grow min-h-0">
     <router-outlet />
   </div>
 </gm-data-loading-wrapper>

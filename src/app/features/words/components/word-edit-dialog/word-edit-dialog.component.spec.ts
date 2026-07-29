@@ -73,6 +73,7 @@ describe('WordEditDialogComponent', () => {
       [WordParameterEnum.ID]: 'word-id',
       [WordParameterEnum.WORD]: 'cat',
       [WordParameterEnum.TRANSLATION]: 'кіт',
+      [WordParameterEnum.DESCRIPTION]: 'A small domesticated animal',
       [WordParameterEnum.GROUP_ID]: 'animals',
       wordGroups: [{ id: 'animals', name: 'Animals' }],
     };
@@ -81,18 +82,23 @@ describe('WordEditDialogComponent', () => {
 
     expect(component.wordForm[WordParameterEnum.WORD]().value()).toBe('cat');
     expect(component.wordForm[WordParameterEnum.TRANSLATION]().value()).toBe('кіт');
+    expect(component.wordForm[WordParameterEnum.DESCRIPTION]().value()).toBe(
+      'A small domesticated animal',
+    );
     expect(component.wordForm[WordParameterEnum.GROUP_ID]().value()).toBe('animals');
     expect(component.isWordFormValid()).toBe(true);
   });
 
-  it('should require word and translation fields', () => {
+  it('should require only the word field', () => {
     createComponent();
 
     expect(component.isWordFormValid()).toBe(false);
     expect(component.wordForm[WordParameterEnum.WORD]().getError('required')?.message).toBe('Word is required');
-    expect(component.wordForm[WordParameterEnum.TRANSLATION]().getError('required')?.message).toBe(
-      'Translation is required',
-    );
+    expect(component.wordForm[WordParameterEnum.TRANSLATION]().getError('required')).toBeUndefined();
+
+    component.wordForm[WordParameterEnum.WORD]().value.set('cat');
+
+    expect(component.isWordFormValid()).toBe(true);
   });
 
   it('should disable the group field when group selection is locked', () => {
@@ -124,6 +130,7 @@ describe('WordEditDialogComponent', () => {
     setFormValue({
       [WordParameterEnum.WORD]: 'cat',
       [WordParameterEnum.TRANSLATION]: 'кіт',
+      [WordParameterEnum.DESCRIPTION]: 'A small domesticated animal',
       [WordParameterEnum.GROUP_ID]: 'animals',
     });
 
@@ -133,6 +140,7 @@ describe('WordEditDialogComponent', () => {
     expect(mockWordsService.addWord).toHaveBeenCalledWith({
       [WordParameterEnum.WORD]: 'cat',
       [WordParameterEnum.TRANSLATION]: 'кіт',
+      [WordParameterEnum.DESCRIPTION]: 'A small domesticated animal',
       [WordParameterEnum.GROUP_ID]: 'animals',
     });
     expect(dialogRef.close).toHaveBeenCalledOnce();
@@ -147,6 +155,7 @@ describe('WordEditDialogComponent', () => {
     setFormValue({
       [WordParameterEnum.WORD]: 'apple',
       [WordParameterEnum.TRANSLATION]: 'яблуко',
+      [WordParameterEnum.DESCRIPTION]: 'A round fruit',
       [WordParameterEnum.GROUP_ID]: 'New group',
     });
 
@@ -158,6 +167,7 @@ describe('WordEditDialogComponent', () => {
     expect(mockWordsService.addWord).toHaveBeenCalledWith({
       [WordParameterEnum.WORD]: 'apple',
       [WordParameterEnum.TRANSLATION]: 'яблуко',
+      [WordParameterEnum.DESCRIPTION]: 'A round fruit',
       [WordParameterEnum.GROUP_ID]: 'custom-group-id',
     });
   });
@@ -167,6 +177,7 @@ describe('WordEditDialogComponent', () => {
       [WordParameterEnum.ID]: 'word-id',
       [WordParameterEnum.WORD]: 'cat',
       [WordParameterEnum.TRANSLATION]: 'кіт',
+      [WordParameterEnum.DESCRIPTION]: 'A small domesticated animal',
       [WordParameterEnum.GROUP_ID]: 'animals',
       wordGroups: [{ id: 'animals', name: 'Animals' }],
     };
@@ -179,6 +190,7 @@ describe('WordEditDialogComponent', () => {
     expect(mockWordsService.updateWord).toHaveBeenCalledWith('word-id', {
       [WordParameterEnum.WORD]: 'cat',
       [WordParameterEnum.TRANSLATION]: 'кішка',
+      [WordParameterEnum.DESCRIPTION]: 'A small domesticated animal',
       [WordParameterEnum.GROUP_ID]: 'animals',
     });
     expect(mockWordsService.addWord).not.toHaveBeenCalled();
@@ -187,10 +199,12 @@ describe('WordEditDialogComponent', () => {
   function setFormValue(value: {
     [WordParameterEnum.WORD]: string;
     [WordParameterEnum.TRANSLATION]: string;
+    [WordParameterEnum.DESCRIPTION]: string;
     [WordParameterEnum.GROUP_ID]: string;
   }): void {
     component.wordForm[WordParameterEnum.WORD]().value.set(value[WordParameterEnum.WORD]);
     component.wordForm[WordParameterEnum.TRANSLATION]().value.set(value[WordParameterEnum.TRANSLATION]);
+    component.wordForm[WordParameterEnum.DESCRIPTION]().value.set(value[WordParameterEnum.DESCRIPTION]);
     component.wordForm[WordParameterEnum.GROUP_ID]().value.set(value[WordParameterEnum.GROUP_ID]);
   }
 });

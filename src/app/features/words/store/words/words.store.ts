@@ -30,7 +30,7 @@ export const WordsStore = signalStore(
 
         const hasValidNameOrTranslation = queryString == null || queryString === ''
           || storeWord[WordParameterEnum.WORD].toLowerCase().includes(queryString)
-          || storeWord[WordParameterEnum.TRANSLATION].toLowerCase().includes(queryString);
+          || storeWord[WordParameterEnum.TRANSLATION]?.toLowerCase().includes(queryString);
 
         return hasValidGroupId && hasValidNameOrTranslation;
       });

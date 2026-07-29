@@ -41,12 +41,12 @@ MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/<db>?retryWrites=true&w=ma
 If you change `.env` after containers are already running, restart the backend/container so the new environment variable is applied.
 
 ```bash
-npm run dev
+npm run docker:up
 ```
 
 Stop Docker:
 ```bash
-npm run dev:stop
+npm run docker:down
 ```
 
 Using local environment:

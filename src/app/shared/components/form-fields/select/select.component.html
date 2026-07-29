@@ -1,4 +1,4 @@
-<mat-form-field>
+<mat-form-field subscriptSizing="dynamic">
   <mat-label>{{ fieldLabel() }}</mat-label>
   <mat-select [formField]="field()" (selectionChange)="valueChange.emit($event.value)">
     <mat-option [value]="defaultOptionValue">All</mat-option>

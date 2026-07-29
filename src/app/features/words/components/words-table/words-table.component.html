@@ -18,7 +18,7 @@
 
     @if (allowSwitchGroup()) {
       <gm-select
-        class="ml-auto"
+        class="ml-auto hidden md:block"
         fieldLabel="Select Collection"
         [field]="selectedGroupField"
         [options]="groups()"
@@ -30,7 +30,7 @@
 
 @if (dataSource()?.length > 0) {
   <gm-table
-    class="grow"
+    class="grow overflow-auto"
     [dataSource]="dataSource()"
     [allowEdit]="allowEdit()"
     [columns]="columns()"

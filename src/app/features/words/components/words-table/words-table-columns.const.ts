@@ -12,6 +12,10 @@ export const WordsTableColumns: TableColumn[] = [
     displayName: WordParameterDisplayNameEnum.TRANSLATION
   },
   {
+    name: WordParameterEnum.DESCRIPTION,
+    displayName: WordParameterDisplayNameEnum.DESCRIPTION
+  },
+  {
     name: WordParameterEnum.GROUP_NAME,
     displayName: WordParameterDisplayNameEnum.WORD_GROUP
   }

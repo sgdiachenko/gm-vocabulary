@@ -1,0 +1,17 @@
+<mat-form-field appearance="fill" class="w-full">
+  <mat-label>{{ fieldLabel() }}</mat-label>
+  <textarea
+    matInput
+    [formField]="field()"
+    [rows]="rows()"
+    [placeholder]="fieldPlaceholder() || 'Enter ' + (fieldLabel() | lowercase)"
+  ></textarea>
+</mat-form-field>
+
+@if (showErrors()) {
+  <div class="field-errors">
+    @for (error of errors(); track $index) {
+      <mat-error>{{ error.message }}</mat-error>
+    }
+  </div>
+}

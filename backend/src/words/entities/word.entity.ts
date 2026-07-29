@@ -8,14 +8,17 @@ export class Word {
   @Prop({ required: true })
   word!: string;
 
-  @Prop({ required: true })
-  translation!: string;
+  @Prop({ type: String, default: undefined })
+  translation?: string;
+
+  @Prop({ type: String, default: undefined })
+  description!: string;
 
   @Prop({ type: Types.ObjectId, required: true, ref: 'User' })
   userId!: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'WordCollection', default: null })
-  groupId!: Types.ObjectId | null;
+  @Prop({ type: Types.ObjectId, ref: 'WordCollection', default: undefined })
+  groupId!: Types.ObjectId | undefined;
 }
 
 export const WordSchema = SchemaFactory.createForClass(Word);

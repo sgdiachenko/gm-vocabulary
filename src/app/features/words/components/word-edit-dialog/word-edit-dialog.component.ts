@@ -12,6 +12,9 @@ import {
 
 import { AutocompleteComponent } from '../../../../shared/components/form-fields/autocomplete/autocomplete.component';
 import { InputComponent } from '../../../../shared/components/form-fields/input/input.component';
+import {
+  TextareaComponent
+} from '../../../../shared/components/form-fields/textarea/textarea.component';
 import { WordGroupService } from '../../../word-sets/services/word-group/word-group.service';
 import { WordParameterDisplayNameEnum } from '../../enums/word-parameter-display-name.enum';
 import { WordGroupParameterEnum } from '../../../word-sets/enums/word-group.parameter.enum';
@@ -33,6 +36,7 @@ import { WordForm } from './word-form';
     ButtonComponent,
     MatDialogActions,
     InputComponent,
+    TextareaComponent,
     DataLoadingWrapperComponent,
     AutocompleteComponent,
 ],
@@ -57,12 +61,12 @@ export class WordEditDialogComponent {
   private readonly wordModel: WritableSignal<WordForm> = signal<WordForm>({
     [WordParameterEnum.WORD]: this.data?.[WordParameterEnum.WORD] ?? '',
     [WordParameterEnum.TRANSLATION]: this.data?.[WordParameterEnum.TRANSLATION] ?? '',
+    [WordParameterEnum.DESCRIPTION]: this.data?.[WordParameterEnum.DESCRIPTION] ?? '',
     [WordParameterEnum.GROUP_ID]: this.data?.[WordParameterEnum.GROUP_ID] ?? ''
   });
 
   readonly wordForm: FieldTree<WordForm> = form(this.wordModel, (schemaPath) => {
     required(schemaPath[WordParameterEnum.WORD], { message: 'Word is required' });
-    required(schemaPath[WordParameterEnum.TRANSLATION], { message: 'Translation is required' });
     disabled(schemaPath[WordParameterEnum.GROUP_ID], {
       when: () => this.data.disableGroupSelection === true
     });

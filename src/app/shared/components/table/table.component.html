@@ -26,7 +26,7 @@
     </ng-container>
   }
 
-  <tr mat-header-row *matHeaderRowDef="columnsNames"></tr>
+  <tr mat-header-row *matHeaderRowDef="columnsNames; sticky: true"></tr>
   <tr
     mat-row *matRowDef="let row; columns: columnsNames;"
     (click)="allowEdit() ? toggleRow(row) : null"

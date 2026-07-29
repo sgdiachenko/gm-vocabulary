@@ -17,6 +17,12 @@
         [fieldPlaceholder]="wordParameterDisplayNameEnum.TRANSLATION"
       ></gm-input>
 
+      <gm-textarea
+        [field]="wordForm[wordParameterEnum.DESCRIPTION]"
+        [fieldLabel]="wordParameterDisplayNameEnum.DESCRIPTION"
+        [fieldPlaceholder]="wordParameterDisplayNameEnum.DESCRIPTION"
+      ></gm-textarea>
+
       <gm-autocomplete
         [field]="wordForm[wordParameterEnum.GROUP_ID]"
         [fieldLabel]="wordParameterDisplayNameEnum.WORD_GROUP"

@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "docker compose up -d",
-    "dev:stop": "docker compose down",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 4200",
     "build": "ng build",

@@ -16,7 +16,7 @@ export class WordsService {
       ...createWordDto,
       groupId: createWordDto.groupId
         ? new Types.ObjectId(createWordDto.groupId)
-        : null,
+        : undefined,
       userId: new Types.ObjectId(userId),
     });
   }
@@ -35,7 +35,7 @@ export class WordsService {
       ...(updateWordDto.groupId !== undefined && {
         groupId: updateWordDto.groupId
           ? new Types.ObjectId(updateWordDto.groupId)
-          : null,
+          : undefined,
       }),
     };
     const result = await this.wordModel
