@@ -196,6 +196,25 @@ describe('WordEditDialogComponent', () => {
     expect(mockWordsService.addWord).not.toHaveBeenCalled();
   });
 
+  it('should convert empty optional fields to undefined before submitting', () => {
+    createComponent();
+    setFormValue({
+      [WordParameterEnum.WORD]: 'cat',
+      [WordParameterEnum.TRANSLATION]: '',
+      [WordParameterEnum.DESCRIPTION]: '',
+      [WordParameterEnum.GROUP_ID]: '',
+    });
+
+    component.apply();
+
+    expect(mockWordsService.addWord).toHaveBeenCalledWith({
+      [WordParameterEnum.WORD]: 'cat',
+      [WordParameterEnum.TRANSLATION]: undefined,
+      [WordParameterEnum.DESCRIPTION]: undefined,
+      [WordParameterEnum.GROUP_ID]: null,
+    });
+  });
+
   function setFormValue(value: {
     [WordParameterEnum.WORD]: string;
     [WordParameterEnum.TRANSLATION]: string;

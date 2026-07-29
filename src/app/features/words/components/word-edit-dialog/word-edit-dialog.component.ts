@@ -25,6 +25,7 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
 import { WordGroup } from '../../../../features/word-sets/interfaces/word-group';
 import { WordParameterEnum } from '../../enums/word.parameter.enum';
 import { WordsService } from '../../services/words/words.service';
+import { WordRequest } from '../../interfaces/word-request';
 import { WordEditDialogData } from './word-edit-dialog-data';
 import { WordForm } from './word-form';
 
@@ -92,21 +93,20 @@ export class WordEditDialogComponent {
         const groupId = isNewGroupSelected
           ? newGroupsRes[WordGroupParameterEnum.ID]
           : (selectedGroupId !== '' ? selectedGroupId : null);
+        const wordRequest: WordRequest = {
+          ...this.wordModel(),
+          [WordParameterEnum.TRANSLATION]:
+            this.wordModel()[WordParameterEnum.TRANSLATION] || undefined,
+          [WordParameterEnum.DESCRIPTION]:
+            this.wordModel()[WordParameterEnum.DESCRIPTION] || undefined,
+          [WordParameterEnum.GROUP_ID]: groupId
+        };
 
         if (this.data?._id == null) {
-          return this.wordsService.addWord({
-            ...this.wordModel(),
-            [WordParameterEnum.GROUP_ID]: groupId
-          });
+          return this.wordsService.addWord(wordRequest);
         }
 
-        return this.wordsService.updateWord(
-          this.data._id,
-          {
-            ...this.wordModel(),
-            [WordParameterEnum.GROUP_ID]: groupId
-          }
-        );
+        return this.wordsService.updateWord(this.data._id, wordRequest);
       })
     )
       .pipe(takeUntilDestroyed(this.destroyRef))
