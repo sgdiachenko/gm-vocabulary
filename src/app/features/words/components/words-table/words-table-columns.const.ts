@@ -13,7 +13,8 @@ export const WordsTableColumns: TableColumn[] = [
   },
   {
     name: WordParameterEnum.DESCRIPTION,
-    displayName: WordParameterDisplayNameEnum.DESCRIPTION
+    displayName: WordParameterDisplayNameEnum.DESCRIPTION,
+    minWidth: 240
   },
   {
     name: WordParameterEnum.GROUP_NAME,
