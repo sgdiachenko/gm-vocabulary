@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, effect, input, output } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import {
   MatCell,
@@ -38,7 +38,34 @@ export class TableComponent {
   columns = input<TableColumn[]>([]);
   dataSource = input<any[]>([]);
   allowEdit = input<boolean>(true);
+  selectionKey = input<string>('_id');
   selectionChange = output<any[]>();
+
+  selection = new SelectionModel<any>(
+    true,
+    [],
+    true,
+    (firstRow, secondRow) => this.getSelectionValue(firstRow) === this.getSelectionValue(secondRow)
+  );
+
+  private readonly reconcileSelection = effect(() => {
+    const rows = this.dataSource();
+    const selectedRows = this.selection.selected;
+
+    if (selectedRows.length === 0) {
+      return;
+    }
+
+    const currentSelection = rows.filter(row => this.selection.isSelected(row));
+    const selectionChanged = currentSelection.length !== selectedRows.length
+      || currentSelection.some((row, index) => row !== selectedRows[index]);
+
+    if (selectionChanged) {
+      this.selection.clear();
+      this.selection.select(...currentSelection);
+      this.selectionChange.emit(currentSelection);
+    }
+  });
 
   get columnsNames(){
     return [
@@ -46,8 +73,6 @@ export class TableComponent {
       ...(this.columns()?.map(({name}) => name) || [])
     ];
   };
-
-  selection = new SelectionModel<any>(true, []);
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -69,5 +94,9 @@ export class TableComponent {
   toggleRow(row: any) {
     this.selection.toggle(row);
     this.selectionChange.emit(this.selection.selected);
+  }
+
+  private getSelectionValue(row: any): unknown {
+    return row?.[this.selectionKey()] ?? row;
   }
 }

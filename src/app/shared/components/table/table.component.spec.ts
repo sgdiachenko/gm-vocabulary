@@ -87,4 +87,22 @@ describe('TableComponent', () => {
     expect(component.selection.isSelected(row)).toBe(false);
     expect(selectionChangeSpy).toHaveBeenCalledWith([]);
   });
+
+  it('should preserve selection when a selected row is replaced with an updated object', async () => {
+    const selectionChangeSpy = vi.fn();
+    const originalRow = { _id: '1', name: 'one' };
+    const updatedRow = { _id: '1', name: 'updated one' };
+    fixture.componentRef.setInput('dataSource', [originalRow]);
+    component.selectionChange.subscribe(selectionChangeSpy);
+    await fixture.whenStable();
+
+    component.toggleRow(originalRow);
+    fixture.componentRef.setInput('dataSource', [updatedRow]);
+    await fixture.whenStable();
+
+    expect(component.selection.isSelected(updatedRow)).toBe(true);
+    expect(component.selection.selected).toEqual([updatedRow]);
+    expect(selectionChangeSpy).toHaveBeenLastCalledWith([updatedRow]);
+    expect(component.isAllSelected()).toBe(true);
+  });
 });
