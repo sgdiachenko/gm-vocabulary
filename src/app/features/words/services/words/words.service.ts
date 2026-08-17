@@ -58,6 +58,19 @@ export class WordsService {
     );
   }
 
+  copyWords(ids: string[]): Observable<Word[]> {
+    this.updateRequestState(null, true);
+    return this.wordsApiService.copyWords(ids).pipe(
+      tap(() => {
+        this.updateRequestState(null, false);
+      }),
+      catchError(err => {
+        this.updateRequestState(new Error(err.error?.message ?? err.message), false);
+        return throwError(() => err);
+      }),
+    );
+  }
+
   updateWord(id: string, word: WordRequest): Observable<void> {
     this.updateRequestState(null, true);
     return this.wordsApiService.updateWord(id, word).pipe(

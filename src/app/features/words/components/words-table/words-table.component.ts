@@ -24,7 +24,7 @@ export class WordsTableComponent {
   dataSource = input<WordsTableRow[]>([]);
   groups = input<SelectOption[]>([]);
   selectedGroupId = input<string | null>(null);
-  allowEdit = input<boolean>(true);
+  isOwner = input<boolean>(true);
   allowSwitchGroup = input<boolean>(true);
   columns = input<TableColumn[]>([]);
 
@@ -32,6 +32,7 @@ export class WordsTableComponent {
   editWord = output<WordsTableRow>();
   deleteWords = output<WordsTableRow[]>();
   previewWords = output<WordsTableRow[]>();
+  copyWords = output<WordsTableRow[]>();
   selectGroup = output<string>();
 
   readonly defaultOptionValue = DefaultOptionValueEnum.ALL;

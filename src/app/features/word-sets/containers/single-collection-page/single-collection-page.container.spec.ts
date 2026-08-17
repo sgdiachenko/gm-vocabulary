@@ -22,7 +22,10 @@ describe('SingleCollectionPageContainer', () => {
 
     mockWordsService = {
       words: signal([]),
+      updateIsLoading: signal(false),
+      updateError: signal(null),
       addWords: () => {},
+      copyWords: () => of([]),
       resetStore: () => {}
     };
 

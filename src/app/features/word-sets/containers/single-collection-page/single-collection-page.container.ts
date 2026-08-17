@@ -83,9 +83,12 @@ export class SingleCollectionPageContainer implements OnInit, OnDestroy {
   readonly fetchError: Signal<Error> = this.wordGroupService.fetchError;
   readonly deleteIsLoading: Signal<boolean> = this.wordGroupService.deleteIsLoading;
   readonly deleteError: Signal<Error> = this.wordGroupService.deleteError;
+  readonly copyIsLoading: Signal<boolean> = this.wordsService.updateIsLoading;
+  readonly copyError: Signal<Error> = this.wordsService.updateError;
 
   private wordEditDialogRef!: MatDialogRef<WordEditDialogComponent>;
   private wordsDeleteDialogRef!: MatDialogRef<SubmitDialogComponent>;
+  private wordsCopyDialogRef!: MatDialogRef<SubmitDialogComponent>;
   private wordGroupDialogRef: MatDialogRef<CollectionEditDialogComponent>;
   private wordsPreviewDialogRef: MatDialogRef<WordsPreviewDialog>;
 
@@ -143,6 +146,24 @@ export class SingleCollectionPageContainer implements OnInit, OnDestroy {
     });
   }
 
+  copyWords(words: Word[]): void {
+    this.wordsCopyDialogRef = this.dialog.open<SubmitDialogComponent, SubmitDialogData>(SubmitDialogComponent, {
+      data: {
+        title: 'Copy',
+        text: 'Are you sure you want to copy selected words?'
+      }
+    });
+
+    this.wordsCopyDialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.wordsService
+          .copyWords(words.map(word => word[WordParameterEnum.ID]))
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe();
+      }
+    });
+  }
+
   previewWords(words: Word[]): void {
     this.wordsPreviewDialogRef = this.dialog.open<WordsPreviewDialog, WordsPreviewDialogData>(
       WordsPreviewDialog,
@@ -156,6 +177,7 @@ export class SingleCollectionPageContainer implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.wordEditDialogRef?.close();
     this.wordsDeleteDialogRef?.close();
+    this.wordsCopyDialogRef?.close();
     this.wordGroupDialogRef?.close();
     this.wordsPreviewDialogRef?.close();
     this.wordsService.resetStore();

@@ -1,7 +1,7 @@
 <gm-data-loading-wrapper
   class="flex flex-col"
-  [loadingState]="fetchIsLoading() || deleteIsLoading()"
-  [error]="fetchError() || deleteError()">
+  [loadingState]="fetchIsLoading() || deleteIsLoading() || copyIsLoading()"
+  [error]="fetchError() || deleteError() || copyError()">
   <div class="flex pb-6 items-center">
     <h2 class="text-lg" [ngClass]="{'mr-4': isCollectionOwnerActive()}"><b>Collection:</b> {{selectedGroup()?.name}}</h2>
     @if (isCollectionOwnerActive()) {
@@ -15,7 +15,7 @@
   </div>
 
   <gm-words-table
-    [allowEdit]="isCollectionOwnerActive()"
+    [isOwner]="isCollectionOwnerActive()"
     [allowSwitchGroup]="false"
     [dataSource]="wordsTable()"
     [columns]="wordsTableColumns()"
@@ -23,6 +23,7 @@
     (addWord)="openEditDialog()"
     (editWord)="openEditDialog($event)"
     (deleteWords)="deleteWords($event)"
+    (copyWords)="copyWords($event)"
     (previewWords)="previewWords($event)"
   ></gm-words-table>
 </gm-data-loading-wrapper>

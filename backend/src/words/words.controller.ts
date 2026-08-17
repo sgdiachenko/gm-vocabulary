@@ -15,6 +15,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import type { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface';
 import { DeleteWordsDto } from './dto/delete-words.dto';
+import { CopyWordsDto } from './dto/copy-words.dto';
 import { ParseObjectIdPipe } from '../common/pipes/parse-object-id.pipe';
 import { Types } from 'mongoose';
 
@@ -34,6 +35,14 @@ export class WordsController {
   @Get()
   findAll(@CurrentUser() user: AuthenticatedUser) {
     return this.wordsService.findAll(user.id);
+  }
+
+  @Post('copy')
+  copy(
+    @Body() copyWordsDto: CopyWordsDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.wordsService.copy(copyWordsDto.ids, user.id);
   }
 
   @Put(':id')

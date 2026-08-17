@@ -22,6 +22,10 @@ export class WordsApiService {
     return this.http.post<Word>(this.BASE_URL, word);
   }
 
+  copyWords(ids: string[]): Observable<Word[]> {
+    return this.http.post<Word[]>(`${this.BASE_URL}/copy`, { ids });
+  }
+
   updateWord(id: string, word: WordRequest): Observable<void> {
     return this.http.put<void>(`${this.BASE_URL}/${id}`, word);
   }

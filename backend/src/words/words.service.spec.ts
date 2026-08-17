@@ -5,10 +5,18 @@ import { WordsService } from './words.service';
 describe('WordsService', () => {
   const exec = jest.fn();
   const wordModel = {
+    find: jest.fn(),
+    insertMany: jest.fn(),
     updateOne: jest.fn(() => ({ exec })),
     deleteMany: jest.fn(() => ({ exec })),
   };
-  const service = new WordsService(wordModel as never);
+  const collectionModel = {
+    find: jest.fn(),
+  };
+  const service = new WordsService(
+    wordModel as never,
+    collectionModel as never,
+  );
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -53,5 +61,48 @@ describe('WordsService', () => {
       _id: { $in: [wordId] },
       userId,
     });
+  });
+
+  it('should copy words from shared collections without assigning a collection', async () => {
+    const wordId = new Types.ObjectId();
+    const groupId = new Types.ObjectId();
+    const sourceOwnerId = new Types.ObjectId();
+    const userId = new Types.ObjectId();
+    const sourceWord = {
+      _id: wordId,
+      word: 'cat',
+      translation: 'кіт',
+      description: 'animal',
+      groupId,
+      userId: sourceOwnerId,
+    };
+    const copiedWord = { ...sourceWord, _id: new Types.ObjectId(), userId };
+
+    wordModel.find.mockReturnValue({
+      lean: jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue([sourceWord]),
+      }),
+    });
+    collectionModel.find.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        lean: jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue([{ _id: groupId }]),
+        }),
+      }),
+    });
+    wordModel.insertMany.mockResolvedValue([copiedWord]);
+
+    await expect(
+      service.copy([wordId.toString()], userId.toString()),
+    ).resolves.toEqual([copiedWord]);
+
+    expect(wordModel.insertMany).toHaveBeenCalledWith([
+      {
+        word: 'cat',
+        translation: 'кіт',
+        description: 'animal',
+        userId,
+      },
+    ]);
   });
 });

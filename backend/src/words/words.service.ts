@@ -4,11 +4,17 @@ import { Model, Types } from 'mongoose';
 import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
 import { Word, WordDocument } from './entities/word.entity';
+import {
+  WordCollection,
+  WordCollectionDocument,
+} from '../word-collections/entities/word-collection.entity';
 
 @Injectable()
 export class WordsService {
   constructor(
     @InjectModel(Word.name) private readonly wordModel: Model<WordDocument>,
+    @InjectModel(WordCollection.name)
+    private readonly collectionModel: Model<WordCollectionDocument>,
   ) {}
 
   create(createWordDto: CreateWordDto, userId: string) {
@@ -23,6 +29,46 @@ export class WordsService {
 
   findAll(userId: string) {
     return this.wordModel.find({ userId: new Types.ObjectId(userId) }).exec();
+  }
+
+  async copy(ids: string[], userId: string) {
+    const ownerId = new Types.ObjectId(userId);
+    const sourceWords = await this.wordModel
+      .find({ _id: { $in: ids.map((id) => new Types.ObjectId(id)) } })
+      .lean()
+      .exec();
+    const groupIds = sourceWords.flatMap((word) =>
+      word.groupId ? [word.groupId] : [],
+    );
+    const sharedCollections = await this.collectionModel
+      .find({
+        _id: { $in: groupIds },
+        isShared: true,
+        userId: { $ne: ownerId },
+      })
+      .select('_id')
+      .lean()
+      .exec();
+    const sharedCollectionIds = new Set(
+      sharedCollections.map((collection) => collection._id.toString()),
+    );
+    const wordsToCopy = sourceWords.filter(
+      (word) =>
+        word.groupId && sharedCollectionIds.has(word.groupId.toString()),
+    );
+
+    if (wordsToCopy.length !== ids.length) {
+      throw new NotFoundException('One or more words not found');
+    }
+
+    return this.wordModel.insertMany(
+      wordsToCopy.map(({ word, translation, description }) => ({
+        word,
+        translation,
+        description,
+        userId: ownerId,
+      })),
+    );
   }
 
   async update(

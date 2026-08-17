@@ -62,6 +62,18 @@ describe('WordsApiService', () => {
     req.flush(word);
   });
 
+  it('should copy words to the current user dictionary', () => {
+    service.copyWords(['1', '2']).subscribe(response => {
+      expect(response).toEqual([word]);
+    });
+
+    const req = httpTestingController.expectOne(`${baseUrl}/copy`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ ids: ['1', '2'] });
+
+    req.flush([word]);
+  });
+
   it('should update a word', () => {
     const request = {
       word: 'cat',

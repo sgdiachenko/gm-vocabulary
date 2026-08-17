@@ -13,6 +13,7 @@ describe('WordsService', () => {
   let mockWordsApiService: {
     getWords: ReturnType<typeof vi.fn>;
     addWord: ReturnType<typeof vi.fn>;
+    copyWords: ReturnType<typeof vi.fn>;
     updateWord: ReturnType<typeof vi.fn>;
     deleteWords: ReturnType<typeof vi.fn>;
   };
@@ -26,6 +27,7 @@ describe('WordsService', () => {
     mockWordsApiService = {
       getWords: vi.fn(),
       addWord: vi.fn(),
+      copyWords: vi.fn(),
       updateWord: vi.fn(),
       deleteWords: vi.fn(),
     };
@@ -79,6 +81,17 @@ describe('WordsService', () => {
     }));
 
     expect(service.words()[0][WordParameterEnum.TRANSLATION]).toBe('кішка');
+    expect(service.updateIsLoading()).toBe(false);
+  });
+
+  it('should copy words without adding duplicates to the current shared view', async () => {
+    const copiedWords = [{ ...words[0], _id: 'copied', groupId: undefined }];
+    mockWordsApiService.copyWords.mockReturnValue(of(copiedWords));
+
+    await firstValueFrom(service.copyWords(['1']));
+
+    expect(mockWordsApiService.copyWords).toHaveBeenCalledWith(['1']);
+    expect(service.words()).toEqual([]);
     expect(service.updateIsLoading()).toBe(false);
   });
 

@@ -1,6 +1,6 @@
 <div class="flex gap-4 pb-4 items-center">
   <div class="flex gap-4 grow-1">
-    @if (allowEdit()) {
+    @if (isOwner()) {
       <gm-button (btnClick)="addWord.emit()">Add</gm-button>
 
       <gm-button
@@ -13,6 +13,12 @@
         (btnClick)="deleteWords.emit(selectedWords)"
         [isDisabled]="selectedWords.length === 0">
         Delete
+      </gm-button>
+    } @else {
+      <gm-button
+        (btnClick)="copyWords.emit(selectedWords)"
+        [isDisabled]="selectedWords.length === 0">
+        Copy
       </gm-button>
     }
 
@@ -38,7 +44,6 @@
   <gm-table
     class="grow overflow-auto"
     [dataSource]="dataSource()"
-    [allowEdit]="allowEdit()"
     [columns]="columns()"
     (selectionChange)="selectedWords = $event"
   ></gm-table>
