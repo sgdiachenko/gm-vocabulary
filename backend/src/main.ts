@@ -15,7 +15,7 @@ async function bootstrap() {
   );
   app.enableCors([
     'http://localhost:4200',
-    'https://vocabulary-angular.vercel.app'
+    'https://vocabulary-angular.vercel.app',
   ]);
 
   await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
