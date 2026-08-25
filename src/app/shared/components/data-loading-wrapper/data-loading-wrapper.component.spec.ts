@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Component } from '@angular/core';
 
 import { DataLoadingWrapperComponent } from './data-loading-wrapper.component';
+import { SnackBar } from '../snack-bar/snack-bar';
 
 @Component({
   imports: [DataLoadingWrapperComponent],
@@ -19,13 +20,13 @@ describe('DataLoadingWrapperComponent', () => {
   let fixture: ComponentFixture<DataLoadingWrapperComponent>;
   let snackBar: {
     dismiss: ReturnType<typeof vi.fn>;
-    open: ReturnType<typeof vi.fn>;
+    openFromComponent: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(async () => {
     snackBar = {
       dismiss: vi.fn(),
-      open: vi.fn()
+      openFromComponent: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -60,39 +61,26 @@ describe('DataLoadingWrapperComponent', () => {
     expect(getSpinner()).toBeTruthy();
   });
 
-  it('should show error message when error changes', async () => {
-    const error = new Error('Something failed');
-
-    fixture.componentRef.setInput('error', error);
+  it('should open the custom snackbar with the provided data', async () => {
+    const data = { type: 'error' as const, message: 'Something failed' };
+    fixture.componentRef.setInput('snackBarData', data);
     await fixture.whenStable();
 
-    expect(snackBar.open).toHaveBeenCalledWith('Something failed', 'Close');
+    expect(snackBar.openFromComponent).toHaveBeenCalledWith(SnackBar, {
+      data,
+      panelClass: 'gm-snack-bar-panel',
+    });
   });
 
-  it('should dismiss snackbar when error is cleared', async () => {
-    fixture.componentRef.setInput('error', new Error('Something failed'));
+  it('should dismiss snackbar when data is cleared', async () => {
+    fixture.componentRef.setInput('snackBarData', {
+      type: 'success',
+      message: 'Saved successfully',
+    });
     await fixture.whenStable();
     snackBar.dismiss.mockClear();
 
-    fixture.componentRef.setInput('error', null);
-    await fixture.whenStable();
-
-    expect(snackBar.dismiss).toHaveBeenCalledOnce();
-  });
-
-  it('should show success message when success message changes', async () => {
-    fixture.componentRef.setInput('successMessage', 'Saved successfully');
-    await fixture.whenStable();
-
-    expect(snackBar.open).toHaveBeenCalledWith('Saved successfully', 'Close');
-  });
-
-  it('should dismiss snackbar when success message is cleared', async () => {
-    fixture.componentRef.setInput('successMessage', 'Saved successfully');
-    await fixture.whenStable();
-    snackBar.dismiss.mockClear();
-
-    fixture.componentRef.setInput('successMessage', null);
+    fixture.componentRef.setInput('snackBarData', null);
     await fixture.whenStable();
 
     expect(snackBar.dismiss).toHaveBeenCalledOnce();

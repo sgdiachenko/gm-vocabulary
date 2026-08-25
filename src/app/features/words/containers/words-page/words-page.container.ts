@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnDestroy, OnInit, Signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnDestroy, OnInit, Signal } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
@@ -15,6 +15,8 @@ import { TableColumn } from '../../../../shared/components/table/table-column';
 import { WordsTableColumns } from '../../components/words-table/words-table-columns.const';
 import { WordsTableComponent } from '../../components/words-table/words-table.component';
 import { SelectOption } from '../../../../shared/interfaces/select-option';
+import { getErrorSnackBarData } from '../../../../shared/utils/get-error-snack-bar-data.util';
+import { SnackBarData } from '../../../../shared/components/snack-bar/snack-bar-data';
 import { WordsTableService } from '../../services/words-table/words-table.service';
 import { WordParameterEnum } from '../../enums/word.parameter.enum';
 import { WordsTableRow } from '../../components/words-table/words-table-row';
@@ -47,9 +49,10 @@ export class WordsPageContainer implements OnInit, OnDestroy {
   readonly wordsTableColumns: TableColumn[] = WordsTableColumns;
 
   readonly fetchIsLoading: Signal<boolean> = this.wordsService.fetchIsLoading;
-  readonly fetchError: Signal<Error> = this.wordsService.fetchError;
   readonly deleteIsLoading: Signal<boolean> = this.wordsService.deleteIsLoading;
-  readonly deleteError: Signal<Error> = this.wordsService.deleteError;
+  readonly snackBarData: Signal<SnackBarData | null> = computed(() =>
+    getErrorSnackBarData(this.wordsService.fetchError() || this.wordsService.deleteError()),
+  );
 
   private wordEditDialogRef!: MatDialogRef<any>;
   private wordsDeleteDialogRef!: MatDialogRef<any>;

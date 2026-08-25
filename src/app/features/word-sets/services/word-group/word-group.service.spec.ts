@@ -111,6 +111,6 @@ describe('WordGroupService', () => {
     await expect(firstValueFrom(service.addGroup({ name: 'Animals' }))).rejects.toBe(error);
 
     expect(service.updateIsLoading()).toBe(false);
-    expect(service.updateError()?.message).toBe('Could not add group');
+    expect(service.updateError()).toBe(error);
   });
 });

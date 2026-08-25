@@ -36,6 +36,22 @@ body {
   // Reset the user agent margin.
   margin: 0;
 }
+
+.gm-snack-bar-panel {
+  --mat-snack-bar-container-color: transparent;
+  --mat-snack-bar-supporting-text-color: inherit;
+
+  .mat-mdc-snackbar-surface {
+    min-width: min(344px, calc(100vw - 32px));
+    padding: 0;
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  .mdc-snackbar__label {
+    padding: 0;
+  }
+}
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }

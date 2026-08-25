@@ -37,6 +37,8 @@ import { WordGroupParameterEnum } from '../../enums/word-group.parameter.enum';
 import { TableColumn } from '../../../../shared/components/table/table-column';
 import { WordParameterEnum } from '../../../words/enums/word.parameter.enum';
 import { SelectOption } from '../../../../shared/interfaces/select-option';
+import { getErrorSnackBarData } from '../../../../shared/utils/get-error-snack-bar-data.util';
+import { SnackBarData } from '../../../../shared/components/snack-bar/snack-bar-data';
 import { WordsService } from '../../../words/services/words/words.service';
 import { AuthService } from '../../../auth/services/auth/auth.service';
 import { Word } from '../../../words/interfaces/word';
@@ -80,11 +82,15 @@ export class SingleCollectionPageContainer implements OnInit, OnDestroy {
   });
 
   readonly fetchIsLoading: Signal<boolean> = this.wordGroupService.fetchIsLoading;
-  readonly fetchError: Signal<Error> = this.wordGroupService.fetchError;
   readonly deleteIsLoading: Signal<boolean> = this.wordGroupService.deleteIsLoading;
-  readonly deleteError: Signal<Error> = this.wordGroupService.deleteError;
   readonly copyIsLoading: Signal<boolean> = this.wordsService.updateIsLoading;
-  readonly copyError: Signal<Error> = this.wordsService.updateError;
+  readonly snackBarData: Signal<SnackBarData | null> = computed(() =>
+    getErrorSnackBarData(
+      this.wordGroupService.fetchError()
+        || this.wordGroupService.deleteError()
+        || this.wordsService.updateError(),
+    ),
+  );
 
   private wordEditDialogRef!: MatDialogRef<WordEditDialogComponent>;
   private wordsDeleteDialogRef!: MatDialogRef<SubmitDialogComponent>;

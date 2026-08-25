@@ -8,6 +8,7 @@ import { WordGroupParameterEnum } from '../../enums/word-group.parameter.enum';
 import { WordGroupService } from '../../services/word-group/word-group.service';
 import { WordGroupRequest } from '../../interfaces/word-group-request';
 import { WordGroup } from '../../interfaces/word-group';
+import { AppError } from '../../../../shared/types/app-error';
 
 describe('CollectionEditDialogComponent', () => {
   let component: CollectionEditDialogComponent;
@@ -17,7 +18,7 @@ describe('CollectionEditDialogComponent', () => {
   let updateIsLoading: WritableSignal<boolean>;
   let mockWordGroupService: {
     updateIsLoading: WritableSignal<boolean>;
-    updateError: WritableSignal<Error | null>;
+    updateError: WritableSignal<AppError | null>;
     addGroup: ReturnType<typeof vi.fn>;
     updateGroup: ReturnType<typeof vi.fn>;
   };

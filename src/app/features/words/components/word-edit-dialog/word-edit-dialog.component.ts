@@ -28,6 +28,8 @@ import { WordsService } from '../../services/words/words.service';
 import { WordRequest } from '../../interfaces/word-request';
 import { WordEditDialogData } from './word-edit-dialog-data';
 import { WordForm } from './word-form';
+import { getErrorSnackBarData } from '../../../../shared/utils/get-error-snack-bar-data.util';
+import { SnackBarData } from '../../../../shared/components/snack-bar/snack-bar-data';
 
 @Component({
   selector: 'gm-word-edit-dialog',
@@ -57,7 +59,9 @@ export class WordEditDialogComponent {
   readonly wordParameterDisplayNameEnum = WordParameterDisplayNameEnum;
 
   wordsUpdateIsLoading: Signal<boolean> = this.wordsService.updateIsLoading;
-  wordsUpdateErr: Signal<Error> = this.wordsService.updateError;
+  readonly snackBarData: Signal<SnackBarData | null> = computed(() =>
+    getErrorSnackBarData(this.wordsService.updateError()),
+  );
 
   private readonly wordModel: WritableSignal<WordForm> = signal<WordForm>({
     [WordParameterEnum.WORD]: this.data?.[WordParameterEnum.WORD] ?? '',

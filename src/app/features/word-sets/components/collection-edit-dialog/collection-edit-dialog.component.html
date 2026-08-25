@@ -1,6 +1,6 @@
 <gm-data-loading-wrapper
   [loadingState]="updateIsLoading()"
-  [error]="updateError()">
+  [snackBarData]="snackBarData()">
   <h2 mat-dialog-title> {{ data != null ? 'Edit' : 'Add' }} collection</h2>
 
   <mat-dialog-content>

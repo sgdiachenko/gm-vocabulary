@@ -1,8 +1,10 @@
 import { computed, inject, Service, signal, Signal, WritableSignal } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { WordGroupParameterEnum } from '../../enums/word-group.parameter.enum';
 import { SelectOption } from '../../../../shared/interfaces/select-option';
+import { AppError } from '../../../../shared/types/app-error';
 import { WordGroupRequest } from '../../interfaces/word-group-request';
 import { WordGroupsApiService } from '../word-groups-api/word-groups-api.service';
 import { WordGroupsStore } from '../../store/word-groups/word-groups.store';
@@ -17,16 +19,16 @@ export class WordGroupService {
   readonly sharedGroups: Signal<WordGroup[]> = this.wordGroupsStore.sharedGroups;
 
   fetchIsLoading: WritableSignal<boolean> = signal(false);
-  fetchError: WritableSignal<Error> = signal(null);
+  fetchError: WritableSignal<AppError | null> = signal(null);
 
   updateIsLoading: WritableSignal<boolean> = signal(false);
-  updateError: WritableSignal<Error> = signal(null);
+  updateError: WritableSignal<AppError | null> = signal(null);
 
   deleteIsLoading: WritableSignal<boolean> = signal(false);
-  deleteError: WritableSignal<Error> = signal(null);
+  deleteError: WritableSignal<AppError | null> = signal(null);
 
   getUserGroups(): Observable<WordGroup[]> {
-    const updateRequestState = (error: Error, isLoading: boolean): void => {
+    const updateRequestState = (error: AppError | null, isLoading: boolean): void => {
       this.fetchError.set(error);
       this.fetchIsLoading.set(isLoading);
     }
@@ -37,15 +39,15 @@ export class WordGroupService {
         this.wordGroupsStore.addGroups(groups);
         updateRequestState(null, false)
       }),
-      catchError(err => {
-        updateRequestState(new Error(err.error?.message ?? err.message), false)
+      catchError((err: HttpErrorResponse) => {
+        updateRequestState(err, false)
         return throwError(() => err);
       })
     );
   }
 
   getSharedGroups(): Observable<WordGroup[]> {
-    const updateRequestState = (error: Error, isLoading: boolean): void => {
+    const updateRequestState = (error: AppError | null, isLoading: boolean): void => {
       this.fetchError.set(error);
       this.fetchIsLoading.set(isLoading);
     }
@@ -56,15 +58,15 @@ export class WordGroupService {
         this.wordGroupsStore.addSharedGroups(groups);
         updateRequestState(null, false)
       }),
-      catchError(err => {
-        updateRequestState(new Error(err.error?.message ?? err.message), false)
+      catchError((err: HttpErrorResponse) => {
+        updateRequestState(err, false)
         return throwError(() => err);
       })
     );
   }
 
   getGroup(id: string): Observable<WordGroup> {
-    const updateRequestState = (error: Error, isLoading: boolean): void => {
+    const updateRequestState = (error: AppError | null, isLoading: boolean): void => {
       this.fetchError.set(error);
       this.fetchIsLoading.set(isLoading);
     }
@@ -75,8 +77,8 @@ export class WordGroupService {
         this.wordGroupsStore.addGroup(group);
         updateRequestState(null, false)
       }),
-      catchError(err => {
-        updateRequestState(new Error(err.error?.message ?? err.message), false)
+      catchError((err: HttpErrorResponse) => {
+        updateRequestState(err, false)
         return throwError(() => err);
       })
     );
@@ -89,8 +91,8 @@ export class WordGroupService {
         this.wordGroupsStore.addGroup(response);
         this.updateRequestState(null, false)
       }),
-      catchError(err => {
-        this.updateRequestState(new Error(err.error?.message ?? err.message), false)
+      catchError((err: HttpErrorResponse) => {
+        this.updateRequestState(err, false)
         return throwError(() => err);
       })
     );
@@ -103,8 +105,8 @@ export class WordGroupService {
         this.wordGroupsStore.addGroups(response);
         this.updateRequestState(null, false)
       }),
-      catchError(err => {
-        this.updateRequestState(new Error(err.error?.message ?? err.message), false)
+      catchError((err: HttpErrorResponse) => {
+        this.updateRequestState(err, false)
         return throwError(() => err);
       })
     );
@@ -120,15 +122,15 @@ export class WordGroupService {
         });
         this.updateRequestState(null, false)
       }),
-      catchError(err => {
-        this.updateRequestState(new Error(err.error?.message ?? err.message), false)
+      catchError((err: HttpErrorResponse) => {
+        this.updateRequestState(err, false)
         return throwError(err);
       })
     );
   }
 
   deleteGroup(id: string): Observable<void> {
-    const updateRequestState = (error: Error, isLoading: boolean): void => {
+    const updateRequestState = (error: AppError | null, isLoading: boolean): void => {
       this.deleteError.set(error);
       this.deleteIsLoading.set(isLoading);
     }
@@ -139,8 +141,8 @@ export class WordGroupService {
         this.wordGroupsStore.deleteGroup(id);
         updateRequestState(null, false)
       }),
-      catchError(err => {
-        updateRequestState(new Error(err.error?.message ?? err.message), false);
+      catchError((err: HttpErrorResponse) => {
+        updateRequestState(err, false);
         return throwError(err);
       })
     );
@@ -163,7 +165,7 @@ export class WordGroupService {
 
   resetStore = this.wordGroupsStore.resetStore;
 
-  private updateRequestState(error: Error, isLoading: boolean): void {
+  private updateRequestState(error: AppError | null, isLoading: boolean): void {
     this.updateError.set(error);
     this.updateIsLoading.set(isLoading);
   }

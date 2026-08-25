@@ -1,7 +1,7 @@
 <gm-data-loading-wrapper
   class="flex flex-col"
   [loadingState]="fetchIsLoading() || deleteIsLoading() || copyIsLoading()"
-  [error]="fetchError() || deleteError() || copyError()">
+  [snackBarData]="snackBarData()">
   <div class="flex pb-6 items-center">
     <h2 class="text-lg" [ngClass]="{'mr-4': isCollectionOwnerActive()}"><b>Collection:</b> {{selectedGroup()?.name}}</h2>
     @if (isCollectionOwnerActive()) {

@@ -93,8 +93,18 @@ describe('AuthService', () => {
     await expect(firstValueFrom(service.auth(user, true))).rejects.toBe(error);
 
     expect(service.authLoadingState()).toBe(false);
-    expect(service.authError()?.message).toBe('Invalid credentials');
+    expect(service.authError()).toBe(error);
     expect(service.authState()).toBeNull();
+  });
+
+  it('should preserve multiple validation messages', async () => {
+    const messages = ['Password is too short', 'Password must contain a number'];
+    const error = { error: { message: messages } };
+    mockAuthApiService.signup.mockReturnValue(throwError(() => error));
+
+    await expect(firstValueFrom(service.auth(user, false))).rejects.toBe(error);
+
+    expect(service.authError()).toBe(error);
   });
 
   it('should auto-auth user from valid local storage data', () => {

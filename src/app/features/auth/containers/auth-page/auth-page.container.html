@@ -1,6 +1,6 @@
 <gm-data-loading-wrapper
   [loadingState]="authLoadingState()"
-  [error]="authErrorMessage()">
+  [snackBarData]="snackBarData()">
   <gm-auth-form
     [isSignupFormActive]="isSignupFormActive()"
     (toggleView)="isSignupFormActive.set($event)"

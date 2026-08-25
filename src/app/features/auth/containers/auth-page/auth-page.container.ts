@@ -1,18 +1,17 @@
-import { Component, DestroyRef, inject, signal, Signal, WritableSignal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal, Signal, WritableSignal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { take } from 'rxjs';
 
 import { DataLoadingWrapperComponent } from '../../../../shared/components/data-loading-wrapper/data-loading-wrapper.component';
+import { SnackBarData } from '../../../../shared/components/snack-bar/snack-bar-data';
+import { getErrorSnackBarData } from '../../../../shared/utils/get-error-snack-bar-data.util';
 import { AuthFormComponent } from '../../components/auth-form/auth-form.component';
 import { AuthService } from '../../services/auth/auth.service';
 import { Auth } from '../../interfaces/auth';
 
 @Component({
   selector: 'gm-auth-page',
-  imports: [
-    AuthFormComponent,
-    DataLoadingWrapperComponent
-  ],
+  imports: [AuthFormComponent, DataLoadingWrapperComponent],
   templateUrl: './auth-page.container.html',
   styleUrl: './auth-page.container.scss',
 })
@@ -21,7 +20,9 @@ export class AuthPageContainer {
   private readonly destroyRef = inject(DestroyRef)
 
   authLoadingState: Signal<boolean> = this.authService.authLoadingState;
-  authErrorMessage: Signal<Error> = this.authService.authError;
+  snackBarData: Signal<SnackBarData | null> = computed(() => {
+    return getErrorSnackBarData(this.authService.authError());
+  });
   isSignupFormActive: WritableSignal<boolean> = signal(false);
 
   submit(user: Auth) {

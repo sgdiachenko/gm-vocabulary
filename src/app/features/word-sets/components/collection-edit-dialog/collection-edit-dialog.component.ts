@@ -19,6 +19,8 @@ import { WordGroupService } from '../../services/word-group/word-group.service';
 import { WordGroupParameterEnum } from '../../enums/word-group.parameter.enum';
 import { WordGroupRequest } from '../../interfaces/word-group-request';
 import { WordGroup } from '../../interfaces/word-group';
+import { getErrorSnackBarData } from '../../../../shared/utils/get-error-snack-bar-data.util';
+import { SnackBarData } from '../../../../shared/components/snack-bar/snack-bar-data';
 
 @Component({
   selector: 'gm-collection-edit-dialog',
@@ -42,7 +44,9 @@ export class CollectionEditDialogComponent {
   private readonly wordGroupService = inject(WordGroupService);
 
   readonly updateIsLoading: Signal<boolean> = this.wordGroupService.updateIsLoading;
-  readonly updateError: Signal<Error | null> = this.wordGroupService.updateError;
+  readonly snackBarData: Signal<SnackBarData | null> = computed(() =>
+    getErrorSnackBarData(this.wordGroupService.updateError()),
+  );
 
   readonly wordGroupParameterEnum = WordGroupParameterEnum;
   readonly wordGroupParameterDisplayNameEnum = WordGroupParameterDisplayNameEnum;

@@ -10,6 +10,7 @@ import { WordGroupService } from '../../../word-sets/services/word-group/word-gr
 import { WordParameterEnum } from '../../enums/word.parameter.enum';
 import { WordEditDialogData } from './word-edit-dialog-data';
 import { WordGroup } from '../../../word-sets/interfaces/word-group';
+import { AppError } from '../../../../shared/types/app-error';
 
 describe('WordEditDialogComponent', () => {
   let component: WordEditDialogComponent;
@@ -19,7 +20,7 @@ describe('WordEditDialogComponent', () => {
   let groups: WritableSignal<WordGroup[]>;
   let mockWordsService: {
     updateIsLoading: WritableSignal<boolean>;
-    updateError: WritableSignal<Error | null>;
+    updateError: WritableSignal<AppError | null>;
     addWord: ReturnType<typeof vi.fn>;
     updateWord: ReturnType<typeof vi.fn>;
   };

@@ -2,6 +2,7 @@ import { catchError, defer, iif, map, Observable, take, tap, throwError } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DestroyRef, inject, Service } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthParameterEnum } from '../../enums/auth.parameter.enum';
 import { AuthApiService } from '../auth-api/auth-api.service';
@@ -33,9 +34,9 @@ export class AuthService {
     ).pipe(
       take(1),
       takeUntilDestroyed(this.destroyRef),
-      catchError(err => {
+      catchError((err: HttpErrorResponse) => {
         this.toggleAuthLoadingState(false);
-        this.authStore.setError(new Error(err.error?.message ?? err.message));
+        this.authStore.setError(err);
         return throwError(() => err);
       }),
       tap(() => {

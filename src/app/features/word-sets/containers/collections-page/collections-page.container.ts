@@ -1,6 +1,7 @@
 import {
   
   Component,
+  computed,
   DestroyRef,
   inject,
   OnDestroy,
@@ -25,6 +26,8 @@ import { SubmitDialogData } from '../../../../shared/components/submit-dialog/su
 import { WordGroupService } from '../../services/word-group/word-group.service';
 import { WordGroup } from '../../../../features/word-sets/interfaces/word-group';
 import { AuthService } from '../../../../features/auth/services/auth/auth.service';
+import { getErrorSnackBarData } from '../../../../shared/utils/get-error-snack-bar-data.util';
+import { SnackBarData } from '../../../../shared/components/snack-bar/snack-bar-data';
 
 @Component({
   selector: 'gm-collections-page',
@@ -54,9 +57,12 @@ export class CollectionsPageContainer implements OnInit, OnDestroy {
   readonly userId: Signal<string> = this.authService.userId;
 
   readonly fetchIsLoading: Signal<boolean> = this.wordGroupService.fetchIsLoading;
-  readonly fetchError: Signal<Error> = this.wordGroupService.fetchError;
   readonly deleteIsLoading: WritableSignal<boolean> = this.wordGroupService.deleteIsLoading;
-  readonly deleteError: WritableSignal<Error> = this.wordGroupService.deleteError;
+  readonly snackBarData: Signal<SnackBarData | null> = computed(() =>
+    getErrorSnackBarData(
+      this.wordGroupService.fetchError() || this.wordGroupService.deleteError(),
+    ),
+  );
 
   private editDialogRef: MatDialogRef<CollectionEditDialogComponent>;
   private deleteDialogRef: MatDialogRef<SubmitDialogComponent>;

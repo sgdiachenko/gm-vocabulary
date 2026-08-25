@@ -1,9 +1,11 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 
+import { AppError } from '../../../../shared/types/app-error';
+
 export interface AuthState {
   isAuthenticated: boolean | null;
   isLoading: boolean | null;
-  error: Error | null;
+  error: AppError | null;
   token: string | null;
   userId: string | null;
 }
@@ -26,7 +28,7 @@ export const AuthStore = signalStore(
     setLoadingState(isLoading: boolean) {
       patchState(store, { isLoading });
     },
-    setError(error: Error | null) {
+    setError(error: AppError | null) {
       patchState(store, { error });
     },
     setAuthData(token: string | null, userId: string | null) {

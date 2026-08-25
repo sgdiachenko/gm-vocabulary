@@ -1,6 +1,6 @@
 <gm-data-loading-wrapper
   [loadingState]="fetchIsLoading() || deleteIsLoading()"
-  [error]="fetchError() || deleteError()">
+  [snackBarData]="snackBarData()">
   <gm-words-table
     [dataSource]="words()"
     [columns]="wordsTableColumns"

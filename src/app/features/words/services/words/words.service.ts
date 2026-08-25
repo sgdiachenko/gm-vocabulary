@@ -1,7 +1,9 @@
 import { inject, Service, signal, Signal, WritableSignal } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { WordParameterEnum } from '../../enums/word.parameter.enum';
+import { AppError } from '../../../../shared/types/app-error';
 
 import { WordRequest } from '../../interfaces/word-request';
 import { WordsApiService } from '../words-api/words-api.service';
@@ -18,16 +20,16 @@ export class WordsService {
   readonly selectedGroupId: Signal<string> = this.wordsStore.groupId;
 
   fetchIsLoading: WritableSignal<boolean> = signal(false);
-  fetchError: WritableSignal<Error> = signal(null);
+  fetchError: WritableSignal<AppError | null> = signal(null);
 
   updateIsLoading: WritableSignal<boolean> = signal(false);
-  updateError: WritableSignal<Error> = signal(null);
+  updateError: WritableSignal<AppError | null> = signal(null);
 
   deleteIsLoading: WritableSignal<boolean> = signal(false);
-  deleteError: WritableSignal<Error> = signal(null);
+  deleteError: WritableSignal<AppError | null> = signal(null);
 
   getWords(): Observable<Word[]> {
-    const updateRequestState = (error: Error, isLoading: boolean): void => {
+    const updateRequestState = (error: AppError | null, isLoading: boolean): void => {
       this.fetchError.set(error);
       this.fetchIsLoading.set(isLoading);
     }
@@ -37,8 +39,8 @@ export class WordsService {
         this.addWords(result);
         updateRequestState(null, false)
       }),
-      catchError(err => {
-        updateRequestState(new Error(err.error?.message ?? err.message), false)
+      catchError((err: HttpErrorResponse) => {
+        updateRequestState(err, false)
         return throwError(err);
       })
     );
@@ -51,8 +53,8 @@ export class WordsService {
         this.wordsStore.addWord(result);
         this.updateRequestState(null, false)
       }),
-      catchError(err => {
-        this.updateRequestState(new Error(err.error?.message ?? err.message), false)
+      catchError((err: HttpErrorResponse) => {
+        this.updateRequestState(err, false)
         return throwError(err);
       })
     );
@@ -64,8 +66,8 @@ export class WordsService {
       tap(() => {
         this.updateRequestState(null, false);
       }),
-      catchError(err => {
-        this.updateRequestState(new Error(err.error?.message ?? err.message), false);
+      catchError((err: HttpErrorResponse) => {
+        this.updateRequestState(err, false);
         return throwError(() => err);
       }),
     );
@@ -81,15 +83,15 @@ export class WordsService {
         });
         this.updateRequestState(null, false)
       }),
-      catchError(err => {
-        this.updateRequestState(new Error(err.error?.message ?? err.message), false)
+      catchError((err: HttpErrorResponse) => {
+        this.updateRequestState(err, false)
         return throwError(err);
       })
     );
   }
 
   deleteWords(ids: string[]): Observable<void> {
-    const updateRequestState = (error: Error, isLoading: boolean): void => {
+    const updateRequestState = (error: AppError | null, isLoading: boolean): void => {
       this.deleteError.set(error);
       this.deleteIsLoading.set(isLoading);
     }
@@ -100,8 +102,8 @@ export class WordsService {
         this.wordsStore.deleteWords(ids);
         updateRequestState(null, false)
       }),
-      catchError(err => {
-        updateRequestState(new Error(err.error?.message ?? err.message), false);
+      catchError((err: HttpErrorResponse) => {
+        updateRequestState(err, false);
         return throwError(err);
       })
     );
@@ -111,7 +113,7 @@ export class WordsService {
   resetStore = this.wordsStore.resetStore;
   addWords = this.wordsStore.addWords;
 
-  private updateRequestState(error: Error, isLoading: boolean): void {
+  private updateRequestState(error: AppError | null, isLoading: boolean): void {
     this.updateError.set(error);
     this.updateIsLoading.set(isLoading);
   }
