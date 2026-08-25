@@ -2,6 +2,14 @@ import { validate } from 'class-validator';
 import { CreateUserDto } from './create-user.dto';
 
 describe('CreateUserDto', () => {
+  it('accepts a password that satisfies every signup rule', async () => {
+    const dto = new CreateUserDto();
+    dto.email = 'user@example.com';
+    dto.password = 'ValidPassword1!';
+
+    await expect(validate(dto)).resolves.toEqual([]);
+  });
+
   it('reports every password rule that is not satisfied', async () => {
     const dto = new CreateUserDto();
     dto.email = 'user@example.com';

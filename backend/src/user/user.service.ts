@@ -8,6 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { compare, hash } from 'bcrypt';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
 import { User, UserDocument } from './entities/user.entity';
 
 @Injectable()
@@ -33,7 +34,7 @@ export class UserService {
     }
   }
 
-  async login(credentials: CreateUserDto) {
+  async login(credentials: LoginUserDto) {
     const jwtSecret = process.env.JWT_SECRET;
 
     if (!jwtSecret) {

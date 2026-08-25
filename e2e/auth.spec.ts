@@ -49,6 +49,53 @@ test.describe('Authentication Flow', () => {
     await expect(submitBtn).toBeDisabled();
   });
 
+  test('should enforce password complexity when signing up', async ({ page }) => {
+    await page.getByRole('button', { name: 'Signup' }).click();
+
+    await page.getByPlaceholder('Enter email').fill('weak-password@example.com');
+    await page.getByPlaceholder('Enter password').fill('z');
+    await page.getByPlaceholder('Repeat Password').fill('z');
+
+    const responsePromise = page.waitForResponse(
+      (response) => response.url().endsWith('/api/user/signup')
+        && response.request().method() === 'POST',
+    );
+    await page.getByRole('button', { name: 'Submit' }).click();
+
+    const response = await responsePromise;
+    expect(response.status()).toBe(400);
+    await expect(page.locator('mat-snack-bar-container')).toContainText(
+      'Password must contain at least 8 characters',
+    );
+    await expect(page.locator('mat-snack-bar-container')).toContainText(
+      'Password must contain at least one uppercase letter',
+    );
+    await expect(page.locator('mat-snack-bar-container')).toContainText(
+      'Password must contain at least one number',
+    );
+    await expect(page.locator('mat-snack-bar-container')).toContainText(
+      'Password must contain at least one special character',
+    );
+    await expect(page.locator('h1')).toHaveText('Signup');
+  });
+
+  test('should not enforce signup password complexity when logging in', async ({ page }) => {
+    await page.getByPlaceholder('Enter email').fill('unknown@example.com');
+    await page.getByPlaceholder('Enter password').fill('z');
+
+    const responsePromise = page.waitForResponse(
+      (response) => response.url().endsWith('/api/user/login')
+        && response.request().method() === 'POST',
+    );
+    await page.getByRole('button', { name: 'Submit' }).click();
+
+    const response = await responsePromise;
+    expect(response.status()).toBe(401);
+    await expect(page.locator('mat-snack-bar-container')).toContainText(
+      'Invalid email or password',
+    );
+  });
+
   test('should sign up, log in, and log out successfully', async ({ page }) => {
     // 1. Sign Up
     await page.getByRole('button', { name: 'Signup' }).click();
