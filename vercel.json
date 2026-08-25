@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "angular",
+  "installCommand": "npm ci",
+  "buildCommand": "npx nx build gm-vocabulary --configuration=production",
+  "devCommand": "npx nx serve gm-vocabulary",
+  "outputDirectory": "dist/gm-vocabulary/browser",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
