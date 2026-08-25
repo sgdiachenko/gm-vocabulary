@@ -1,0 +1,32 @@
+<mat-form-field
+  class="w-full"
+  subscriptSizing="dynamic"
+  [ngClass]="{ 'mat-mdc-form-field_disabled': state().disabled() }"
+>
+  <mat-label>{{ fieldLabel() }}</mat-label>
+  <input
+    [formField]="field()"
+    type="text"
+    [placeholder]="fieldPlaceholder() || 'Enter ' + (fieldLabel() | lowercase)"
+    matInput
+    [matAutocomplete]="auto"
+  />
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayOption" autoActiveFirstOption>
+    @for (option of filteredOptions(); track option.id) {
+      <mat-option [value]="option.id">
+        @if (option.isCustom) {
+          <small>Add</small>&nbsp;
+        }
+        {{ option.name }}
+      </mat-option>
+    }
+  </mat-autocomplete>
+</mat-form-field>
+
+@if (showErrors()) {
+  <div class="field-errors">
+    @for (error of errors(); track $index) {
+      <mat-error>{{ error.message }}</mat-error>
+    }
+  </div>
+}

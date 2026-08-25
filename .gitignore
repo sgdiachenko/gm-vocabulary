@@ -52,3 +52,9 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+
+
+.nx/cache
+.nx/workspace-data
+.nx/migrate-runs

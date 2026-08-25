@@ -1,0 +1,78 @@
+<gm-data-loading-wrapper
+  [loadingState]="fetchIsLoading() || deleteIsLoading()"
+  [snackBarData]="snackBarData()"
+>
+  <h1 class="text-lg pb-2">My Collections</h1>
+  <div class="grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
+    <mat-card
+      appearance="outlined"
+      class="items-center justify-center has-hover-color cursor-pointer"
+      (click)="openEditDialog()"
+    >
+      <mat-card-content>
+        <div class="flex items-center">
+          <mat-icon class="mr-1">add</mat-icon>
+          Add collection
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    @for (collection of collections(); track collection._id) {
+      <ng-container
+        [ngTemplateOutlet]="collectionCardTpl"
+        [ngTemplateOutletContext]="{ collection: collection }"
+      ></ng-container>
+    }
+  </div>
+
+  @if (sharedCollections().length > 0) {
+    <h1 class="text-lg pb-2 mt-7">Shared Collections</h1>
+    <div class="grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
+      @for (collection of sharedCollections(); track collection._id) {
+        <ng-container
+          [ngTemplateOutlet]="collectionCardTpl"
+          [ngTemplateOutletContext]="{ collection: collection }"
+        ></ng-container>
+      }
+    </div>
+  }
+</gm-data-loading-wrapper>
+
+<ng-template #collectionCardTpl let-collection="collection">
+  <mat-card
+    class="cursor-pointer has-hover-background"
+    appearance="outlined"
+    [routerLink]="['/collections', collection._id]"
+  >
+    <mat-card-content>
+      <mat-card-title>
+        <div class="flex items-center">
+          <div class="flex justify-between mr-2 grow-1 items-center">
+            <span class="grow-1">{{ collection.name }}</span>
+            @if (collection.isShared && userId() === collection.userId) {
+              <mat-icon
+                class="text-active ml-2 mr-1"
+                matTooltip="Collection visible for other users"
+                >share</mat-icon
+              >
+            }
+          </div>
+
+          @if (userId() === collection.userId) {
+            <button
+              matMiniFab
+              class="mr-2"
+              (click)="$event.stopPropagation(); openEditDialog(collection)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+
+            <button matMiniFab (click)="$event.stopPropagation(); openDeleteDialog(collection._id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          }
+        </div>
+      </mat-card-title>
+    </mat-card-content>
+  </mat-card>
+</ng-template>

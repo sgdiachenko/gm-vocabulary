@@ -1,0 +1,8 @@
+<button
+  [matButton]="isPrimary() ? 'filled' : 'elevated'"
+  [disabled]="isDisabled()"
+  (click)="btnClick.emit()"
+  [type]="isSubmit() ? 'submit' : 'button'"
+>
+  <ng-content></ng-content>
+</button>

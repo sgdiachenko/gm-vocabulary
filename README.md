@@ -19,6 +19,7 @@
 ### Testing
 - Vitest (Unit Testing)
 - Playwright (End-to-End Testing)
+- Nx 23 monorepo tooling
 
 ---
 
@@ -63,17 +64,17 @@ npm test
 Run e2e tests
 
 ```bash
-npm run test:e2e
+npm run e2e
 ```
 Run e2e tests with UI mode
 
 ```bash
-npm run test:e2e:ui
+npm run e2e:ui
 ```
 Run end-to-end tests in headed mode
 
 ```bash
-npm run test:e2e:headed
+npm run e2e:headed
 ```
 
 Build production version:
@@ -315,33 +316,33 @@ npm start
 
 The frontend will be available at `http://localhost:4200/`.
 
-## Production build: single Docker image
+## Production backend image
 
-This repo has a multi-stage `Dockerfile` that builds Angular and runs the backend which serves the Angular build.
+The backend has a multi-stage Dockerfile at `apps/api/Dockerfile`.
 
 Build:
 
 ```bash
-docker build -t gm-vocabulary:prod .
+docker build -f apps/api/Dockerfile --target production -t gm-vocabulary-api:prod .
 ```
 
 Run (provide MongoDB URI):
 
 ```bash
-docker run --rm -p 3000:3000 -e MONGODB_URI="mongodb+srv://..." gm-vocabulary:prod
+docker run --rm -p 3000:3000 -e MONGODB_URI="mongodb+srv://..." -e JWT_SECRET="..." gm-vocabulary-api:prod
 ```
 ## Code scaffolding
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Nx exposes the Angular generators. To generate a new component, run:
 
 ```bash
-ng generate component component-name
+npx nx g @nx/angular:component component-name --project=gm-vocabulary
 ```
 
 For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
 
 ```bash
-ng generate --help
+npx nx list @nx/angular
 ```
 
 ## Building
@@ -349,7 +350,7 @@ ng generate --help
 To build the project run:
 
 ```bash
-ng build
+npm run build
 ```
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.

@@ -1,0 +1,90 @@
+{
+  "name": "gm-vocabulary",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "generators": {
+    "@schematics/angular:component": {
+      "style": "scss",
+      "changeDetection": "OnPush"
+    }
+  },
+  "sourceRoot": "apps/gm-vocabulary/src",
+  "prefix": "gm",
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "options": {
+        "browser": "apps/gm-vocabulary/src/main.ts",
+        "tsConfig": "apps/gm-vocabulary/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/gm-vocabulary/public"
+          }
+        ],
+        "styles": ["apps/gm-vocabulary/src/tailwind.css", "apps/gm-vocabulary/src/styles.scss"],
+        "outputPath": "dist/gm-vocabulary"
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kB",
+              "maximumError": "1MB"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kB",
+              "maximumError": "8kB"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/gm-vocabulary/src/environments/environment.ts",
+              "with": "apps/gm-vocabulary/src/environments/environment.development.ts"
+            }
+          ],
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production",
+      "outputs": ["{options.outputPath}"]
+    },
+    "serve": {
+      "executor": "@angular/build:dev-server",
+      "options": {
+        "host": "0.0.0.0",
+        "port": 4200,
+        "allowedHosts": ["host.docker.internal"]
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "gm-vocabulary:build:production"
+        },
+        "development": {
+          "buildTarget": "gm-vocabulary:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "tsConfig": "apps/gm-vocabulary/tsconfig.spec.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["apps/gm-vocabulary/**/*.ts", "apps/gm-vocabulary/**/*.html"]
+      }
+    }
+  }
+}

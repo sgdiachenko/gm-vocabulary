@@ -1,0 +1,73 @@
+<h2 mat-dialog-title>Selected words</h2>
+
+<mat-dialog-content>
+  @if (currentWord(); as word) {
+    <section
+      class="carousel"
+      aria-roledescription="carousel"
+      [attr.aria-label]="'Word ' + (currentIndex() + 1) + ' of ' + data.words.length"
+    >
+      <button
+        matIconButton
+        type="button"
+        aria-label="Show previous word"
+        [disabled]="!hasMultipleWords()"
+        (click)="showPrevious()"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+
+      <article class="word-card" aria-live="polite">
+        <div class="word-field">
+          <span class="field-label">Name</span>
+          <p class="field-value">{{ word[wordParameter.WORD] }}</p>
+          <div class="cover" [class.cover_visible]="!showName()" aria-hidden="true"></div>
+        </div>
+
+        @if (
+          word[wordParameter.TRANSLATION] !== null && word[wordParameter.TRANSLATION] !== undefined
+        ) {
+          <div class="word-field">
+            <span class="field-label">Translation</span>
+            <p class="field-value">{{ word[wordParameter.TRANSLATION] }}</p>
+            <div class="cover" [class.cover_visible]="!showTranslation()" aria-hidden="true"></div>
+          </div>
+        }
+
+        @if (
+          word[wordParameter.DESCRIPTION] !== null && word[wordParameter.DESCRIPTION] !== undefined
+        ) {
+          <div class="word-field">
+            <span class="field-label">Description</span>
+            <p class="field-value max-h-70 overflow-auto">{{ word[wordParameter.DESCRIPTION] }}</p>
+            <div class="cover" [class.cover_visible]="!showDescription()" aria-hidden="true"></div>
+          </div>
+        }
+      </article>
+
+      <button
+        matIconButton
+        type="button"
+        aria-label="Show next word"
+        [disabled]="!hasMultipleWords()"
+        (click)="showNext()"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </section>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <div class="visibility-controls" aria-label="Visible word fields">
+    <gm-checkbox [(checked)]="showName"> Name </gm-checkbox>
+    <gm-checkbox [(checked)]="showTranslation" [disabled]="!hasTranslation()">
+      Translation
+    </gm-checkbox>
+    <gm-checkbox [(checked)]="showDescription" [disabled]="!hasDescription()">
+      Description
+    </gm-checkbox>
+  </div>
+
+  <gm-button (btnClick)="close()">Close</gm-button>
+</mat-dialog-actions>

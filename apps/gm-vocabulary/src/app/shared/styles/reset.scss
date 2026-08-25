@@ -1,0 +1,13 @@
+@use 'helpers';
+
+.mat-mdc-button:not(:disabled).text-active {
+  @extend .text-active;
+}
+
+.mdc-text-field--filled.mat-mdc-form-field_disabled {
+  background-color: var(
+    --mat-form-field-filled-disabled-container-color,
+    color-mix(in srgb, var(--mat-sys-on-surface) 4%, transparent)
+  );
+  pointer-events: none;
+}

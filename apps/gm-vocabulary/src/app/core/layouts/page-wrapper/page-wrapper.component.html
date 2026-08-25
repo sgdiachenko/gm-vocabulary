@@ -1,0 +1,30 @@
+<gm-data-loading-wrapper class="flex flex-col" [loadingState]="authLoadingState()">
+  <mat-toolbar class="flex justify-between shrink-0">
+    <span routerLink="/">GM Vocabulary</span>
+    <div class="flex">
+      <button
+        matButton
+        routerLink="/words"
+        [class.text-active]="isWordsPageActive()"
+        [class.pointer-events-none]="isWordsPageActive()"
+      >
+        My Words
+      </button>
+
+      <button
+        matButton
+        routerLink="/collections"
+        routerLinkActive="text-active pointer-events-none"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Library
+      </button>
+
+      <button matButton (click)="logout()">Logout</button>
+    </div>
+  </mat-toolbar>
+
+  <div class="grow min-h-0">
+    <router-outlet />
+  </div>
+</gm-data-loading-wrapper>
