@@ -197,7 +197,7 @@ describe('WordEditDialogComponent', () => {
     expect(mockWordsService.addWord).not.toHaveBeenCalled();
   });
 
-  it('should convert empty optional fields to undefined before submitting', () => {
+  it('should convert empty optional fields to null before submitting', () => {
     createComponent();
     setFormValue({
       [WordParameterEnum.WORD]: 'cat',
@@ -210,8 +210,8 @@ describe('WordEditDialogComponent', () => {
 
     expect(mockWordsService.addWord).toHaveBeenCalledWith({
       [WordParameterEnum.WORD]: 'cat',
-      [WordParameterEnum.TRANSLATION]: undefined,
-      [WordParameterEnum.DESCRIPTION]: undefined,
+      [WordParameterEnum.TRANSLATION]: null,
+      [WordParameterEnum.DESCRIPTION]: null,
       [WordParameterEnum.GROUP_ID]: null,
     });
   });

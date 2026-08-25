@@ -4,10 +4,10 @@ test.describe('Words Management', () => {
   // Helper to register and login a new user
   async function registerAndLogin(page: Page) {
     const uniqueEmail = `user-${Date.now()}-${Math.floor(Math.random() * 1000)}@example.com`;
-    const password = 'TestPassword123';
+    const password = 'TestPassword123!';
 
     await page.goto('/auth');
-    await page.locator('a', { hasText: 'Signup' }).click();
+    await page.getByRole('button', { name: 'Signup' }).click();
     await page.getByPlaceholder('Enter email').fill(uniqueEmail);
     await page.getByPlaceholder('Enter password').fill(password);
     await page.getByPlaceholder('Repeat Password').fill(password);

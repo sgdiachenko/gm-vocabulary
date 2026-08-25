@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { firstValueFrom, of, throwError } from 'rxjs';
 
-import { WordGroupParameterEnum } from '../../enums/word-group.parameter.enum';
 import { WordGroupsApiService } from '../word-groups-api/word-groups-api.service';
 import { WordGroupsStore } from '../../store/word-groups/word-groups.store';
 import { WordGroupService } from './word-group.service';

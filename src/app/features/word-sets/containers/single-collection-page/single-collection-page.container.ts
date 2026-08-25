@@ -121,7 +121,7 @@ export class SingleCollectionPageContainer implements OnInit, OnDestroy {
   }
 
   openEditDialog(word?: Word) {
-    this.wordEditDialogRef = this.dialog.open<WordEditDialogComponent, WordEditDialogData | {}>(WordEditDialogComponent, {
+    this.wordEditDialogRef = this.dialog.open<WordEditDialogComponent, WordEditDialogData>(WordEditDialogComponent, {
       data: {
         ...(word ?? {}),
         groupId: this.selectedGroup()[WordGroupParameterEnum.ID],
@@ -132,7 +132,7 @@ export class SingleCollectionPageContainer implements OnInit, OnDestroy {
   }
 
   openEditWordGroupDialog() {
-    this.wordGroupDialogRef = this.dialog.open<CollectionEditDialogComponent, WordGroup | {}>(CollectionEditDialogComponent, {
+    this.wordGroupDialogRef = this.dialog.open<CollectionEditDialogComponent, WordGroup | undefined>(CollectionEditDialogComponent, {
       data: this.selectedGroup()
     });
   }

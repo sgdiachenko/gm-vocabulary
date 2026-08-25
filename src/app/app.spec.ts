@@ -3,11 +3,9 @@ import { App } from './app';
 import { AuthService } from './features/auth/services/auth/auth.service';
 
 describe('App', () => {
-  let mockAuthService: any;
-
   beforeEach(async () => {
-    mockAuthService = {
-      autoAuthUser: () => {}
+    const mockAuthService = {
+      autoAuthUser: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -24,4 +22,3 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 });
-

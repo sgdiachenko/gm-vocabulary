@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Authentication Flow', () => {
   const uniqueEmail = `test-${Date.now()}-${Math.floor(Math.random() * 1000)}@example.com`;
-  const password = 'TestPassword123';
+  const password = 'TestPassword123!';
 
   test.beforeEach(async ({ page }) => {
     // Navigating to root should redirect to /auth if not logged in
@@ -16,7 +16,7 @@ test.describe('Authentication Flow', () => {
 
   test('should show validation errors on invalid inputs', async ({ page }) => {
     // Go to Signup form
-    await page.locator('a', { hasText: 'Signup' }).click();
+    await page.getByRole('button', { name: 'Signup' }).click();
     await expect(page.locator('h1')).toHaveText('Signup');
 
     const emailInput = page.getByPlaceholder('Enter email');
@@ -30,7 +30,7 @@ test.describe('Authentication Flow', () => {
     // Trigger validation on email
     await emailInput.fill('invalid-email');
     await emailInput.blur();
-    await expect(page.locator('mat-error')).toContainText(['Invalid email']);
+    await expect(page.locator('mat-error')).toContainText(['Email is not valid']);
 
     // Trigger validation on password and repeat password by making them dirty and empty
     await passwordInput.fill('a');
@@ -41,13 +41,17 @@ test.describe('Authentication Flow', () => {
     await repeatPasswordInput.blur();
 
     const errors = page.locator('mat-error');
-    await expect(errors).toContainText(['Invalid email', 'Field is required', 'Field is required']);
+    await expect(errors).toContainText([
+      'Email is not valid',
+      'This field is required',
+      'This field is required',
+    ]);
     await expect(submitBtn).toBeDisabled();
   });
 
   test('should sign up, log in, and log out successfully', async ({ page }) => {
     // 1. Sign Up
-    await page.locator('a', { hasText: 'Signup' }).click();
+    await page.getByRole('button', { name: 'Signup' }).click();
     await expect(page.locator('h1')).toHaveText('Signup');
 
     await page.getByPlaceholder('Enter email').fill(uniqueEmail);
@@ -63,11 +67,13 @@ test.describe('Authentication Flow', () => {
 
     // 2. Try Login with incorrect password
     await page.getByPlaceholder('Enter email').fill(uniqueEmail);
-    await page.getByPlaceholder('Enter password').fill('WrongPassword!');
+    await page.getByPlaceholder('Enter password').fill('WrongPassword1!');
     await page.getByRole('button', { name: 'Submit' }).click();
 
     // Verify error message from backend shown in snackbar
-    await expect(page.locator('mat-snack-bar-container')).toContainText('Password does not match');
+    await expect(page.locator('mat-snack-bar-container')).toContainText(
+      'Invalid email or password',
+    );
 
     // 3. Login with correct credentials
     await page.getByPlaceholder('Enter password').fill(password);

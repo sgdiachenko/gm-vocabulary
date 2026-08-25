@@ -10,15 +10,13 @@ import { WordGroupService } from '../../services/word-group/word-group.service';
 describe('CollectionsPageContainer', () => {
   let component: CollectionsPageContainer;
   let fixture: ComponentFixture<CollectionsPageContainer>;
-  let mockAuthService: any;
-  let mockWordGroupService: any;
 
   beforeEach(async () => {
-    mockAuthService = {
+    const mockAuthService = {
       userId: signal('user123')
     };
 
-    mockWordGroupService = {
+    const mockWordGroupService = {
       groups: signal([]),
       sharedGroups: signal([]),
       fetchIsLoading: signal(false),
@@ -27,7 +25,7 @@ describe('CollectionsPageContainer', () => {
       deleteError: signal(null),
       getUserGroups: () => of([]),
       getSharedGroups: () => of([]),
-      resetStore: () => {}
+      resetStore: vi.fn(),
     };
 
     await TestBed.configureTestingModule({

@@ -231,8 +231,8 @@ describe('AuthFormComponent', () => {
     return fixture.nativeElement.querySelector('h1');
   }
 
-  function getToggleLink(): HTMLAnchorElement {
-    return fixture.nativeElement.querySelector('a[matbutton]');
+  function getToggleLink(): HTMLButtonElement {
+    return fixture.nativeElement.querySelector('button[matbutton][type="button"]');
   }
 
   function getSubmitButton(): HTMLButtonElement {

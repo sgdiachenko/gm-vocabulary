@@ -22,7 +22,10 @@
           <div class="cover" [class.cover_visible]="!showName()" aria-hidden="true"></div>
         </div>
 
-        @if (word[wordParameter.TRANSLATION] != null) {
+        @if (
+          word[wordParameter.TRANSLATION] !== null
+          && word[wordParameter.TRANSLATION] !== undefined
+        ) {
           <div class="word-field">
             <span class="field-label">Translation</span>
             <p class="field-value">{{ word[wordParameter.TRANSLATION] }}</p>
@@ -33,7 +36,10 @@
           </div>
         }
 
-        @if (word[wordParameter.DESCRIPTION] != null) {
+        @if (
+          word[wordParameter.DESCRIPTION] !== null
+          && word[wordParameter.DESCRIPTION] !== undefined
+        ) {
           <div class="word-field">
             <span class="field-label">Description</span>
             <p class="field-value max-h-70 overflow-auto">{{ word[wordParameter.DESCRIPTION] }}</p>

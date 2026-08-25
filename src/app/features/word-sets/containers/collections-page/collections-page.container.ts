@@ -75,7 +75,7 @@ export class CollectionsPageContainer implements OnInit, OnDestroy {
   }
 
   openEditDialog(wordGroup?: WordGroup) {
-    this.editDialogRef = this.dialog.open<CollectionEditDialogComponent, WordGroup | {}>(CollectionEditDialogComponent, {
+    this.editDialogRef = this.dialog.open<CollectionEditDialogComponent, WordGroup | undefined>(CollectionEditDialogComponent, {
       data: wordGroup
     });
   }

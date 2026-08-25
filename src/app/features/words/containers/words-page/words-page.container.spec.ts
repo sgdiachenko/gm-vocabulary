@@ -11,29 +11,26 @@ import { WordsTableService } from '../../services/words-table/words-table.servic
 describe('WordsPageContainer', () => {
   let component: WordsPageContainer;
   let fixture: ComponentFixture<WordsPageContainer>;
-  let mockWordsService: any;
-  let mockWordGroupService: any;
-  let mockWordsTableService: any;
 
   beforeEach(async () => {
-    mockWordsService = {
+    const mockWordsService = {
       filteredWords: signal([]),
       fetchIsLoading: signal(false),
       fetchError: signal(null),
       deleteIsLoading: signal(false),
       deleteError: signal(null),
       getWords: () => of([]),
-      resetStore: () => {}
+      resetStore: vi.fn(),
     };
 
-    mockWordGroupService = {
+    const mockWordGroupService = {
       groups: signal([]),
       getWordGroupOptions: signal([]),
       getUserGroups: () => of([]),
-      resetStore: () => {}
+      resetStore: vi.fn(),
     };
 
-    mockWordsTableService = {
+    const mockWordsTableService = {
       getTableData: () => signal([])
     };
 

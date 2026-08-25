@@ -22,7 +22,9 @@
   }
 
   <div class="flex justify-center gap-4 pt-4">
-    <a matButton (click)="toggleView.emit(!isSignupFormActive())">{{isSignupFormActive() ? 'Login' : 'Signup'}}</a>
+    <button matButton type="button" (click)="toggleView.emit(!isSignupFormActive())">
+      {{isSignupFormActive() ? 'Login' : 'Signup'}}
+    </button>
     <gm-button [isDisabled]="!isAuthFormSubmittable()" [isSubmit]="true">Submit</gm-button>
   </div>
 </form>

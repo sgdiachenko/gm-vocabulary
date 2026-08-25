@@ -4,10 +4,10 @@ test.describe('Collections Management', () => {
   // Helper to register and login a new user
   async function registerAndLogin(page: Page) {
     const uniqueEmail = `user-${Date.now()}-${Math.floor(Math.random() * 1000)}@example.com`;
-    const password = 'TestPassword123';
+    const password = 'TestPassword123!';
 
     await page.goto('/auth');
-    await page.locator('a', { hasText: 'Signup' }).click();
+    await page.getByRole('button', { name: 'Signup' }).click();
     await page.getByPlaceholder('Enter email').fill(uniqueEmail);
     await page.getByPlaceholder('Enter password').fill(password);
     await page.getByPlaceholder('Repeat Password').fill(password);
@@ -40,8 +40,7 @@ test.describe('Collections Management', () => {
     // 1. Add Collection
     await page.locator('mat-card', { hasText: 'Add collection' }).click();
     
-    // Fill Name input (dialog title says "Add word")
-    await expect(page.locator('h2')).toContainText('Add word');
+    await expect(page.locator('h2')).toContainText('Add collection');
     await page.getByPlaceholder('Name').fill(collectionName);
     
     // Toggle Share (slide toggle)
@@ -64,7 +63,7 @@ test.describe('Collections Management', () => {
 
     // 2. Edit Collection
     await card.locator('button').filter({ has: page.locator('mat-icon:has-text("edit")') }).click();
-    await expect(page.locator('mat-dialog-container h2')).toContainText('Edit word');
+    await expect(page.locator('mat-dialog-container h2')).toContainText('Edit collection');
     await page.getByPlaceholder('Name').fill(updatedName);
     
     // Submit edit dialog

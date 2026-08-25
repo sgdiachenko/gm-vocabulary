@@ -34,14 +34,19 @@ import { Checkbox } from '../form-fields/checkbox/checkbox';
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
 })
-export class TableComponent {
+export class TableComponent<
+  T extends Record<string, string | number | undefined> = Record<
+    string,
+    string | number | undefined
+  >,
+> {
   columns = input<TableColumn[]>([]);
-  dataSource = input<any[]>([]);
+  dataSource = input<T[]>([]);
   allowEdit = input<boolean>(true);
   selectionKey = input<string>('_id');
-  selectionChange = output<any[]>();
+  selectionChange = output<T[]>();
 
-  selection = new SelectionModel<any>(
+  selection = new SelectionModel<T>(
     true,
     [],
     true,
@@ -91,12 +96,12 @@ export class TableComponent {
     this.selectionChange.emit(this.selection.selected);
   }
 
-  toggleRow(row: any) {
+  toggleRow(row: T) {
     this.selection.toggle(row);
     this.selectionChange.emit(this.selection.selected);
   }
 
-  private getSelectionValue(row: any): unknown {
-    return row?.[this.selectionKey()] ?? row;
+  private getSelectionValue(row: T): unknown {
+    return row[this.selectionKey()] ?? row;
   }
 }

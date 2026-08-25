@@ -1,7 +1,9 @@
 <gm-data-loading-wrapper
   [loadingState]="wordsUpdateIsLoading()"
   [snackBarData]="snackBarData()">
-  <h2 mat-dialog-title> {{ data.word != null ? 'Edit' : 'Add' }} word</h2>
+  <h2 mat-dialog-title>
+    {{ data.word !== null && data.word !== undefined ? 'Edit' : 'Add' }} word
+  </h2>
 
   <mat-dialog-content>
     <form class="flex flex-col">

@@ -11,25 +11,22 @@ import { WordGroupService } from '../../services/word-group/word-group.service';
 describe('SingleCollectionPageContainer', () => {
   let component: SingleCollectionPageContainer;
   let fixture: ComponentFixture<SingleCollectionPageContainer>;
-  let mockAuthService: any;
-  let mockWordsService: any;
-  let mockWordGroupService: any;
 
   beforeEach(async () => {
-    mockAuthService = {
+    const mockAuthService = {
       userId: signal('user123')
     };
 
-    mockWordsService = {
+    const mockWordsService = {
       words: signal([]),
       updateIsLoading: signal(false),
       updateError: signal(null),
-      addWords: () => {},
+      addWords: vi.fn(),
       copyWords: () => of([]),
-      resetStore: () => {}
+      resetStore: vi.fn(),
     };
 
-    mockWordGroupService = {
+    const mockWordGroupService = {
       groups: signal([{ _id: 'all', name: 'All Words', userId: 'user123' }]),
       getWordGroupOptions: signal([]),
       fetchIsLoading: signal(false),
@@ -37,7 +34,7 @@ describe('SingleCollectionPageContainer', () => {
       deleteIsLoading: signal(false),
       deleteError: signal(null),
       getGroup: () => of({ _id: 'all', name: 'All Words', words: [], userId: 'user123' }),
-      resetStore: () => {}
+      resetStore: vi.fn(),
     };
 
     await TestBed.configureTestingModule({

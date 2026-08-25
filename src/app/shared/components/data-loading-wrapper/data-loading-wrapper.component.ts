@@ -23,11 +23,14 @@ export class DataLoadingWrapperComponent implements OnChanges {
     }
 
     const data = this.snackBarData();
-    data == null
-      ? this.snackBar.dismiss()
-      : this.snackBar.openFromComponent(SnackBar, {
-          data,
-          panelClass: 'gm-snack-bar-panel',
-        });
+    if (data == null) {
+      this.snackBar.dismiss();
+      return;
+    }
+
+    this.snackBar.openFromComponent(SnackBar, {
+      data,
+      panelClass: 'gm-snack-bar-panel',
+    });
   }
 }

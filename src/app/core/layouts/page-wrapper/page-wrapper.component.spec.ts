@@ -8,12 +8,11 @@ import { AuthService } from '../../../features/auth/services/auth/auth.service';
 describe('PageWrapperComponent', () => {
   let component: PageWrapperComponent;
   let fixture: ComponentFixture<PageWrapperComponent>;
-  let mockAuthService: any;
 
   beforeEach(async () => {
-    mockAuthService = {
+    const mockAuthService = {
       authLoadingState: signal(false),
-      logout: () => {}
+      logout: vi.fn(),
     };
 
     await TestBed.configureTestingModule({

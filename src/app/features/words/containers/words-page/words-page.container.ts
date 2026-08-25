@@ -54,8 +54,8 @@ export class WordsPageContainer implements OnInit, OnDestroy {
     getErrorSnackBarData(this.wordsService.fetchError() || this.wordsService.deleteError()),
   );
 
-  private wordEditDialogRef!: MatDialogRef<any>;
-  private wordsDeleteDialogRef!: MatDialogRef<any>;
+  private wordEditDialogRef!: MatDialogRef<WordEditDialogComponent>;
+  private wordsDeleteDialogRef!: MatDialogRef<SubmitDialogComponent>;
   private wordsPreviewDialogRef!: MatDialogRef<WordsPreviewDialog>;
 
   ngOnInit(): void {
@@ -72,7 +72,7 @@ export class WordsPageContainer implements OnInit, OnDestroy {
   }
 
   openEditDialog(word?: Word): void {
-    this.wordEditDialogRef = this.dialog.open<WordEditDialogComponent, WordEditDialogData | {}>(WordEditDialogComponent, {
+    this.wordEditDialogRef = this.dialog.open<WordEditDialogComponent, WordEditDialogData>(WordEditDialogComponent, {
       data: {
         ...(word ?? {}),
         wordGroups: this.wordGroupOptions() ?? []
