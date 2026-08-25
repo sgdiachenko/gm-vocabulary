@@ -5,6 +5,8 @@ import { Types } from 'mongoose';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
+  const originalJwtSecret = process.env.JWT_SECRET;
+
   interface UserInput {
     email: string;
     password: string;
@@ -24,6 +26,15 @@ describe('UserService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    process.env.JWT_SECRET = 'unit-test-secret';
+  });
+
+  afterAll(() => {
+    if (originalJwtSecret === undefined) {
+      delete process.env.JWT_SECRET;
+    } else {
+      process.env.JWT_SECRET = originalJwtSecret;
+    }
   });
 
   it('should hash a password before creating a user', async () => {

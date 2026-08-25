@@ -29,9 +29,9 @@ jobs:
       - name: Type check
         run: npm run typecheck
       - name: Unit tests
-        run: npm run test:ci
+        run: npx nx test gm-vocabulary --watch=false
       - name: Production build
-        run: npm run build
+        run: npx nx build gm-vocabulary --configuration=production
 
   backend:
     name: Backend checks
