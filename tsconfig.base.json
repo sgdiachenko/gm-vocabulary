@@ -12,7 +12,9 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
-    "paths": {},
+    "paths": {
+      "util-environments": ["./libs/shared/util-environments/src/index.ts"]
+    },
     "rootDir": "."
   },
   "angularCompilerOptions": {

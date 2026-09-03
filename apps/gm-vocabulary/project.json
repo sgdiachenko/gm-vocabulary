@@ -47,8 +47,8 @@
           "extractLicenses": false,
           "fileReplacements": [
             {
-              "replace": "apps/gm-vocabulary/src/environments/environment.ts",
-              "with": "apps/gm-vocabulary/src/environments/environment.development.ts"
+              "replace": "libs/shared/util-environments/src/lib/environment.ts",
+              "with": "libs/shared/util-environments/src/lib/environment.development.ts"
             }
           ],
           "sourceMap": true
