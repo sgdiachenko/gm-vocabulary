@@ -1,18 +1,19 @@
+import { vi } from 'vitest';
 import { NotFoundException } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { WordCollectionsService } from './word-collections.service';
 
 describe('WordCollectionsService', () => {
-  const exec = jest.fn();
-  const query = { populate: jest.fn(), exec };
+  const exec = vi.fn();
+  const query = { populate: vi.fn(), exec };
   const collectionModel = {
-    find: jest.fn(() => query),
-    updateOne: jest.fn(() => ({ exec })),
+    find: vi.fn(() => query),
+    updateOne: vi.fn(() => ({ exec })),
   };
   const service = new WordCollectionsService(collectionModel as never);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     query.populate.mockReturnValue(query);
     collectionModel.find.mockReturnValue(query);
     collectionModel.updateOne.mockReturnValue({ exec });

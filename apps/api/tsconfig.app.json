@@ -10,5 +10,5 @@
     "moduleResolution": "bundler"
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["jest.config.ts", "jest.config.cts", "src/**/*.spec.ts", "src/**/*.test.ts"]
+  "exclude": ["vitest.config.mts", "vitest.config.e2e.mts", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }

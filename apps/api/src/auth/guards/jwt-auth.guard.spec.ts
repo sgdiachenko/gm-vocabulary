@@ -1,9 +1,10 @@
+import { vi } from 'vitest';
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 describe('JwtAuthGuard', () => {
-  const jwtService = { verifyAsync: jest.fn() };
+  const jwtService = { verifyAsync: vi.fn() };
   const guard = new JwtAuthGuard(jwtService as unknown as JwtService);
 
   function createContext(authorization?: string) {
@@ -16,7 +17,7 @@ describe('JwtAuthGuard', () => {
   }
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should attach the verified user to the request', async () => {

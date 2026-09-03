@@ -9,10 +9,10 @@ export type WordCollectionDocument = HydratedDocument<WordCollection>;
   toObject: { virtuals: true },
 })
 export class WordCollection {
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   name!: string;
 
-  @Prop({ default: false })
+  @Prop({ type: Boolean, default: false })
   isShared!: boolean;
 
   @Prop({ type: Types.ObjectId, required: true, ref: 'User' })

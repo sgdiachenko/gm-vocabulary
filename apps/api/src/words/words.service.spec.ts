@@ -1,17 +1,18 @@
+import { vi } from 'vitest';
 import { NotFoundException } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { WordsService } from './words.service';
 
 describe('WordsService', () => {
-  const exec = jest.fn();
+  const exec = vi.fn();
   const wordModel = {
-    find: jest.fn(),
-    insertMany: jest.fn(),
-    updateOne: jest.fn(() => ({ exec })),
-    deleteMany: jest.fn(() => ({ exec })),
+    find: vi.fn(),
+    insertMany: vi.fn(),
+    updateOne: vi.fn(() => ({ exec })),
+    deleteMany: vi.fn(() => ({ exec })),
   };
   const collectionModel = {
-    find: jest.fn(),
+    find: vi.fn(),
   };
   const service = new WordsService(
     wordModel as never,
@@ -19,7 +20,7 @@ describe('WordsService', () => {
   );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     wordModel.updateOne.mockReturnValue({ exec });
     wordModel.deleteMany.mockReturnValue({ exec });
   });
@@ -79,14 +80,14 @@ describe('WordsService', () => {
     const copiedWord = { ...sourceWord, _id: new Types.ObjectId(), userId };
 
     wordModel.find.mockReturnValue({
-      lean: jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue([sourceWord]),
+      lean: vi.fn().mockReturnValue({
+        exec: vi.fn().mockResolvedValue([sourceWord]),
       }),
     });
     collectionModel.find.mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        lean: jest.fn().mockReturnValue({
-          exec: jest.fn().mockResolvedValue([{ _id: groupId }]),
+      select: vi.fn().mockReturnValue({
+        lean: vi.fn().mockReturnValue({
+          exec: vi.fn().mockResolvedValue([{ _id: groupId }]),
         }),
       }),
     });

@@ -79,12 +79,6 @@
       "options": {
         "tsConfig": "apps/gm-vocabulary/tsconfig.spec.json"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "lintFilePatterns": ["apps/gm-vocabulary/**/*.ts", "apps/gm-vocabulary/**/*.html"]
-      }
     }
   }
 }

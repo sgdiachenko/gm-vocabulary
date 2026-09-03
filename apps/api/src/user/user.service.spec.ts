@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
@@ -13,11 +14,11 @@ describe('UserService', () => {
   }
 
   const userModel = {
-    create: jest.fn(),
-    findOne: jest.fn(),
+    create: vi.fn(),
+    findOne: vi.fn(),
   };
   const jwtService = {
-    signAsync: jest.fn(),
+    signAsync: vi.fn(),
   };
   const service = new UserService(
     userModel as never,
@@ -25,7 +26,7 @@ describe('UserService', () => {
   );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     process.env.JWT_SECRET = 'unit-test-secret';
   });
 
