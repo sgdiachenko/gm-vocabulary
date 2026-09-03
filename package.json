@@ -18,7 +18,7 @@
     "e2e": "nx e2e gm-vocabulary-e2e",
     "e2e:ui": "nx e2e gm-vocabulary-e2e --configuration=ui",
     "e2e:headed": "nx e2e gm-vocabulary-e2e --configuration=headed",
-    "lint": "nx run-many -t lint -p gm-vocabulary api gm-vocabulary-e2e",
+    "lint": "nx run-many -t lint",
     "typecheck": "ngc --noEmit -p apps/gm-vocabulary/tsconfig.app.json && tsc --noEmit -p apps/gm-vocabulary/tsconfig.spec.json"
   },
   "prettier": {
