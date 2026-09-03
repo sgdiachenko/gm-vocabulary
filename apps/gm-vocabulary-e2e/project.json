@@ -2,6 +2,7 @@
   "name": "gm-vocabulary-e2e",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
+  "tags": ["scope:gm-vocabulary", "type:e2e"],
   "sourceRoot": "apps/gm-vocabulary-e2e/src",
   "implicitDependencies": ["gm-vocabulary", "api"],
   "targets": {

@@ -1,0 +1,7 @@
+{
+  "name": "api-collections-data-access",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/collections/data-access/src",
+  "projectType": "library",
+  "tags": ["scope:api", "domain:collections", "type:data-access"]
+}

@@ -1,0 +1,48 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
+import { signal } from '@angular/core';
+import { of } from 'rxjs';
+
+import { CollectionsPageContainer } from './collections-page.container';
+import { AuthService } from '@gm-vocabulary/auth/data-access';
+import { WordGroupService } from '@gm-vocabulary/collections/data-access';
+
+describe('CollectionsPageContainer', () => {
+  let component: CollectionsPageContainer;
+  let fixture: ComponentFixture<CollectionsPageContainer>;
+
+  beforeEach(async () => {
+    const mockAuthService = {
+      userId: signal('user123'),
+    };
+
+    const mockWordGroupService = {
+      groups: signal([]),
+      sharedGroups: signal([]),
+      fetchIsLoading: signal(false),
+      fetchError: signal(null),
+      deleteIsLoading: signal(false),
+      deleteError: signal(null),
+      getUserGroups: () => of([]),
+      getSharedGroups: () => of([]),
+      resetStore: vi.fn(),
+    };
+
+    await TestBed.configureTestingModule({
+      imports: [CollectionsPageContainer],
+      providers: [
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: WordGroupService, useValue: mockWordGroupService },
+        { provide: MatDialog, useValue: {} },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(CollectionsPageContainer);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

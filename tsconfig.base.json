@@ -13,7 +13,47 @@
     "target": "ES2022",
     "module": "preserve",
     "paths": {
-      "util-environments": ["./libs/shared/util-environments/src/index.ts"]
+      "@gm-vocabulary/shared/environments": ["./libs/shared/util-environments/src/index.ts"],
+      "@gm-vocabulary/feature-shell": ["./libs/gm-vocabulary/feature-shell/src/index.ts"],
+      "@gm-vocabulary/auth/data-access": ["./libs/gm-vocabulary/auth/data-access/src/index.ts"],
+      "@gm-vocabulary/auth/ui": ["./libs/gm-vocabulary/auth/ui/src/index.ts"],
+      "@gm-vocabulary/auth/feature-auth": ["./libs/gm-vocabulary/auth/feature-auth/src/index.ts"],
+      "@gm-vocabulary/auth/util": ["./libs/gm-vocabulary/auth/util/src/index.ts"],
+      "@gm-vocabulary/vocabulary/data-access": [
+        "./libs/gm-vocabulary/vocabulary/data-access/src/index.ts"
+      ],
+      "@gm-vocabulary/vocabulary/ui": ["./libs/gm-vocabulary/vocabulary/ui/src/index.ts"],
+      "@gm-vocabulary/vocabulary/feature-list": [
+        "./libs/gm-vocabulary/vocabulary/feature-list/src/index.ts"
+      ],
+      "@gm-vocabulary/vocabulary/util": ["./libs/gm-vocabulary/vocabulary/util/src/index.ts"],
+      "@gm-vocabulary/collections/data-access": [
+        "./libs/gm-vocabulary/collections/data-access/src/index.ts"
+      ],
+      "@gm-vocabulary/collections/feature-list": [
+        "./libs/gm-vocabulary/collections/feature-list/src/index.ts"
+      ],
+      "@gm-vocabulary/collections/feature-details": [
+        "./libs/gm-vocabulary/collections/feature-details/src/index.ts"
+      ],
+      "@gm-vocabulary/collections/util": ["./libs/gm-vocabulary/collections/util/src/index.ts"],
+      "@gm-vocabulary/shared/ui": ["./libs/shared/ui/src/index.ts"],
+      "@gm-vocabulary/shared/util": ["./libs/shared/util/src/index.ts"],
+      "@gm-vocabulary/vocabulary/feature-editor": [
+        "./libs/gm-vocabulary/vocabulary/feature-editor/src/index.ts"
+      ],
+      "@gm-vocabulary/collections/feature-editor": [
+        "./libs/gm-vocabulary/collections/feature-editor/src/index.ts"
+      ],
+      "@gm-vocabulary/api/auth/feature": ["./libs/api/auth/feature/src/index.ts"],
+      "@gm-vocabulary/api/users/feature": ["./libs/api/users/feature/src/index.ts"],
+      "@gm-vocabulary/api/words/feature": ["./libs/api/words/feature/src/index.ts"],
+      "@gm-vocabulary/api/collections/feature": ["./libs/api/collections/feature/src/index.ts"],
+      "@gm-vocabulary/api/shared/util": ["./libs/api/shared/util/src/index.ts"],
+      "@gm-vocabulary/api/words/data-access": ["./libs/api/words/data-access/src/index.ts"],
+      "@gm-vocabulary/api/collections/data-access": [
+        "./libs/api/collections/data-access/src/index.ts"
+      ]
     },
     "rootDir": "."
   },

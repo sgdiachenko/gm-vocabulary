@@ -1,0 +1,63 @@
+<div class="flex gap-4 pb-4 items-center">
+  <div class="flex gap-4 grow-1">
+    @if (isOwner()) {
+      <gm-button (btnClick)="addWord.emit()">Add</gm-button>
+
+      <gm-button
+        (btnClick)="editWord.emit(selectedWords[0])"
+        [isDisabled]="!selectedWords || selectedWords.length !== 1"
+      >
+        Edit
+      </gm-button>
+
+      <gm-button
+        (btnClick)="deleteWords.emit(selectedWords)"
+        [isDisabled]="selectedWords.length === 0"
+      >
+        Delete
+      </gm-button>
+    } @else {
+      <gm-button
+        (btnClick)="copyWords.emit(selectedWords)"
+        [isDisabled]="selectedWords.length === 0"
+      >
+        Copy
+      </gm-button>
+    }
+
+    <gm-button
+      (btnClick)="previewWords.emit(selectedWords)"
+      [isDisabled]="selectedWords.length === 0"
+    >
+      View
+    </gm-button>
+  </div>
+
+  @if (allowSwitchGroup()) {
+    <gm-select
+      class="ml-auto hidden md:block"
+      fieldLabel="Select Collection"
+      [field]="selectedGroupField"
+      [options]="groups()"
+      (valueChange)="selectGroup.emit($event)"
+    ></gm-select>
+  }
+</div>
+
+@if (dataSource().length > 0) {
+  <gm-table
+    class="grow overflow-auto"
+    [dataSource]="dataSource()"
+    [columns]="columns()"
+    (selectionChange)="selectedWords = $event"
+  ></gm-table>
+} @else {
+  <div class="flex flex-col justify-center items-center h-full w-full">
+    <h1 class="pb-3">There are no words added</h1>
+    <p>
+      Please add new word{{
+        selectedGroupId() !== defaultOptionValue ? ' or select another collection' : ''
+      }}
+    </p>
+  </div>
+}

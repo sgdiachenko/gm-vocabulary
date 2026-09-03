@@ -1,312 +1,120 @@
 # GM Vocabulary
 
-> Full-stack Angular application demonstrating scalable frontend architecture, modern state management, and secure authentication patterns.
+GM Vocabulary is a full-stack vocabulary learning application organized as an **Nx 23 monorepo**. The browser client is built with **Angular 22**, the REST API with **NestJS 12**, and application data is stored in MongoDB through Mongoose.
 
-## ⚙️ Tech Stack
+The repository is structured for continued growth: deployable applications are thin composition roots, while product code lives in domain-oriented Nx libraries with enforced dependency boundaries.
 
-### Frontend
-- Angular v22
-- NgRx SignalStore
-- Angular Material
-- Tailwind CSS
+## Technology stack
 
-### Backend
-- Node.js
-- NestJS
-- MongoDB
-- Mongoose
+| Area                 | Technology                                                                 |
+| -------------------- | -------------------------------------------------------------------------- |
+| Monorepo             | Nx 23.2, npm                                                               |
+| Frontend             | Angular 22, standalone components, Signals, Signal Forms, NgRx SignalStore |
+| UI                   | Angular Material, Tailwind CSS, SCSS                                       |
+| Backend              | NestJS 12, Express, class-validator                                        |
+| Persistence          | MongoDB, Mongoose 9                                                        |
+| Testing              | Vitest, Playwright                                                         |
+| Local infrastructure | Docker Compose                                                             |
 
-### Testing
-- Vitest (Unit Testing)
-- Playwright (End-to-End Testing)
-- Nx 23 monorepo tooling
+## Architecture at a glance
 
----
+```text
+apps/gm-vocabulary       Angular bootstrap, root providers and routes
+apps/api                 NestJS bootstrap and root module composition
+apps/gm-vocabulary-e2e   Cross-application Playwright tests
 
-## 🧪 Development Commands
-
-### Start application
-
-Using Docker:
-
-#### MongoDB connection
-
-By default, Docker Compose starts MongoDB automatically, so no extra setup is required.
-
-Before running the app, create your own local `.env` file only if you want to use MongoDB Atlas or another external database:
-
-```env
-MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/<db>?retryWrites=true&w=majority
+libs/gm-vocabulary       Angular shell and business-domain libraries
+libs/api                 NestJS feature and persistence libraries
+libs/shared              Reusable frontend UI and utilities
 ```
 
-If you change `.env` after containers are already running, restart the backend/container so the new environment variable is applied.
+```mermaid
+flowchart LR
+  Browser --> Angular[Angular application]
+  Angular --> ClientFeatures[Angular feature libraries]
+  ClientFeatures -->|REST + Bearer JWT| API[NestJS API]
+  API --> ApiFeatures[NestJS feature libraries]
+  ApiFeatures --> DataAccess[API data-access libraries]
+  DataAccess --> MongoDB[(MongoDB)]
+```
+
+The applications under `apps/` contain framework bootstrap and top-level composition. Capabilities are grouped under `libs/` by platform, domain, and responsibility:
+
+- `feature` libraries orchestrate user journeys or expose NestJS modules.
+- `ui` libraries contain presentational Angular components.
+- `data-access` libraries own client state/API access or server persistence models.
+- `util` libraries contain contracts and framework-light helpers.
+- `feature-shell` owns the authenticated Angular layout and navigation.
+
+Nx project tags (`scope:*`, `domain:*`, and `type:*`) and `@nx/enforce-module-boundaries` prevent invalid dependencies between layers. Public imports use library entry points such as `@gm-vocabulary/auth/data-access`; consumers do not reach into another library's internals.
+
+See [Project structure](docs/architecture/project-structure.md) for the complete library map and [Architecture audit](docs/architecture/architecture-audit.md) for the current engineering assessment.
+
+## Angular application
+
+`apps/gm-vocabulary` is the Angular composition root. It owns `bootstrapApplication`, application-wide providers, root routing, global styles, and deployment assets. Route-level features are lazy-loaded from Nx libraries.
+
+The client is divided into these domains:
+
+- `auth`: authentication screens, guard/interceptor, session state, and API access.
+- `vocabulary`: word list, editor, table UI, state, and API access.
+- `collections`: collection list/details/editor, state, and API access.
+- `feature-shell`: authenticated layout and primary navigation.
+- `shared`: reusable UI controls, feedback components, types, validation, and environment values.
+
+Angular Signals handle local and derived state, NgRx SignalStore provides domain state, and RxJS remains the asynchronous boundary for HTTP and dialog workflows.
+
+## NestJS API
+
+`apps/api` is the NestJS composition root. It configures the global API prefix, CORS, input validation, MongoDB, and the domain modules exposed by API libraries.
+
+- `api-auth-feature`: JWT module, guard, and authenticated-user decorator.
+- `api-users-feature`: signup, login, password hashing, and user persistence.
+- `api-words-feature`: protected word endpoints and business rules.
+- `api-collections-feature`: protected collection endpoints and ownership rules.
+- `api-words-data-access` and `api-collections-data-access`: Mongoose entities and schemas.
+- `api-shared-util`: reusable API pipes and helpers.
+
+Requests follow the NestJS controller → service → Mongoose model flow. A global `ValidationPipe` transforms input, strips unknown fields, and rejects non-whitelisted properties. Word and collection routes are protected by the JWT guard; authorization is enforced by server-side ownership filters.
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 24
+- npm 11
+- Docker with Docker Compose, or a reachable MongoDB instance
+
+Install dependencies:
+
+```bash
+npm ci
+```
+
+Copy `.env.example` to `.env` and replace the JWT placeholder with a long random value. `MONGODB_URI` is optional when using the default local MongoDB address.
+
+```env
+MONGODB_URI=mongodb://localhost:27017/gm-vocabulary
+JWT_SECRET=replace-with-a-long-random-secret
+```
+
+### Run with Docker Compose
 
 ```bash
 npm run docker:up
 ```
 
-Stop Docker:
+The Angular app is available at `http://localhost:4200`; the API listens at `http://localhost:3000/api`.
+
 ```bash
 npm run docker:down
 ```
 
-Using local environment:
+### Run locally
+
+Start MongoDB, then run the API and frontend in separate terminals:
 
 ```bash
-npm run start:server
-npm start
-```
-Run unit tests
-
-```bash
-npm test
-```
-Run e2e tests
-
-```bash
-npm run e2e
-```
-Run e2e tests with UI mode
-
-```bash
-npm run e2e:ui
-```
-Run end-to-end tests in headed mode
-
-```bash
-npm run e2e:headed
-```
-
-Build production version:
-
-```bash
-npm run build
-```
----
-
-## 🚀 Overview
-
-**GM Vocabulary** is a full-stack vocabulary learning platform built with Angular and Node.js.
-
-Beyond core functionality, the project is designed to demonstrate **production-grade engineering practices**:
-
-- Scalable frontend architecture (Angular + Signals)
-- Clean and predictable state management without global store complexity
-- Secure authentication flows (JWT)
-- Clear separation of concerns across the full stack
-
-This project reflects patterns used in **enterprise SaaS applications**.
-
----
-
-## 🎯 Key Highlights
-
-- Signal-based state management (NgRx SignalStore)
-- JWT authentication with auto-login / auto-logout
-- Protected collection and word APIs with JWT guards and DTO validation
-- Interceptor-driven HTTP architecture
-- Modular backend (NestJS + Mongoose)
-- Clean and scalable UI architecture (Angular + Tailwind + Material)
-
----
-
-## 🧩 Features
-
-- User authentication (signup / login)
-- Vocabulary & collection management
-- Protected routes with Angular guards
-- Persistent sessions with auto-restore
-- Reactive UI powered by Angular Signals
-- HTTP interceptor for centralized auth handling
-- Backend enforces access control, not just the UI layer
-
----
-
-## 🏗 Architecture
-
-### Frontend
-
-The application follows a **scalable Angular architecture**:
-
-- Container / Presentational component pattern
-- Signal-based state management (NgRx SignalStore)
-- Centralized authentication state (Signals)
-- Service layer for API abstraction
-- HTTP interceptors for cross-cutting concerns
-
-### Key Engineering Decisions
-
-- **SignalStore over NgRx Store**  
-  → reduces boilerplate while maintaining predictable state management
-
-- **Interceptor-based architecture**  
-  → clean handling of authentication and cross-cutting concerns
-
-- **Separation of concerns**  
-  → improves maintainability, testability, and scalability
-
----
-
-### Backend
-
-The backend follows a **modular NestJS architecture**:
-
-- Feature modules for users, collections, words, and authentication
-- Controller → Service separation with dependency injection
-- JWT guard and a custom current-user decorator for protected endpoints
-- DTO validation through a global `ValidationPipe`
-- Mongoose-based data modeling
-- Custom pipes for request parameter validation
-
----
-
-## 🔐 Authentication
-
-JWT-based authentication with full client-server flow:
-
-- Secure login/signup with bcrypt hashing
-- Stateless authentication using JWT
-- HTTP interceptor for automatic token injection
-- Route protection via Angular guards
-- Auto-login & auto-logout based on token expiration
-
-### Flow Overview
-
-1. User logs in → backend returns JWT  
-2. Token is stored in localStorage  
-3. Interceptor attaches token to requests  
-4. NestJS `JwtAuthGuard` validates the JWT and attaches the authenticated user to the request
-5. App restores session on reload  
-
-📄 Detailed flow documentation:  
-👉 https://www.notion.so/Authentication-flow-353ad045035b80e7a3baf41bb0d21fe7
-
----
-
-## 🔐 Security
-
-- Password hashing with bcrypt
-- Stateless authentication using JWT
-- Protected endpoints via `JwtAuthGuard`
-- Authorization via Bearer tokens
-
-## 👥 Domain Logic & Access Control
-
-The application models a multi-user environment with shared and private data:
-
-- Vocabulary collections are **owned by individual users**
-- Users can browse collections created by others
-- Only the **collection owner** can create, update, or delete words within their collections
-
-This ensures proper separation between **read access (shared data)** and **write permissions (owner-restricted)**.
-
-### Data Interaction Flow
-
-- Words are displayed in a structured table for efficient browsing
-- Create / update / delete operations are handled via form-driven modal workflows
-- Backend enforces ownership validation to prevent unauthorized modifications
-
-### Production considerations
-
-- Move JWT secret to environment variables
-- Implement refresh tokens
-- Consider HttpOnly cookies (XSS mitigation)
-
----
-
-## 🧠 Why This Project Exists
-
-This project was built as a **portfolio application** to demonstrate:
-
-- Senior-level Angular architecture
-- Full-stack engineering capabilities
-- Modern state management (Signals)
-- Secure authentication design
-
----
-
-## 🗺 Roadmap
-
-- Refresh token implementation
-- Role-based access control (RBAC)
-- Vocabulary learning modes (quiz / spaced repetition)
-- SSR (Angular Universal)
-- Docker & CI/CD setup
-
----
-
-## 🖥 Demo
-
-> Coming soon (deployment in progress)
-
----
-
-## 🛠 Getting Started
-
-## Quick start (recommended): Docker Compose (dev + hot reload)
-
-This repo includes a `docker-compose.yml` for local development:
-- Angular dev server with hot reload
-- NestJS backend with watch mode
-- MongoDB either **local container** or **MongoDB Atlas** via `MONGODB_URI`
-
-### Development
-
-```bash
-docker compose up -d
-```
-
-- **Frontend**: `http://localhost:4200/`
-- **Backend API**: `http://localhost:3000/api`
-
-To follow logs:
-
-```bash
-docker compose logs -f backend
-docker compose logs -f frontend
-```
-
-To stop:
-
-```bash
-docker compose down
-```
-
-## MongoDB configuration
-
-### Option A (default): local MongoDB in Docker
-
-Do nothing. If `MONGODB_URI` is not provided, the backend connects to:
-- `mongodb://mongo:27017/gm-vocabulary` (the `mongo` service in Compose)
-
-### Option B: MongoDB Atlas (recommended for CI/CD & shared envs)
-
-1) Create a local `.env` file (it is ignored by git):
-
-```bash
-cp .env.example .env
-```
-
-2) Put your Atlas connection string into `.env`:
-
-```env
-MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>/<db>?retryWrites=true&w=majority
-```
-
-3) Restart the backend to apply env changes:
-
-```bash
-docker compose up -d --force-recreate backend
-```
-
-In CI/CD (GitHub Actions, GitLab CI, etc.) you should store `MONGODB_URI` as a **secret** and pass it as an environment variable. Do not commit real credentials into the repo.
-
-## Run without Docker (manual dev)
-
-If you prefer running locally (Node + Angular on your machine), run in two terminals:
-
-```bash
-npm install
 npm run start:server
 ```
 
@@ -314,56 +122,74 @@ npm run start:server
 npm start
 ```
 
-The frontend will be available at `http://localhost:4200/`.
+## Development commands
 
-## Production backend image
+| Command                | Purpose                                            |
+| ---------------------- | -------------------------------------------------- |
+| `npm start`            | Serve the Angular application                      |
+| `npm run start:server` | Serve the NestJS API in development mode           |
+| `npm run build`        | Build both deployable applications                 |
+| `npm run lint`         | Lint all Nx projects and enforce module boundaries |
+| `npm test`             | Run all configured unit/integration test targets   |
+| `npm run test:api:e2e` | Run NestJS API end-to-end tests                    |
+| `npm run e2e`          | Run Playwright end-to-end tests                    |
+| `npm run e2e:ui`       | Run Playwright with its interactive UI             |
+| `npm run typecheck`    | Type-check the Angular app and tests               |
+| `npm run graph`        | Open the Nx project graph                          |
 
-The backend has a multi-stage Dockerfile at `apps/api/Dockerfile`.
-
-Build:
-
-```bash
-docker build -f apps/api/Dockerfile --target production -t gm-vocabulary-api:prod .
-```
-
-Run (provide MongoDB URI):
-
-```bash
-docker run --rm -p 3000:3000 -e MONGODB_URI="mongodb+srv://..." -e JWT_SECRET="..." gm-vocabulary-api:prod
-```
-## Code scaffolding
-
-Nx exposes the Angular generators. To generate a new component, run:
+Useful Nx commands:
 
 ```bash
-npx nx g @nx/angular:component component-name --project=gm-vocabulary
+npx nx show projects
+npx nx show project gm-vocabulary
+npx nx graph
+npx nx affected -t lint test build
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Run a target for one project while iterating:
 
 ```bash
-npx nx list @nx/angular
+npx nx test gm-vocabulary-auth-data-access
+npx nx lint api-words-feature
+npx nx build api
 ```
 
-## Building
+## Adding code
 
-To build the project run:
+Generate code in the library that owns the capability. Prefer an existing library until a new boundary has a clear owner, public API, and independent reason to change.
 
 ```bash
-npm run build
+npx nx g @nx/angular:component user-menu \
+  --project=gm-vocabulary-feature-shell \
+  --changeDetection=OnPush \
+  --export
+
+npx nx g @nx/angular:library feature-review \
+  --directory=libs/gm-vocabulary/vocabulary/feature-review \
+  --tags=scope:gm-vocabulary,domain:vocabulary,type:feature
+
+npx nx g @nx/js:library data-access \
+  --directory=libs/api/review/data-access \
+  --tags=scope:api,domain:review,type:data-access
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+After generation, expose intentional symbols through `src/index.ts`, refine project tags, and verify dependencies with lint and the Nx graph.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Nx references:
 
-## 📚 Additional Notes
-This project emphasizes:
-- Clean architecture over quick implementation
-- Predictable state management
-- Production-ready patterns
+- [Workspace and project structure](https://nx.dev/concepts/decisions/folder-structure)
+- [Project dependency rules](https://nx.dev/concepts/decisions/project-dependency-rules)
+- [Enforce module boundaries](https://nx.dev/features/enforce-module-boundaries)
+- [Nx generators](https://nx.dev/features/generate-code)
 
-## 👤 Author
-Serhii Diachenko <br/>
-Senior Angular Engineer (10+ years) <br/>
-Specializing in scalable frontend architecture, RxJS, and data-intensive applications
+NestJS references:
+
+- [Modules](https://docs.nestjs.com/modules)
+- [Validation](https://docs.nestjs.com/techniques/validation)
+- [MongoDB integration](https://docs.nestjs.com/techniques/mongodb)
+
+## Authentication and security status
+
+The current implementation provides bcrypt password hashing, JWT-protected endpoints, client route protection, automatic Bearer-token attachment, and server-side ownership checks. The access token is currently persisted in `localStorage`, and there is no refresh-token/session rotation flow. Treat the current authentication design as an intermediate stage, not a finished production security model.
+
+Before a public production launch, address the prioritized findings in the [Architecture audit](docs/architecture/architecture-audit.md), especially token storage and rotation, secret management, word-to-collection integrity, rate limiting, health checks, and observability.

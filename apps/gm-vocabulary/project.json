@@ -10,6 +10,7 @@
   },
   "sourceRoot": "apps/gm-vocabulary/src",
   "prefix": "gm",
+  "tags": ["scope:gm-vocabulary", "type:app"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",

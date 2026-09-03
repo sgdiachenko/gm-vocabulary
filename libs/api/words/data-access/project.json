@@ -1,0 +1,7 @@
+{
+  "name": "api-words-data-access",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/words/data-access/src",
+  "projectType": "library",
+  "tags": ["scope:api", "domain:words", "type:data-access"]
+}

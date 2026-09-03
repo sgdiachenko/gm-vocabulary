@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from './user/user.module';
-import { WordsModule } from './words/words.module';
-import { WordCollectionsModule } from './word-collections/word-collections.module';
+import { WordCollectionsModule } from '@gm-vocabulary/api/collections/feature';
+import { UserModule } from '@gm-vocabulary/api/users/feature';
+import { WordsModule } from '@gm-vocabulary/api/words/feature';
 
 @Module({
   imports: [
@@ -11,10 +11,7 @@ import { WordCollectionsModule } from './word-collections/word-collections.modul
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        uri: config.get<string>(
-          'MONGODB_URI',
-          'mongodb://localhost:27017/gm-vocabulary',
-        ),
+        uri: config.get<string>('MONGODB_URI', 'mongodb://localhost:27017/gm-vocabulary'),
       }),
     }),
     UserModule,

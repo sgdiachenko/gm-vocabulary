@@ -1,0 +1,18 @@
+{
+  "name": "gm-vocabulary-auth-feature-auth",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/gm-vocabulary/auth/feature-auth/src",
+  "prefix": "gm",
+  "projectType": "library",
+  "tags": ["scope:gm-vocabulary", "domain:auth", "type:feature"],
+  "// targets": "to see all targets run: nx show project gm-vocabulary-auth-feature-auth --web",
+  "targets": {
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "buildTarget": "gm-vocabulary:build:development",
+        "tsConfig": "libs/gm-vocabulary/auth/feature-auth/tsconfig.spec.json"
+      }
+    }
+  }
+}

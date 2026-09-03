@@ -11,6 +11,7 @@
     "vitest.config.e2e.mts",
     "src/**/*.test.ts",
     "src/**/*.spec.ts",
+    "../../libs/api/**/*.spec.ts",
     "src/**/*.d.ts"
   ]
 }

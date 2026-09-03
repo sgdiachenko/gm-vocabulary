@@ -1,0 +1,17 @@
+{
+  "name": "gm-vocabulary-auth-data-access",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/gm-vocabulary/auth/data-access/src",
+  "prefix": "gm",
+  "projectType": "library",
+  "tags": ["scope:gm-vocabulary", "domain:auth", "type:data-access"],
+  "targets": {
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "buildTarget": "gm-vocabulary:build:development",
+        "tsConfig": "libs/gm-vocabulary/auth/data-access/tsconfig.spec.json"
+      }
+    }
+  }
+}

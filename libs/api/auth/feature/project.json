@@ -1,0 +1,7 @@
+{
+  "name": "api-auth-feature",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/auth/feature/src",
+  "projectType": "library",
+  "tags": ["scope:api", "domain:auth", "type:feature"]
+}

@@ -1,0 +1,24 @@
+<gm-data-loading-wrapper [loadingState]="updateIsLoading()" [snackBarData]="snackBarData()">
+  <h2 mat-dialog-title>{{ data !== null && data !== undefined ? 'Edit' : 'Add' }} collection</h2>
+
+  <mat-dialog-content>
+    <form class="flex flex-col">
+      <gm-input
+        [field]="wordGroupForm[wordGroupParameterEnum.NAME]"
+        [fieldLabel]="wordGroupParameterDisplayNameEnum.NAME"
+        [fieldPlaceholder]="wordGroupParameterDisplayNameEnum.NAME"
+      ></gm-input>
+
+      <gm-slide-toggle [field]="wordGroupForm[wordGroupParameterEnum.IS_SHARED]!">
+        {{ wordGroupParameterDisplayNameEnum.IS_SHARED }}
+      </gm-slide-toggle>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="center" class="gap-4">
+    <gm-button (btnClick)="close()">Cancel</gm-button>
+    <gm-button (btnClick)="apply()" [isPrimary]="true" [isDisabled]="!isWordGroupFormValid()"
+      >Submit</gm-button
+    >
+  </mat-dialog-actions>
+</gm-data-loading-wrapper>

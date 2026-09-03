@@ -1,0 +1,10 @@
+{
+  "name": "gm-vocabulary-vocabulary-util",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/gm-vocabulary/vocabulary/util/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["scope:gm-vocabulary", "domain:vocabulary", "type:util"],
+  "// targets": "to see all targets run: nx show project gm-vocabulary-vocabulary-util --web",
+  "targets": {}
+}

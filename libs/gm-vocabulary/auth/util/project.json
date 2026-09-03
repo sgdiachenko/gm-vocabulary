@@ -1,0 +1,10 @@
+{
+  "name": "gm-vocabulary-auth-util",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/gm-vocabulary/auth/util/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["scope:gm-vocabulary", "domain:auth", "type:util"],
+  "// targets": "to see all targets run: nx show project gm-vocabulary-auth-util --web",
+  "targets": {}
+}

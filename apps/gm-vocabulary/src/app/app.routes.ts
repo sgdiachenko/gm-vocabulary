@@ -1,16 +1,13 @@
 import { Routes } from '@angular/router';
-
-import { PageWrapperComponent } from './core/layouts/page-wrapper/page-wrapper.component';
-import { authGuard } from './core/guards/auth-guard';
+import { authGuard } from '@gm-vocabulary/auth/data-access';
+import { PageWrapperComponent } from '@gm-vocabulary/feature-shell';
 
 export const routes: Routes = [
   {
     path: 'auth',
     title: 'GM Vocabulary',
     loadComponent: () =>
-      import('./features/auth/containers/auth-page/auth-page.container').then(
-        (m) => m.AuthPageContainer,
-      ),
+      import('@gm-vocabulary/auth/feature-auth').then((m) => m.AuthPageContainer),
   },
   {
     path: '',
@@ -25,9 +22,7 @@ export const routes: Routes = [
         path: 'words',
         title: 'My Words',
         loadComponent: () =>
-          import('./features/words/containers/words-page/words-page.container').then(
-            (m) => m.WordsPageContainer,
-          ),
+          import('@gm-vocabulary/vocabulary/feature-list').then((m) => m.WordsPageContainer),
         canActivate: [authGuard],
       },
       {
@@ -38,17 +33,17 @@ export const routes: Routes = [
             path: '',
             title: 'Library',
             loadComponent: () =>
-              import(
-                './features/word-sets/containers/collections-page/collections-page.container'
-              ).then((m) => m.CollectionsPageContainer),
+              import('@gm-vocabulary/collections/feature-list').then(
+                (m) => m.CollectionsPageContainer,
+              ),
           },
           {
             path: ':collectionId',
             title: 'Collection',
             loadComponent: () =>
-              import(
-                './features/word-sets/containers/single-collection-page/single-collection-page.container'
-              ).then((m) => m.SingleCollectionPageContainer),
+              import('@gm-vocabulary/collections/feature-details').then(
+                (m) => m.SingleCollectionPageContainer,
+              ),
           },
         ],
       },

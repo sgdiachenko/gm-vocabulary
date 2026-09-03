@@ -1,0 +1,7 @@
+{
+  "name": "api-users-feature",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/users/feature/src",
+  "projectType": "library",
+  "tags": ["scope:api", "domain:users", "type:feature"]
+}

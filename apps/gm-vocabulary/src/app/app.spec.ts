@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
-import { AuthService } from './features/auth/services/auth/auth.service';
+import { AuthService } from '@gm-vocabulary/auth/data-access';
 
 describe('App', () => {
   beforeEach(async () => {
