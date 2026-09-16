@@ -1,5 +1,8 @@
 <h1 class="text-2xl text-center pb-8">{{ isSignupFormActive() ? 'Signup' : 'Login' }}</h1>
 <form [formRoot]="authForm">
+  @if (isSignupFormActive()) {
+    <gm-input fieldLabel="Username" fieldPlaceholder="Enter username" [field]="authForm.username" />
+  }
   <gm-input fieldLabel="Email" [field]="authForm.email" fieldType="email"></gm-input>
 
   <gm-input fieldLabel="Password" [field]="authForm.password" fieldType="password"></gm-input>

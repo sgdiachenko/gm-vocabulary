@@ -28,6 +28,8 @@ export class PageWrapperComponent {
   private router = inject(Router);
   authLoadingState: Signal<boolean> = this.authService.authLoadingState;
 
+  username = this.authService.username;
+
   logout(): void {
     const logoutDialogRef = this.dialog.open<SubmitDialogComponent, SubmitDialogData, boolean>(
       SubmitDialogComponent,

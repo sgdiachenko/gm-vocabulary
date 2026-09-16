@@ -46,7 +46,7 @@
         "./libs/gm-vocabulary/collections/feature-editor/src/index.ts"
       ],
       "@gm-vocabulary/api/auth/feature": ["./libs/api/auth/feature/src/index.ts"],
-      "@gm-vocabulary/api/users/feature": ["./libs/api/users/feature/src/index.ts"],
+      "@gm-vocabulary/api/auth/data-access": ["./libs/api/auth/data-access/src/index.ts"],
       "@gm-vocabulary/api/words/feature": ["./libs/api/words/feature/src/index.ts"],
       "@gm-vocabulary/api/collections/feature": ["./libs/api/collections/feature/src/index.ts"],
       "@gm-vocabulary/api/shared/util": ["./libs/api/shared/util/src/index.ts"],

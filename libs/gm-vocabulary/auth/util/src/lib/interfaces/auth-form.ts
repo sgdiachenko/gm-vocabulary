@@ -1,5 +1,5 @@
-import { Auth } from './auth';
+import { SignupRequest } from './signup-request';
 
-export interface AuthForm extends Auth {
+export interface AuthForm extends SignupRequest {
   repeatPassword: string;
 }

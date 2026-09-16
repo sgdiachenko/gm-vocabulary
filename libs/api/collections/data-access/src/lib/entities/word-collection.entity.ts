@@ -15,7 +15,7 @@ export class WordCollection {
   @Prop({ type: Boolean, default: false })
   isShared!: boolean;
 
-  @Prop({ type: Types.ObjectId, required: true, ref: 'User' })
+  @Prop({ type: Types.ObjectId, required: true, ref: 'Auth' })
   userId!: Types.ObjectId;
 }
 

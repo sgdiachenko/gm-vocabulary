@@ -22,8 +22,8 @@ Angular projects use `feature`, `ui`, `data-access`, and `util` type tags. Featu
 
 ## API libraries
 
-- `libs/api/auth/feature` owns the JWT module, guard, identity decorator, and authenticated request contracts.
-- `libs/api/users/feature` owns signup and login use cases.
+- `libs/api/auth/feature` owns signup/login controllers and services, the JWT module, guard, identity decorator, and authenticated request contracts.
+- `libs/api/auth/data-access` owns the `Auth` Mongoose schema.
 - `libs/api/words/feature` and `libs/api/collections/feature` own HTTP controllers and application services.
 - `libs/api/words/data-access` and `libs/api/collections/data-access` own Mongoose schemas.
 - `libs/api/shared/util` owns reusable Nest pipes and validators.
@@ -49,3 +49,11 @@ npx nx g @nx/angular:library libs/gm-vocabulary/<domain>/<type> \
 ```
 
 New projects should receive a project-local test target. Components should be generated into the owning library with `@nx/angular:component`, standalone APIs, the `gm` selector prefix, and tests enabled.
+
+## Authentication boundary
+
+`Auth` stores credentials and a display username in MongoDB's existing `users` collection. Renaming the model does not change account `_id` values. Words and collections retain their `userId` owner references; their Mongoose `ref` is `Auth`. Future user profiles/preferences and billing data belong to separate domains and refer to the same stable account ID.
+
+The API exposes `POST /api/auth/signup` and `POST /api/auth/login`. Frontend and backend must be deployed together because the former `/api/user/*` endpoints are removed. Signup requires a nonblank username (trimmed, not unique) and returns public account data without the password or a token. Login still uses email/password and returns a token, expiry, userId, and username. A successful login fills a missing or blank legacy username from the part of email before `@` and persists it; existing names are preserved. No bulk database migration is required.
+
+The frontend distinguishes `LoginCredentials`, `SignupRequest`, `SignupResponse`, and `LoginResponse`. Signup returns to the login form without authenticating. Login establishes the session and displays the username beside Logout. Username is restored from local storage and cleared on logout. Sessions saved before this change remain valid without a username; the header displays the name after the next successful login.

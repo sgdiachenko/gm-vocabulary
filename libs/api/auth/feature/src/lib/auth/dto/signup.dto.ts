@@ -1,7 +1,14 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { Matches, IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { MatchesRule } from '@gm-vocabulary/api/shared/util';
 
-export class CreateUserDto {
+export class SignupDto {
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value.trim() : value))
+  @IsString()
+  @IsNotEmpty()
+  @Matches(/\S/, { message: 'Username must not be blank' })
+  username!: string;
+
   @IsEmail()
   email!: string;
 

@@ -1,9 +1,9 @@
 import { validate } from 'class-validator';
-import { LoginUserDto } from './login-user.dto';
+import { LoginDto } from './login.dto';
 
-describe('LoginUserDto', () => {
+describe('LoginDto', () => {
   it('does not apply signup password complexity rules', async () => {
-    const dto = new LoginUserDto();
+    const dto = new LoginDto();
     dto.email = 'user@example.com';
     dto.password = 'z';
 
@@ -11,7 +11,7 @@ describe('LoginUserDto', () => {
   });
 
   it('still rejects an empty password', async () => {
-    const dto = new LoginUserDto();
+    const dto = new LoginDto();
     dto.email = 'user@example.com';
     dto.password = '';
 

@@ -14,7 +14,7 @@ export class Word {
   @Prop({ type: String, default: undefined })
   description!: string;
 
-  @Prop({ type: Types.ObjectId, required: true, ref: 'User' })
+  @Prop({ type: Types.ObjectId, required: true, ref: 'Auth' })
   userId!: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'WordCollection', default: undefined })

@@ -8,7 +8,7 @@ import { InputComponent } from '@gm-vocabulary/shared/ui';
 import { ButtonComponent } from '@gm-vocabulary/shared/ui';
 import { isStrictEmail } from '@gm-vocabulary/shared/util';
 import { AuthForm } from '@gm-vocabulary/auth/util';
-import { Auth } from '@gm-vocabulary/auth/util';
+import { SignupRequest, LoginCredentials } from '@gm-vocabulary/auth/util';
 
 @Component({
   selector: 'gm-auth-form',
@@ -18,7 +18,7 @@ import { Auth } from '@gm-vocabulary/auth/util';
 })
 export class AuthFormComponent {
   isSignupFormActive = input(false);
-  submitForm = output<Auth>();
+  submitForm = output<LoginCredentials | SignupRequest>();
   toggleView = output<boolean>();
 
   readonly emailControlName = 'email';
@@ -26,6 +26,7 @@ export class AuthFormComponent {
   readonly repeatPasswordControlName = 'repeatPassword';
 
   private readonly authModel: WritableSignal<AuthForm> = signal<AuthForm>({
+    username: '',
     email: '',
     password: '',
     repeatPassword: '',
@@ -34,6 +35,17 @@ export class AuthFormComponent {
   readonly authForm: FieldTree<AuthForm> = form(
     this.authModel,
     (schemaPath) => {
+      required(schemaPath.username, {
+        message: FormFieldValidationMessagesConst[FormFieldValidationMessageKeyEnum.REQUIRED],
+        when: () => this.isSignupFormActive(),
+      });
+      validate(schemaPath.username, ({ value }) => {
+        if (!this.isSignupFormActive() || value().trim()) return undefined;
+        return {
+          kind: FormFieldValidationMessageKeyEnum.REQUIRED,
+          message: FormFieldValidationMessagesConst[FormFieldValidationMessageKeyEnum.REQUIRED],
+        };
+      });
       required(schemaPath.email, {
         message: FormFieldValidationMessagesConst[FormFieldValidationMessageKeyEnum.REQUIRED],
       });
@@ -77,9 +89,13 @@ export class AuthFormComponent {
     {
       submission: {
         action: async () => {
-          const { email, password } = this.authModel();
+          const { email, password, username } = this.authModel();
 
-          this.submitForm.emit({ email, password });
+          this.submitForm.emit(
+            this.isSignupFormActive()
+              ? { email, password, username: username.trim() }
+              : { email, password },
+          );
 
           return undefined;
         },

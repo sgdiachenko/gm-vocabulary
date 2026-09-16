@@ -3,9 +3,9 @@ import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
 import { Types } from 'mongoose';
-import { UserService } from './user.service';
+import { AuthService } from './auth.service';
 
-describe('UserService', () => {
+describe('AuthService', () => {
   const originalJwtSecret = process.env.JWT_SECRET;
 
   interface UserInput {
@@ -20,7 +20,7 @@ describe('UserService', () => {
   const jwtService = {
     signAsync: vi.fn(),
   };
-  const service = new UserService(userModel as never, jwtService as unknown as JwtService);
+  const service = new AuthService(userModel as never, jwtService as unknown as JwtService);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -45,6 +45,7 @@ describe('UserService', () => {
 
     const result = await service.signup({
       email: 'user@example.com',
+      username: 'Test User',
       password: 'plain-password',
     });
     if (!savedUser) {
@@ -53,14 +54,14 @@ describe('UserService', () => {
 
     expect(savedUser.password).not.toBe('plain-password');
     await expect(compare('plain-password', savedUser.password)).resolves.toBe(true);
-    expect(result).toEqual({ _id: id, email: 'user@example.com' });
+    expect(result).toEqual({ _id: id, email: 'user@example.com', username: 'Test User' });
   });
 
   it('should translate duplicate emails into a conflict response', async () => {
     userModel.create.mockRejectedValue({ code: 11000 });
 
     await expect(
-      service.signup({ email: 'user@example.com', password: 'password' }),
+      service.signup({ email: 'user@example.com', username: 'Test User', password: 'password' }),
     ).rejects.toThrow(ConflictException);
   });
 
@@ -69,6 +70,7 @@ describe('UserService', () => {
     userModel.findOne.mockResolvedValue({
       _id: id,
       email: 'user@example.com',
+      username: 'Test User',
       password: await hash('password', 4),
     });
     jwtService.signAsync.mockResolvedValue('signed-token');
@@ -79,7 +81,55 @@ describe('UserService', () => {
       token: 'signed-token',
       expiresInSeconds: 3600,
       userId: id.toString(),
+      username: 'Test User',
     });
+  });
+
+  it.each([undefined, '', '   '])(
+    'backfills a legacy username (%s) after successful login',
+    async (username) => {
+      const account = {
+        _id: new Types.ObjectId(),
+        email: 'john.smith@outlook.com',
+        password: await hash('password', 4),
+        username,
+        save: vi.fn().mockResolvedValue(undefined),
+      };
+      userModel.findOne.mockResolvedValue(account);
+      const result = await service.login({ email: account.email, password: 'password' });
+      expect(account.save).toHaveBeenCalledOnce();
+      expect(account.username).toBe('john.smith');
+      expect(result.username).toBe('john.smith');
+    },
+  );
+
+  it('preserves an existing username', async () => {
+    const account = {
+      _id: new Types.ObjectId(),
+      email: 'john@example.com',
+      password: await hash('password', 4),
+      username: 'Custom Name',
+      save: vi.fn(),
+    };
+    userModel.findOne.mockResolvedValue(account);
+    const result = await service.login({ email: account.email, password: 'password' });
+    expect(result.username).toBe('Custom Name');
+    expect(account.save).not.toHaveBeenCalled();
+  });
+
+  it('does not backfill or issue a token when the password is wrong', async () => {
+    const account = {
+      _id: new Types.ObjectId(),
+      email: 'john@example.com',
+      password: await hash('password', 4),
+      save: vi.fn(),
+    };
+    userModel.findOne.mockResolvedValue(account);
+    await expect(service.login({ email: account.email, password: 'wrong' })).rejects.toThrow(
+      UnauthorizedException,
+    );
+    expect(account.save).not.toHaveBeenCalled();
+    expect(jwtService.signAsync).not.toHaveBeenCalled();
   });
 
   it('should reject invalid credentials', async () => {

@@ -52,13 +52,14 @@ test.describe('Authentication Flow', () => {
   test('should enforce password complexity when signing up', async ({ page }) => {
     await page.getByRole('button', { name: 'Signup' }).click();
 
+    await page.getByPlaceholder('Enter username').fill('Weak Password Test');
     await page.getByPlaceholder('Enter email').fill('weak-password@example.com');
     await page.getByPlaceholder('Enter password').fill('z');
     await page.getByPlaceholder('Repeat Password').fill('z');
 
     const responsePromise = page.waitForResponse(
-      (response) => response.url().endsWith('/api/user/signup')
-        && response.request().method() === 'POST',
+      (response) =>
+        response.url().endsWith('/api/auth/signup') && response.request().method() === 'POST',
     );
     await page.getByRole('button', { name: 'Submit' }).click();
 
@@ -84,8 +85,8 @@ test.describe('Authentication Flow', () => {
     await page.getByPlaceholder('Enter password').fill('z');
 
     const responsePromise = page.waitForResponse(
-      (response) => response.url().endsWith('/api/user/login')
-        && response.request().method() === 'POST',
+      (response) =>
+        response.url().endsWith('/api/auth/login') && response.request().method() === 'POST',
     );
     await page.getByRole('button', { name: 'Submit' }).click();
 
@@ -101,6 +102,7 @@ test.describe('Authentication Flow', () => {
     await page.getByRole('button', { name: 'Signup' }).click();
     await expect(page.locator('h1')).toHaveText('Signup');
 
+    await page.getByPlaceholder('Enter username').fill('Test User');
     await page.getByPlaceholder('Enter email').fill(uniqueEmail);
     await page.getByPlaceholder('Enter password').fill(password);
     await page.getByPlaceholder('Repeat Password').fill(password);
@@ -129,6 +131,10 @@ test.describe('Authentication Flow', () => {
     // Success should redirect to /words
     await expect(page).toHaveURL(/\/words/);
     await expect(page.locator('mat-toolbar')).toContainText('GM Vocabulary');
+
+    await expect(page.locator('mat-toolbar')).toContainText('Test User');
+    await page.reload();
+    await expect(page.locator('mat-toolbar')).toContainText('Test User');
 
     // 4. Logout
     await page.getByRole('button', { name: 'Logout' }).click();

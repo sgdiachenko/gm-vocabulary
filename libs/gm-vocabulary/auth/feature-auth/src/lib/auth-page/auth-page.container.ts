@@ -15,7 +15,7 @@ import { SnackBarData } from '@gm-vocabulary/shared/ui';
 import { getErrorSnackBarData } from '@gm-vocabulary/shared/ui';
 import { AuthFormComponent } from '@gm-vocabulary/auth/ui';
 import { AuthService } from '@gm-vocabulary/auth/data-access';
-import { Auth } from '@gm-vocabulary/auth/util';
+import { SignupRequest, LoginCredentials } from '@gm-vocabulary/auth/util';
 
 @Component({
   selector: 'gm-auth-page',
@@ -33,16 +33,15 @@ export class AuthPageContainer {
   });
   isSignupFormActive: WritableSignal<boolean> = signal(false);
 
-  submit(user: Auth) {
-    this.authService
-      .auth(user, !this.isSignupFormActive())
-      .pipe(take(1), takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          if (this.isSignupFormActive()) {
-            this.isSignupFormActive.set(false);
-          }
-        },
-      });
+  submit(user: LoginCredentials | SignupRequest) {
+    const request =
+      'username' in user ? this.authService.signup(user) : this.authService.login(user);
+    request.pipe(take(1), takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        if (this.isSignupFormActive()) {
+          this.isSignupFormActive.set(false);
+        }
+      },
+    });
   }
 }

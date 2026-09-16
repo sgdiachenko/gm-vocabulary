@@ -1,17 +1,29 @@
 import { validate } from 'class-validator';
-import { CreateUserDto } from './create-user.dto';
+import { SignupDto } from './signup.dto';
 
-describe('CreateUserDto', () => {
+describe('SignupDto', () => {
   it('accepts a password that satisfies every signup rule', async () => {
-    const dto = new CreateUserDto();
+    const dto = new SignupDto();
+    dto.username = 'Test User';
     dto.email = 'user@example.com';
     dto.password = 'ValidPassword1!';
 
     await expect(validate(dto)).resolves.toEqual([]);
   });
 
+  it.each([undefined, '', '   '])('rejects an empty username (%s)', async (username) => {
+    const dto = Object.assign(new SignupDto(), {
+      email: 'user@example.com',
+      password: 'ValidPassword1!',
+      username,
+    });
+    const errors = await validate(dto);
+    expect(errors.some((error) => error.property === 'username')).toBe(true);
+  });
+
   it('reports every password rule that is not satisfied', async () => {
-    const dto = new CreateUserDto();
+    const dto = new SignupDto();
+    dto.username = 'Test User';
     dto.email = 'user@example.com';
     dto.password = 'z';
 

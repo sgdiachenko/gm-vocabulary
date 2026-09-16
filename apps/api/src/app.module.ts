@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { WordCollectionsModule } from '@gm-vocabulary/api/collections/feature';
-import { UserModule } from '@gm-vocabulary/api/users/feature';
+import { AuthModule } from '@gm-vocabulary/api/auth/feature';
 import { WordsModule } from '@gm-vocabulary/api/words/feature';
 
 @Module({
@@ -14,7 +14,7 @@ import { WordsModule } from '@gm-vocabulary/api/words/feature';
         uri: config.get<string>('MONGODB_URI', 'mongodb://localhost:27017/gm-vocabulary'),
       }),
     }),
-    UserModule,
+    AuthModule,
     WordsModule,
     WordCollectionsModule,
   ],

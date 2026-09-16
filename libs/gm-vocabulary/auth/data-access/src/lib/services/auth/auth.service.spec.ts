@@ -6,7 +6,7 @@ import { AuthParameterEnum } from '@gm-vocabulary/auth/util';
 import { AuthApiService } from '../auth-api/auth-api.service';
 import { AuthStore } from '../../store/auth/auth.store';
 import { AuthService } from './auth.service';
-import { Auth } from '@gm-vocabulary/auth/util';
+import { LoginCredentials } from '@gm-vocabulary/auth/util';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -19,7 +19,7 @@ describe('AuthService', () => {
     navigate: ReturnType<typeof vi.fn>;
   };
 
-  const user: Auth = {
+  const user: LoginCredentials = {
     email: 'test@example.com',
     password: 'password',
   };
@@ -61,10 +61,11 @@ describe('AuthService', () => {
         token: 'token-1',
         expiresInSeconds: 60,
         userId: 'user-1',
+        username: 'Test User',
       }),
     );
 
-    await firstValueFrom(service.auth(user, true));
+    await firstValueFrom(service.login(user));
 
     expect(mockAuthApiService.login).toHaveBeenCalledWith(user);
     expect(service.authState()).toBe(true);
@@ -72,6 +73,8 @@ describe('AuthService', () => {
     expect(service.authError()).toBeNull();
     expect(service.token()).toBe('token-1');
     expect(service.userId()).toBe('user-1');
+    expect(service.username()).toBe('Test User');
+    expect(localStorage.getItem(AuthParameterEnum.USERNAME)).toBe('Test User');
     expect(localStorage.getItem(AuthParameterEnum.TOKEN)).toBe('token-1');
     expect(localStorage.getItem(AuthParameterEnum.USER_ID)).toBe('user-1');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
@@ -80,10 +83,10 @@ describe('AuthService', () => {
   it('should signup without navigating home', async () => {
     mockAuthApiService.signup.mockReturnValue(of(user));
 
-    await firstValueFrom(service.auth(user, false));
+    await firstValueFrom(service.signup({ ...user, username: 'Test User' }));
 
-    expect(mockAuthApiService.signup).toHaveBeenCalledWith(user);
-    expect(service.authState()).toBe(true);
+    expect(mockAuthApiService.signup).toHaveBeenCalledWith({ ...user, username: 'Test User' });
+    expect(service.authState()).toBe(false);
     expect(service.authLoadingState()).toBe(false);
     expect(mockRouter.navigate).not.toHaveBeenCalledWith(['/']);
   });
@@ -92,7 +95,7 @@ describe('AuthService', () => {
     const error = { error: { message: 'Invalid credentials' } };
     mockAuthApiService.login.mockReturnValue(throwError(() => error));
 
-    await expect(firstValueFrom(service.auth(user, true))).rejects.toBe(error);
+    await expect(firstValueFrom(service.login(user))).rejects.toBe(error);
 
     expect(service.authLoadingState()).toBe(false);
     expect(service.authError()).toBe(error);
@@ -104,13 +107,16 @@ describe('AuthService', () => {
     const error = { error: { message: messages } };
     mockAuthApiService.signup.mockReturnValue(throwError(() => error));
 
-    await expect(firstValueFrom(service.auth(user, false))).rejects.toBe(error);
+    await expect(firstValueFrom(service.signup({ ...user, username: 'Test User' }))).rejects.toBe(
+      error,
+    );
 
     expect(service.authError()).toBe(error);
   });
 
   it('should auto-auth user from valid local storage data', () => {
     localStorage.setItem(AuthParameterEnum.TOKEN, 'stored-token');
+    localStorage.setItem(AuthParameterEnum.USERNAME, 'Stored User');
     localStorage.setItem(AuthParameterEnum.USER_ID, 'stored-user');
     localStorage.setItem(AuthParameterEnum.EXPIRES_IN, new Date(Date.now() + 60_000).toISOString());
 
@@ -118,7 +124,17 @@ describe('AuthService', () => {
 
     expect(service.token()).toBe('stored-token');
     expect(service.userId()).toBe('stored-user');
+    expect(service.username()).toBe('Stored User');
     expect(service.authState()).toBe(true);
+  });
+
+  it('restores legacy sessions that have no stored username', () => {
+    localStorage.setItem(AuthParameterEnum.TOKEN, 'legacy-token');
+    localStorage.setItem(AuthParameterEnum.USER_ID, 'legacy-user');
+    localStorage.setItem(AuthParameterEnum.EXPIRES_IN, new Date(Date.now() + 60_000).toISOString());
+    service.autoAuthUser();
+    expect(service.authState()).toBe(true);
+    expect(service.username()).toBeNull();
   });
 
   it('should clear expired local storage auth data', () => {
@@ -137,7 +153,8 @@ describe('AuthService', () => {
 
   it('should logout, clear store, clear local storage, and navigate to auth page', () => {
     authStore.setAuthState(true);
-    authStore.setAuthData('token-1', 'user-1');
+    authStore.setAuthData('token-1', 'user-1', 'Test User');
+    localStorage.setItem(AuthParameterEnum.USERNAME, 'Test User');
     localStorage.setItem(AuthParameterEnum.TOKEN, 'token-1');
     localStorage.setItem(AuthParameterEnum.USER_ID, 'user-1');
 
@@ -146,6 +163,8 @@ describe('AuthService', () => {
     expect(service.authState()).toBe(false);
     expect(service.token()).toBeNull();
     expect(service.userId()).toBeNull();
+    expect(service.username()).toBeNull();
+    expect(localStorage.getItem(AuthParameterEnum.USERNAME)).toBeNull();
     expect(localStorage.getItem(AuthParameterEnum.TOKEN)).toBeNull();
     expect(localStorage.getItem(AuthParameterEnum.USER_ID)).toBeNull();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/auth']);
