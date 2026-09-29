@@ -8,6 +8,7 @@ test.describe('Words Management', () => {
 
     await page.goto('/auth');
     await page.getByRole('button', { name: 'Signup' }).click();
+    await page.getByPlaceholder('Enter username').fill('Test User');
     await page.getByPlaceholder('Enter email').fill(uniqueEmail);
     await page.getByPlaceholder('Enter password').fill(password);
     await page.getByPlaceholder('Repeat Password').fill(password);

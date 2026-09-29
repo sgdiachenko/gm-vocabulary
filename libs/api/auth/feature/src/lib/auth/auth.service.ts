@@ -3,25 +3,26 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { compare, hash } from 'bcrypt';
 import { Model } from 'mongoose';
-import { CreateUserDto } from './dto/create-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
-import { User, UserDocument } from './entities/user.entity';
+import { SignupDto } from './dto/signup.dto';
+import { LoginDto } from './dto/login.dto';
+import { Auth, AuthDocument } from '@gm-vocabulary/api/auth/data-access';
 
 @Injectable()
-export class UserService {
+export class AuthService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(Auth.name) private readonly userModel: Model<AuthDocument>,
     private readonly jwtService: JwtService,
   ) {}
 
-  async signup(createUserDto: CreateUserDto) {
+  async signup(createUserDto: SignupDto) {
     try {
       const user = await this.userModel.create({
         email: createUserDto.email,
+        username: createUserDto.username,
         password: await hash(createUserDto.password, 10),
       });
 
-      return { _id: user._id, email: user.email };
+      return { _id: user._id, email: user.email, username: user.username! };
     } catch (error: unknown) {
       if (this.isDuplicateKeyError(error)) {
         throw new ConflictException('Email already in use');
@@ -30,7 +31,7 @@ export class UserService {
     }
   }
 
-  async login(credentials: LoginUserDto) {
+  async login(credentials: LoginDto) {
     const jwtSecret = process.env.JWT_SECRET;
 
     if (!jwtSecret) {
@@ -40,6 +41,11 @@ export class UserService {
     const user = await this.userModel.findOne({ email: credentials.email });
     if (!user || !(await compare(credentials.password, user.password))) {
       throw new UnauthorizedException('Invalid email or password');
+    }
+
+    if (!user.username?.trim()) {
+      user.username = user.email.split('@')[0];
+      await user.save();
     }
 
     const expiresInSeconds = 3600;
@@ -52,7 +58,7 @@ export class UserService {
       },
     );
 
-    return { token, expiresInSeconds, userId };
+    return { token, expiresInSeconds, userId, username: user.username };
   }
 
   private isDuplicateKeyError(error: unknown): error is { code: number } {

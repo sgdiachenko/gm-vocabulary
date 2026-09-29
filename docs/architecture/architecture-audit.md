@@ -2,6 +2,8 @@
 
 **Audit date:** 2026-09-03
 
+**2026-09-16 update:** Authentication now lives entirely under `api/auth`: `feature` owns signup/login and JWT handling, and `data-access` owns the `Auth` schema backed by the existing `users` collection. The former `api-users-feature` library was removed. See [current project structure](project-structure.md#authentication-boundary) for username behavior and API compatibility. The audit and validation figures below describe the original audit date.
+
 **Scope:** Source-controlled applications, Nx libraries, configuration, tests, and deployment assets. Generated output, installed dependencies, and secret values were excluded.
 
 **Method:** Static source review plus local Nx lint, test, and production-build validation performed after the library extraction.

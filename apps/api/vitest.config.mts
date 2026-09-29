@@ -16,8 +16,8 @@ export default defineConfig({
       '@gm-vocabulary/api/shared/util': fileURLToPath(
         new URL('../../libs/api/shared/util/src/index.ts', import.meta.url),
       ),
-      '@gm-vocabulary/api/users/feature': fileURLToPath(
-        new URL('../../libs/api/users/feature/src/index.ts', import.meta.url),
+      '@gm-vocabulary/api/auth/data-access': fileURLToPath(
+        new URL('../../libs/api/auth/data-access/src/index.ts', import.meta.url),
       ),
       '@gm-vocabulary/api/words/data-access': fileURLToPath(
         new URL('../../libs/api/words/data-access/src/index.ts', import.meta.url),

@@ -13,6 +13,7 @@ describe('PageWrapperComponent', () => {
     const mockAuthService = {
       authLoadingState: signal(false),
       logout: vi.fn(),
+      username: signal('Test User'),
     };
 
     await TestBed.configureTestingModule({
@@ -23,6 +24,10 @@ describe('PageWrapperComponent', () => {
     fixture = TestBed.createComponent(PageWrapperComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
+  });
+
+  it('should display the username beside logout', () => {
+    expect(fixture.nativeElement.querySelector('mat-toolbar').textContent).toContain('Test User');
   });
 
   it('should create', () => {

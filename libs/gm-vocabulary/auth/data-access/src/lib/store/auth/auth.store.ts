@@ -8,6 +8,7 @@ export interface AuthState {
   error: AppError | null;
   token: string | null;
   userId: string | null;
+  username: string | null;
 }
 
 export const initialState: AuthState = {
@@ -16,6 +17,7 @@ export const initialState: AuthState = {
   error: null,
   token: null,
   userId: null,
+  username: null,
 };
 
 export const AuthStore = signalStore(
@@ -31,8 +33,8 @@ export const AuthStore = signalStore(
     setError(error: AppError | null) {
       patchState(store, { error });
     },
-    setAuthData(token: string | null, userId: string | null) {
-      patchState(store, { token, userId });
+    setAuthData(token: string | null, userId: string | null, username: string | null = null) {
+      patchState(store, { token, userId, username });
     },
     resetStore() {
       patchState(store, initialState);

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormFieldValidationMessageKeyEnum } from '@gm-vocabulary/shared/util';
 import { FormFieldValidationMessagesConst } from '@gm-vocabulary/shared/util';
 import { AuthFormComponent } from './auth-form.component';
-import { Auth } from '@gm-vocabulary/auth/util';
+import { LoginCredentials } from '@gm-vocabulary/auth/util';
 
 describe('AuthFormComponent', () => {
   let component: AuthFormComponent;
@@ -92,7 +92,7 @@ describe('AuthFormComponent', () => {
   });
 
   it('should emit email and password when a valid login form is submitted', async () => {
-    const submitSpy = vi.fn<(auth: Auth) => void>();
+    const submitSpy = vi.fn<(auth: LoginCredentials) => void>();
     component.submitForm.subscribe(submitSpy);
     setControlValue(component.emailControlName, 'test@example.com');
     setControlValue(component.passwordControlName, 'secret');
@@ -105,6 +105,34 @@ describe('AuthFormComponent', () => {
       email: 'test@example.com',
       password: 'secret',
     });
+  });
+
+  it('requires a nonblank username only for signup and emits its trimmed value', async () => {
+    fixture.componentRef.setInput('isSignupFormActive', true);
+    await fixture.whenStable();
+    const submitSpy = vi.fn();
+    component.submitForm.subscribe(submitSpy);
+    component.authForm.email().value.set('test@example.com');
+    component.authForm.password().value.set('secret');
+    component.authForm.repeatPassword().value.set('secret');
+    component.authForm.username().value.set('   ');
+    await fixture.whenStable();
+    expect(component.authForm().invalid()).toBe(true);
+    expect(getInputByLabel('Username')).not.toBeNull();
+    component.authForm.username().value.set('  Test User  ');
+    await fixture.whenStable();
+    getForm().requestSubmit();
+    await fixture.whenStable();
+    expect(submitSpy).toHaveBeenCalledWith({
+      email: 'test@example.com',
+      password: 'secret',
+      username: 'Test User',
+    });
+    fixture.componentRef.setInput('isSignupFormActive', false);
+    component.authForm.username().value.set('');
+    await fixture.whenStable();
+    expect(getInputByLabel('Username')).toBeNull();
+    expect(component.authForm().valid()).toBe(true);
   });
 
   it('should mark fields as touched when an invalid form is submitted', async () => {

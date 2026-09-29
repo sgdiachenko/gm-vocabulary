@@ -4,13 +4,13 @@ import { TestBed } from '@angular/core/testing';
 
 import { environment } from '@gm-vocabulary/shared/environments';
 import { AuthApiService } from './auth-api.service';
-import { Auth } from '@gm-vocabulary/auth/util';
+import { LoginCredentials } from '@gm-vocabulary/auth/util';
 
 describe('AuthApiService', () => {
   let service: AuthApiService;
   let httpTestingController: HttpTestingController;
-  const baseUrl = `${environment.vocabularyApiUrl}/user`;
-  const user: Auth = {
+  const baseUrl = `${environment.vocabularyApiUrl}/auth`;
+  const user: LoginCredentials = {
     email: 'test@example.com',
     password: 'password',
   };
@@ -49,14 +49,14 @@ describe('AuthApiService', () => {
   });
 
   it('should send signup request', () => {
-    service.signup(user).subscribe((response) => {
-      expect(response).toEqual(user);
+    service.signup({ ...user, username: 'Test User' }).subscribe((response) => {
+      expect(response).toEqual({ _id: 'user-1', email: user.email, username: 'Test User' });
     });
 
     const req = httpTestingController.expectOne(`${baseUrl}/signup`);
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(user);
+    expect(req.request.body).toEqual({ ...user, username: 'Test User' });
 
-    req.flush(user);
+    req.flush({ _id: 'user-1', email: user.email, username: 'Test User' });
   });
 });

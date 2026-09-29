@@ -1,7 +1,7 @@
 <gm-data-loading-wrapper class="flex flex-col" [loadingState]="authLoadingState()">
   <mat-toolbar class="flex justify-between shrink-0">
     <span routerLink="/">GM Vocabulary</span>
-    <div class="flex">
+    <div class="flex items-center gap-2">
       <button
         matButton
         routerLink="/words"
@@ -20,6 +20,9 @@
         Library
       </button>
 
+      @if (username()) {
+        <span class="max-w-40 truncate" [title]="username()">{{ username() }}</span>
+      }
       <button matButton (click)="logout()">Logout</button>
     </div>
   </mat-toolbar>

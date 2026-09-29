@@ -1,4 +1,4 @@
-import { catchError, defer, iif, map, Observable, take, tap, throwError } from 'rxjs';
+import { catchError, defer, map, Observable, take, tap, throwError } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DestroyRef, inject, Service } from '@angular/core';
 import { Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { AuthParameterEnum } from '@gm-vocabulary/auth/util';
 import { AuthApiService } from '../auth-api/auth-api.service';
 import { LoginResponse } from '@gm-vocabulary/auth/util';
 import { AuthStore } from '../../store/auth/auth.store';
-import { Auth } from '@gm-vocabulary/auth/util';
+import { SignupRequest, LoginCredentials } from '@gm-vocabulary/auth/util';
 
 @Service()
 export class AuthService {
@@ -23,15 +23,24 @@ export class AuthService {
 
   token = this.authStore.token;
   userId = this.authStore.userId;
+  username = this.authStore.username;
   private tokenTimer?: ReturnType<typeof setTimeout>;
 
-  auth(user: Auth, isLoginModeActive: boolean): Observable<void> {
-    this.toggleAuthLoadingState(true);
-    return iif(
-      () => isLoginModeActive,
-      defer(() => this.login(user)),
+  signup(user: SignupRequest): Observable<void> {
+    return this.handleAuth(
       defer(() => this.authApiService.signup(user)),
-    ).pipe(
+      false,
+    );
+  }
+
+  login(user: LoginCredentials): Observable<void> {
+    return this.handleAuth(this.authenticate(user), true);
+  }
+
+  private handleAuth(request: Observable<unknown>, isLoginModeActive: boolean): Observable<void> {
+    this.toggleAuthLoadingState(true);
+    this.authStore.setError(null);
+    return request.pipe(
       take(1),
       takeUntilDestroyed(this.destroyRef),
       catchError((err: HttpErrorResponse) => {
@@ -40,9 +49,9 @@ export class AuthService {
         return throwError(() => err);
       }),
       tap(() => {
-        this.toggleAuthState(true);
         this.toggleAuthLoadingState(false);
         if (isLoginModeActive) {
+          this.toggleAuthState(true);
           this.router.navigate(['/']);
         }
       }),
@@ -50,7 +59,7 @@ export class AuthService {
     );
   }
 
-  private login(user: Auth): Observable<void> {
+  private authenticate(user: LoginCredentials): Observable<void> {
     return this.authApiService.login(user).pipe(
       tap((response: LoginResponse) => {
         this.setAuthTimer(response.expiresInSeconds);
@@ -58,6 +67,7 @@ export class AuthService {
           response.token,
           new Date(new Date().getTime() + response.expiresInSeconds * 1000),
           response.userId,
+          response.username,
         );
       }),
       map(() => void 0),
@@ -85,13 +95,17 @@ export class AuthService {
       return;
     }
 
-    this.updateAuthStore(authData.token, authData.userId);
+    this.updateAuthStore(authData.token, authData.userId, authData.username);
     this.toggleAuthState(true);
     this.setAuthTimer(expiresIn / 1000);
   }
 
-  private updateAuthStore(token: string | null, userId: string | null): void {
-    this.authStore.setAuthData(token, userId);
+  private updateAuthStore(
+    token: string | null,
+    userId: string | null,
+    username: string | null,
+  ): void {
+    this.authStore.setAuthData(token, userId, username);
   }
 
   private setAuthTimer(durationInSeconds: number): void {
@@ -109,11 +123,12 @@ export class AuthService {
     this.authStore.setLoadingState(state);
   }
 
-  private saveAuthData(token: string, expiresIn: Date, userId: string): void {
-    this.updateAuthStore(token, userId);
+  private saveAuthData(token: string, expiresIn: Date, userId: string, username: string): void {
+    this.updateAuthStore(token, userId, username);
     localStorage.setItem(AuthParameterEnum.TOKEN, token);
     localStorage.setItem(AuthParameterEnum.EXPIRES_IN, expiresIn.toISOString());
     localStorage.setItem(AuthParameterEnum.USER_ID, userId);
+    localStorage.setItem(AuthParameterEnum.USERNAME, username);
   }
 
   private clearAuthData(): void {
@@ -121,9 +136,15 @@ export class AuthService {
     localStorage.removeItem(AuthParameterEnum.TOKEN);
     localStorage.removeItem(AuthParameterEnum.EXPIRES_IN);
     localStorage.removeItem(AuthParameterEnum.USER_ID);
+    localStorage.removeItem(AuthParameterEnum.USERNAME);
   }
 
-  private getAuthData(): { token: string; expiresIn: Date; userId: string } | null {
+  private getAuthData(): {
+    token: string;
+    expiresIn: Date;
+    userId: string;
+    username: string | null;
+  } | null {
     const token = localStorage.getItem(AuthParameterEnum.TOKEN);
     const expiresIn = localStorage.getItem(AuthParameterEnum.EXPIRES_IN);
     const userId = localStorage.getItem(AuthParameterEnum.USER_ID);
@@ -135,6 +156,7 @@ export class AuthService {
       token,
       expiresIn: new Date(expiresIn),
       userId,
+      username: localStorage.getItem(AuthParameterEnum.USERNAME),
     };
   }
 }

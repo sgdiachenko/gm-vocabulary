@@ -68,8 +68,8 @@ Angular Signals handle local and derived state, NgRx SignalStore provides domain
 
 `apps/api` is the NestJS composition root. It configures the global API prefix, CORS, input validation, MongoDB, and the domain modules exposed by API libraries.
 
-- `api-auth-feature`: JWT module, guard, and authenticated-user decorator.
-- `api-users-feature`: signup, login, password hashing, and user persistence.
+- `api-auth-feature`: signup, login, password hashing, JWT guards, and authenticated identity.
+- `api-auth-data-access`: the `Auth` Mongoose schema, stored in the existing `users` collection.
 - `api-words-feature`: protected word endpoints and business rules.
 - `api-collections-feature`: protected collection endpoints and ownership rules.
 - `api-words-data-access` and `api-collections-data-access`: Mongoose entities and schemas.
