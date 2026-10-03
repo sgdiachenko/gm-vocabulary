@@ -73,6 +73,16 @@ export default defineConfig([
     },
   },
   {
+    files: ['apps/api-express/**/*.js'],
+    extends: [eslint.configs.recommended],
+    languageOptions: {
+      globals: { console: 'readonly', process: 'readonly' },
+    },
+    rules: {
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    },
+  },
+  {
     files: ['apps/gm-vocabulary/**/*.ts', 'libs/gm-vocabulary/**/*.ts', 'libs/shared/**/*.ts'],
     extends: [angular.configs.tsRecommended],
     processor: angular.processInlineTemplates,

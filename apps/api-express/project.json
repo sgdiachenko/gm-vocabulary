@@ -1,0 +1,22 @@
+{
+  "name": "api-express",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/api-express/src",
+  "projectType": "application",
+  "tags": ["scope:api", "type:app"],
+  "targets": {
+    "serve": {
+      "continuous": true,
+      "executor": "nx:run-commands",
+      "options": { "command": "node --env-file-if-exists=.env apps/api-express/src/server.js" }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": { "command": "vitest run --config apps/api-express/vitest.config.mjs" }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "command": "eslint apps/api-express/src apps/api-express/test" }
+    }
+  }
+}
