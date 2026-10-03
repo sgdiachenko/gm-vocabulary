@@ -21,6 +21,7 @@ The repository is structured for continued growth: deployable applications are t
 ```text
 apps/gm-vocabulary       Angular bootstrap, root providers and routes
 apps/api                 NestJS bootstrap and root module composition
+apps/api-express         Optional Express API for architecture comparison
 apps/gm-vocabulary-e2e   Cross-application Playwright tests
 
 libs/gm-vocabulary       Angular shell and business-domain libraries
@@ -76,6 +77,8 @@ Angular Signals handle local and derived state, NgRx SignalStore provides domain
 - `api-shared-util`: reusable API pipes and helpers.
 
 Requests follow the NestJS controller → service → Mongoose model flow. A global `ValidationPipe` transforms input, strips unknown fields, and rejects non-whitelisted properties. Word and collection routes are protected by the JWT guard; authorization is enforced by server-side ownership filters.
+
+For an equivalent API assembled directly with Express routers, middleware, explicit validation, and Mongoose models, see the [Express comparison API](apps/api-express/README.md). It is a separate Nx application and is not part of the default Docker Compose stack.
 
 ## Getting started
 
