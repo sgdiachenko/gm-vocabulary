@@ -1,5 +1,7 @@
 # Express comparison API
 
+For the decision-level comparison, see [NestJS and Express architecture trade-offs](../../docs/architecture/nest-vs-express.md).
+
 This is an alternative implementation of the current Nest API for architectural comparison. It was recovered from commit `3335c19` (the last revision before the Express-to-Nest migration) and adapted to the current Nx workspace and current `/api/auth`, `/api/words`, and `/api/collections` contract. The original code had older routes and authorization bugs; this variant deliberately matches the current Nest behavior instead of preserving those defects.
 
 ## Run

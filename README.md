@@ -76,9 +76,9 @@ Angular Signals handle local and derived state, NgRx SignalStore provides domain
 - `api-words-data-access` and `api-collections-data-access`: Mongoose entities and schemas.
 - `api-shared-util`: reusable API pipes and helpers.
 
-Requests follow the NestJS controller → service → Mongoose model flow. A global `ValidationPipe` transforms input, strips unknown fields, and rejects non-whitelisted properties. Word and collection routes are protected by the JWT guard; authorization is enforced by server-side ownership filters.
+Requests follow the NestJS controller → service → Mongoose model flow. A global `ValidationPipe` transforms input and rejects non-whitelisted properties. Word and collection routes are protected by the JWT guard; authorization is enforced by server-side ownership filters.
 
-For an equivalent API assembled directly with Express routers, middleware, explicit validation, and Mongoose models, see the [Express comparison API](apps/api-express/README.md). It is a separate Nx application and is not part of the default Docker Compose stack.
+For an equivalent API assembled directly with Express routers, middleware, explicit validation, and Mongoose models, see the [Express comparison API](apps/api-express/README.md) and the [NestJS–Express architecture trade-offs](docs/architecture/nest-vs-express.md). It is a separate Nx application and is not part of the default Docker Compose stack.
 
 ## Getting started
 
