@@ -13,6 +13,6 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "emitDecoratorMetadata": true,
-    "noPropertyAccessFromIndexSignature": false
+    "noPropertyAccessFromIndexSignature": true
   }
 }

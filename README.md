@@ -1,81 +1,37 @@
 # GM Vocabulary
 
-GM Vocabulary is a full-stack vocabulary learning application organized as an **Nx 23 monorepo**. The browser client is built with **Angular 22**, the REST API with **NestJS 12**, and application data is stored in MongoDB through Mongoose.
-
-The repository is structured for continued growth: deployable applications are thin composition roots, while product code lives in domain-oriented Nx libraries with enforced dependency boundaries.
-
-## Technology stack
-
-| Area                 | Technology                                                                 |
-| -------------------- | -------------------------------------------------------------------------- |
-| Monorepo             | Nx 23.2, npm                                                               |
-| Frontend             | Angular 22, standalone components, Signals, Signal Forms, NgRx SignalStore |
-| UI                   | Angular Material, Tailwind CSS, SCSS                                       |
-| Backend              | NestJS 12, Express, class-validator                                        |
-| Persistence          | MongoDB, Mongoose 9                                                        |
-| Testing              | Vitest, Playwright                                                         |
-| Local infrastructure | Docker Compose                                                             |
-
-## Architecture at a glance
+GM Vocabulary uses Angular 22, NestJS 12 and MongoDB/Mongoose in an Nx 23 workspace.
+There are three projects: the browser application, the API and Playwright E2E.
+Product code lives in domain folders inside each application.
 
 ```text
-apps/gm-vocabulary       Angular bootstrap, root providers and routes
-apps/api                 NestJS bootstrap and root module composition
-apps/gm-vocabulary-e2e   Cross-application Playwright tests
+apps/gm-vocabulary/src/app/
+  shell/                       layout and navigation
+  features/auth/               authentication, session state, guard and interceptor
+  features/vocabulary/words/   word screens, dialogs, HTTP services and store
+  features/vocabulary/collections/ collection screens, services and store
+  shared/ui/                   reusable controls, dialogs and feedback
+  shared/forms/                contracts, validation and field helpers
+apps/gm-vocabulary/src/environments/
+apps/gm-vocabulary/src/styles/
 
-libs/gm-vocabulary       Angular shell and business-domain libraries
-libs/api                 NestJS feature and persistence libraries
-libs/shared              Reusable frontend UI and utilities
+apps/api/src/
+  common/                      pipes and validators
+  modules/auth/                authentication module and schema
+  modules/vocabulary/words/    words module and schema
+  modules/vocabulary/collections/ collections module and schema
+apps/api/test/                 integration tests with disposable MongoDB
+apps/gm-vocabulary-e2e/src/    browser tests
 ```
 
-```mermaid
-flowchart LR
-  Browser --> Angular[Angular application]
-  Angular --> ClientFeatures[Angular feature libraries]
-  ClientFeatures -->|REST + Bearer JWT| API[NestJS API]
-  API --> ApiFeatures[NestJS feature libraries]
-  ApiFeatures --> DataAccess[API data-access libraries]
-  DataAccess --> MongoDB[(MongoDB)]
-```
+Angular uses standalone components, Signals, Signal Forms, NgRx SignalStore,
+RxJS, Angular Material and Tailwind. Nest requests follow controller → service
+→ Mongoose. Auth and vocabulary remain separate; words and collections can
+cooperate inside vocabulary. Files use local imports, and ESLint enforces folder
+boundaries for relative paths and aliases. Lazy loading and provider scopes are
+preserved. See [Project structure](docs/architecture/project-structure.md) and
+[verification](docs/architecture/simplification-verification.md).
 
-The applications under `apps/` contain framework bootstrap and top-level composition. Capabilities are grouped under `libs/` by platform, domain, and responsibility:
-
-- `feature` libraries orchestrate user journeys or expose NestJS modules.
-- `ui` libraries contain presentational Angular components.
-- `data-access` libraries own client state/API access or server persistence models.
-- `util` libraries contain contracts and framework-light helpers.
-- `feature-shell` owns the authenticated Angular layout and navigation.
-
-Nx project tags (`scope:*`, `domain:*`, and `type:*`) and `@nx/enforce-module-boundaries` prevent invalid dependencies between layers. Public imports use library entry points such as `@gm-vocabulary/auth/data-access`; consumers do not reach into another library's internals.
-
-See [Project structure](docs/architecture/project-structure.md) for the complete library map and [Architecture audit](docs/architecture/architecture-audit.md) for the current engineering assessment.
-
-## Angular application
-
-`apps/gm-vocabulary` is the Angular composition root. It owns `bootstrapApplication`, application-wide providers, root routing, global styles, and deployment assets. Route-level features are lazy-loaded from Nx libraries.
-
-The client is divided into these domains:
-
-- `auth`: authentication screens, guard/interceptor, session state, and API access.
-- `vocabulary`: word list, editor, table UI, state, and API access.
-- `collections`: collection list/details/editor, state, and API access.
-- `feature-shell`: authenticated layout and primary navigation.
-- `shared`: reusable UI controls, feedback components, types, validation, and environment values.
-
-Angular Signals handle local and derived state, NgRx SignalStore provides domain state, and RxJS remains the asynchronous boundary for HTTP and dialog workflows.
-
-## NestJS API
-
-`apps/api` is the NestJS composition root. It configures the global API prefix, CORS, input validation, MongoDB, and the domain modules exposed by API libraries.
-
-- `api-auth-feature`: signup, login, password hashing, JWT guards, and authenticated identity.
-- `api-auth-data-access`: the `Auth` Mongoose schema, stored in the existing `users` collection.
-- `api-words-feature`: protected word endpoints and business rules.
-- `api-collections-feature`: protected collection endpoints and ownership rules.
-- `api-words-data-access` and `api-collections-data-access`: Mongoose entities and schemas.
-- `api-shared-util`: reusable API pipes and helpers.
-
-Requests follow the NestJS controller → service → Mongoose model flow. A global `ValidationPipe` transforms input, strips unknown fields, and rejects non-whitelisted properties. Word and collection routes are protected by the JWT guard; authorization is enforced by server-side ownership filters.
 
 ## Getting started
 
@@ -124,69 +80,50 @@ npm start
 
 ## Development commands
 
-| Command                | Purpose                                            |
-| ---------------------- | -------------------------------------------------- |
-| `npm start`            | Serve the Angular application                      |
-| `npm run start:server` | Serve the NestJS API in development mode           |
-| `npm run build`        | Build both deployable applications                 |
-| `npm run lint`         | Lint all Nx projects and enforce module boundaries |
-| `npm test`             | Run all configured unit/integration test targets   |
-| `npm run test:api:e2e` | Run NestJS API end-to-end tests                    |
-| `npm run e2e`          | Run Playwright end-to-end tests                    |
-| `npm run e2e:ui`       | Run Playwright with its interactive UI             |
-| `npm run typecheck`    | Type-check the Angular app and tests               |
-| `npm run graph`        | Open the Nx project graph                          |
+| Command | Purpose |
+| --- | --- |
+| `npm start` | Serve Angular on port 4200 |
+| `npm run start:server` | Serve the API on port 3000 |
+| `npm run build` | Build both applications |
+| `npm run lint` | Lint all projects and enforce import boundaries |
+| `npm run typecheck` | Check Angular templates/app/tests and API app/tests |
+| `npm run test:ci` | Run both unit suites without Nx cache |
+| `npm run test:boundaries` | Check allowed and forbidden folder imports |
+| `npm run test:api:e2e` | Run real-MongoDB API integration tests |
+| `npm run e2e` | Run Playwright against local app/API servers |
+| `npm run graph` | Open the Nx project graph |
 
-Useful Nx commands:
+For API integration tests, provide an isolated local MongoDB and test secret:
 
 ```bash
-npx nx show projects
-npx nx show project gm-vocabulary
-npx nx graph
-npx nx affected -t lint test build
+MONGODB_URI=mongodb://127.0.0.1:27028/gm_structure_local \
+JWT_SECRET=local-test-secret npm run test:api:e2e
 ```
 
-Run a target for one project while iterating:
+The integration test setup rejects default database names and non-loopback hosts.
+Use disposable data for browser tests as well. CI runs both API integration and
+Playwright tests against its MongoDB service.
+
+While iterating, target one of the three projects:
 
 ```bash
-npx nx test gm-vocabulary-auth-data-access
-npx nx lint api-words-feature
+npx nx test gm-vocabulary --watch=false
+npx nx test api --run
+npx nx lint api
 npx nx build api
 ```
 
 ## Adding code
 
-Generate code in the library that owns the capability. Prefer an existing library until a new boundary has a clear owner, public API, and independent reason to change.
+Add code to the owning application/domain folder, with tests/templates/styles
+beside it. Keep auth separate from vocabulary and shared UI/forms independent of
+features. New libraries need a concrete independent consumer or build boundary.
+Do not generate a library for each screen, schema, technical layer or helper.
 
-```bash
-npx nx g @nx/angular:component user-menu \
-  --project=gm-vocabulary-feature-shell \
-  --changeDetection=OnPush \
-  --export
+The API output stays at `dist/apps/api`; Angular output stays at
+`dist/gm-vocabulary/browser`. The production Docker image installs only the
+generated API runtime dependencies. Vercel retains its existing SPA rewrite.
 
-npx nx g @nx/angular:library feature-review \
-  --directory=libs/gm-vocabulary/vocabulary/feature-review \
-  --tags=scope:gm-vocabulary,domain:vocabulary,type:feature
-
-npx nx g @nx/js:library data-access \
-  --directory=libs/api/review/data-access \
-  --tags=scope:api,domain:review,type:data-access
-```
-
-After generation, expose intentional symbols through `src/index.ts`, refine project tags, and verify dependencies with lint and the Nx graph.
-
-Nx references:
-
-- [Workspace and project structure](https://nx.dev/concepts/decisions/folder-structure)
-- [Project dependency rules](https://nx.dev/concepts/decisions/project-dependency-rules)
-- [Enforce module boundaries](https://nx.dev/features/enforce-module-boundaries)
-- [Nx generators](https://nx.dev/features/generate-code)
-
-NestJS references:
-
-- [Modules](https://docs.nestjs.com/modules)
-- [Validation](https://docs.nestjs.com/techniques/validation)
-- [MongoDB integration](https://docs.nestjs.com/techniques/mongodb)
 
 ## Authentication and security status
 

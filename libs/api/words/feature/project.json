@@ -1,7 +1,0 @@
-{
-  "name": "api-words-feature",
-  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/api/words/feature/src",
-  "projectType": "library",
-  "tags": ["scope:api", "domain:words", "type:feature"]
-}

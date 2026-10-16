@@ -4,76 +4,35 @@ import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 import angular from 'angular-eslint';
 import nx from '@nx/eslint-plugin';
+import folderBoundaries from './tools/eslint/folder-boundaries.mjs';
 
 export default defineConfig([
   {
     plugins: {
       '@nx': nx,
+      local: { rules: { 'folder-boundaries': folderBoundaries } },
     },
   },
   {
     files: ['**/*.ts'],
     extends: [eslint.configs.recommended, tseslint.configs.recommended, tseslint.configs.stylistic],
     rules: {
+      'local/folder-boundaries': 'error',
       '@nx/enforce-module-boundaries': [
         'error',
         {
           enforceBuildableLibDependency: true,
           allow: [],
           depConstraints: [
-            {
-              sourceTag: 'scope:gm-vocabulary',
-              onlyDependOnLibsWithTags: ['scope:gm-vocabulary', 'scope:shared'],
-            },
-            {
-              sourceTag: 'scope:api',
-              onlyDependOnLibsWithTags: ['scope:api'],
-            },
-            {
-              sourceTag: 'scope:shared',
-              onlyDependOnLibsWithTags: ['scope:shared'],
-            },
-            {
-              sourceTag: 'type:app',
-              onlyDependOnLibsWithTags: [
-                'type:feature',
-                'type:ui',
-                'type:data-access',
-                'type:util',
-              ],
-            },
-            {
-              sourceTag: 'type:e2e',
-              onlyDependOnLibsWithTags: ['type:app'],
-            },
-            {
-              sourceTag: 'type:util',
-              onlyDependOnLibsWithTags: ['type:util'],
-            },
-            {
-              sourceTag: 'type:ui',
-              onlyDependOnLibsWithTags: ['type:ui', 'type:util'],
-            },
-            {
-              sourceTag: 'type:data-access',
-              onlyDependOnLibsWithTags: ['type:data-access', 'type:util'],
-            },
-            {
-              sourceTag: 'type:feature',
-              onlyDependOnLibsWithTags: [
-                'type:feature',
-                'type:ui',
-                'type:data-access',
-                'type:util',
-              ],
-            },
+            { sourceTag: 'scope:gm-vocabulary', onlyDependOnLibsWithTags: ['scope:gm-vocabulary'] },
+            { sourceTag: 'scope:api', onlyDependOnLibsWithTags: ['scope:api'] },
           ],
         },
       ],
     },
   },
   {
-    files: ['apps/gm-vocabulary/**/*.ts', 'libs/gm-vocabulary/**/*.ts', 'libs/shared/**/*.ts'],
+    files: ['apps/gm-vocabulary/**/*.ts'],
     extends: [angular.configs.tsRecommended],
     processor: angular.processInlineTemplates,
     rules: {
@@ -96,11 +55,7 @@ export default defineConfig([
     },
   },
   {
-    files: [
-      'apps/gm-vocabulary/**/*.html',
-      'libs/gm-vocabulary/**/*.html',
-      'libs/shared/**/*.html',
-    ],
+    files: ['apps/gm-vocabulary/**/*.html'],
     extends: [angular.configs.templateRecommended, angular.configs.templateAccessibility],
     rules: {},
   },

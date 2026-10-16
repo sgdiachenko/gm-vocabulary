@@ -1,59 +1,109 @@
 # Project structure
 
-This workspace uses a grouped Nx layout. Deployable applications stay thin under `apps/`, while product code is grouped first by business domain and then by architectural role under `libs/`.
+The workspace contains three Nx projects: `gm-vocabulary`, `api`, and
+`gm-vocabulary-e2e`. Product code lives in the application that owns it. Nx still
+orchestrates builds, lint, tests, development servers, and backend packaging.
 
-## Applications
-
-- `apps/gm-vocabulary` owns Angular bootstrap, root providers, root routes, global styles, and deployment assets.
-- `apps/api` owns Nest bootstrap and root infrastructure composition.
-- `apps/gm-vocabulary-e2e` owns cross-application Playwright scenarios.
-
-## Angular libraries
-
-- `libs/gm-vocabulary/feature-shell` owns the authenticated application layout and navigation shell.
-- `libs/gm-vocabulary/auth` owns authentication UI, feature orchestration, state/API access, and contracts.
-- `libs/gm-vocabulary/vocabulary` owns word screens, editors, presentational tables, state/API access, and contracts.
-- `libs/gm-vocabulary/collections` owns collection screens, editors, state/API access, and contracts.
-- `libs/shared/ui` owns reusable presentational components and UI feedback helpers.
-- `libs/shared/util` owns reusable types, validation, and framework-light helpers.
-- `libs/shared/util-environments` owns compile-time frontend environment values.
-
-Angular projects use `feature`, `ui`, `data-access`, and `util` type tags. Feature libraries may compose lower layers; UI libraries depend only on UI/util libraries; data-access libraries depend only on data-access/util libraries; util libraries depend only on util libraries.
-
-## API libraries
-
-- `libs/api/auth/feature` owns signup/login controllers and services, the JWT module, guard, identity decorator, and authenticated request contracts.
-- `libs/api/auth/data-access` owns the `Auth` Mongoose schema.
-- `libs/api/words/feature` and `libs/api/collections/feature` own HTTP controllers and application services.
-- `libs/api/words/data-access` and `libs/api/collections/data-access` own Mongoose schemas.
-- `libs/api/shared/util` owns reusable Nest pipes and validators.
-
-Mongoose schemas are separate from feature modules so words and collections can use each other's models without a circular project dependency.
-
-## Public APIs and dependency rules
-
-Cross-project imports must use the aliases declared in `tsconfig.base.json`; imports into another project's `src/lib` implementation are forbidden. Scope and type constraints are enforced by `@nx/enforce-module-boundaries` in the root ESLint configuration.
-
-Do not create empty `ui`, `data-access`, or `util` projects for symmetry. Add a project when it establishes a real ownership, dependency, testing, or caching boundary.
-
-## Generating new Angular projects
-
-Use a unique Nx project name and an explicit import path:
-
-```bash
-npx nx g @nx/angular:library libs/gm-vocabulary/<domain>/<type> \
-  --name=gm-vocabulary-<domain>-<type> \
-  --importPath=@gm-vocabulary/<domain>/<type> \
-  --tags=scope:gm-vocabulary,domain:<domain>,type:<type> \
-  --standalone=false --skipModule --strict
+```text
+apps/
+├── gm-vocabulary/
+│   └── src/
+│       ├── app/
+│       │   ├── app.ts, app.config.ts, app.routes.ts
+│       │   ├── shell/page-wrapper/
+│       │   ├── features/
+│       │   │   ├── auth/
+│       │   │   │   ├── auth-page/, auth-form/, contracts/
+│       │   │   │   └── services, store, guard, interceptor
+│       │   │   └── vocabulary/
+│       │   │       ├── words/
+│       │   │       │   ├── words-page/, word-edit-dialog/
+│       │   │       │   ├── words-table/, words-preview-dialog/, contracts/
+│       │   │       │   └── services and store
+│       │   │       └── collections/
+│       │   │           ├── collections-page/, single-collection-page/
+│       │   │           ├── collection-edit-dialog/, contracts/
+│       │   │           └── services and store
+│       │   └── shared/
+│       │       ├── ui/       controls, table, dialogs, feedback and error helpers
+│       │       └── forms/    form contracts, validation and field helpers
+│       ├── environments/
+│       └── styles/           shared Sass helpers and reset
+├── api/
+│   ├── src/
+│   │   ├── main.ts, app.module.ts
+│   │   ├── common/pipes/, common/validators/
+│   │   └── modules/
+│   │       ├── auth/         module, controller, service, entity, DTOs, guards
+│   │       └── vocabulary/
+│   │           ├── words/       module, controller, service, entity, DTOs
+│   │           └── collections/ module, controller, service, entity, DTOs
+│   └── test/                real-MongoDB API integration tests
+└── gm-vocabulary-e2e/src/   Playwright tests
+tools/eslint/               folder boundary rule and regression tests
 ```
 
-New projects should receive a project-local test target. Components should be generated into the owning library with `@nx/angular:component`, standalone APIs, the `gm` selector prefix, and tests enabled.
+Tests, templates and component styles sit beside the owning code. Imports are
+relative and point to the required file; library aliases and library barrels
+have been removed. Route components remain lazy-loaded.
 
-## Authentication boundary
+## Boundaries
 
-`Auth` stores credentials and a display username in MongoDB's existing `users` collection. Renaming the model does not change account `_id` values. Words and collections retain their `userId` owner references; their Mongoose `ref` is `Auth`. Future user profiles/preferences and billing data belong to separate domains and refer to the same stable account ID.
+`eslint.config.js` retains Nx project checks and enables the local folder rule:
 
-The API exposes `POST /api/auth/signup` and `POST /api/auth/login`. Frontend and backend must be deployed together because the former `/api/user/*` endpoints are removed. Signup requires a nonblank username (trimmed, not unique) and returns public account data without the password or a token. Login still uses email/password and returns a token, expiry, userId, and username. A successful login fills a missing or blank legacy username from the part of email before `@` and persists it; existing names are preserved. No bulk database migration is required.
+- Frontend and backend cannot import each other.
+- Shared UI/forms cannot import features.
+- Auth cannot import vocabulary on either platform.
+- API common helpers cannot import domain modules.
+- Other backend domains cannot import vocabulary entities.
+- Words and collections may use each other's existing contracts, services and
+  components within vocabulary.
 
-The frontend distinguishes `LoginCredentials`, `SignupRequest`, `SignupResponse`, and `LoginResponse`. Signup returns to the login form without authenticating. Login establishes the session and displays the username beside Logout. Username is restored from local storage and cleared on logout. Sessions saved before this change remain valid without a username; the header displays the name after the next successful login.
+The rule resolves relative imports and TypeScript aliases, checks re-exports,
+dynamic imports and type imports, and rejects removed `@gm-vocabulary/*`
+aliases. `npm run test:boundaries` exercises allowed and forbidden examples.
+
+Do not add a facade, repository abstraction, or library solely for symmetry.
+Keep services and stores separate until an independent behavior change justifies
+changing their responsibilities.
+
+## Compilation, tests and cache
+
+`tsconfig.base.json` enables `strict` and `strictTemplates`; application and
+specification compilation retain the other existing strict checks.
+`npm run typecheck` checks Angular templates/application/tests and API
+application/tests/configs. API environment accesses use bracket syntax to retain
+`noPropertyAccessFromIndexSignature` without changing behavior.
+
+- Angular has one unit target, discovering `**/*.spec.ts` inside its source root.
+- API has one unit target, discovering `src/**/*.spec.ts`.
+- `test:api:e2e` discovers only `test/**/*.e2e-spec.ts`, uses production prefix
+  and ValidationPipe settings, and preserves Nest decorator metadata.
+- E2E setup refuses a missing/default database URI. Use a disposable loopback
+  MongoDB URI with a database name beginning `gm_structure_` and a test JWT secret.
+
+Nx test inputs include application sources, specs and configs. Shared inputs
+include root TypeScript/package/lockfile/Nx configs; lint additionally includes
+the root ESLint config and local rule files. Build production inputs exclude
+unit and integration tests. Existing Nx plugins and generators are retained.
+
+## Runtime and deployment
+
+Angular routes, providers, session storage keys, timers and cleanup stay with
+their original owners. Auth remains separate from vocabulary. Nest retains
+`AuthModule`, `WordsModule`, `WordCollectionsModule`, and the current model
+registrations, including both vocabulary schemas where required.
+
+Mongo model names remain `Auth`, `Word`, `WordCollection`; physical collections
+remain `users`, `words`, `wordgroups`. References and the `words` populate virtual
+remain unchanged. No data migration is required.
+
+Build outputs remain `dist/apps/api` and `dist/gm-vocabulary/browser`. Docker,
+Compose service names/volumes, API prefix, ports, production environment URL and
+Vercel SPA rewrites retain their existing contracts. Development environment
+replacement now points to `apps/gm-vocabulary/src/environments`.
+
+See [ADR 0001](adr/0001-simplify-workspace-retain-nx.md), the
+[implementation plan](simplification-plan.md), and the
+[verification record](simplification-verification.md). Earlier architecture
+audits describe the pre-migration workspace and remain historical evidence.

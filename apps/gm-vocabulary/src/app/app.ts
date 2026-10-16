@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-import { AuthService } from '@gm-vocabulary/auth/data-access';
+import { AuthService } from './features/auth/auth.service';
 
 @Component({
   selector: 'gm-root',

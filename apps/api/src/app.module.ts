@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { WordCollectionsModule } from '@gm-vocabulary/api/collections/feature';
-import { AuthModule } from '@gm-vocabulary/api/auth/feature';
-import { WordsModule } from '@gm-vocabulary/api/words/feature';
+import { WordCollectionsModule } from './modules/vocabulary/collections/word-collections.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { WordsModule } from './modules/vocabulary/words/words.module';
 
 @Module({
   imports: [

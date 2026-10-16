@@ -4,14 +4,16 @@
     "outDir": "../../dist/out-tsc",
     "module": "preserve",
     "moduleResolution": "bundler",
-    "types": ["vitest/globals", "node"]
+    "types": ["vitest/globals", "node"],
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
   "include": [
     "vitest.config.mts",
     "vitest.config.e2e.mts",
     "src/**/*.test.ts",
     "src/**/*.spec.ts",
-    "../../libs/api/**/*.spec.ts",
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "test/**/*.ts"
   ]
 }

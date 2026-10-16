@@ -19,7 +19,8 @@
     "e2e:ui": "nx e2e gm-vocabulary-e2e --configuration=ui",
     "e2e:headed": "nx e2e gm-vocabulary-e2e --configuration=headed",
     "lint": "nx run-many -t lint",
-    "typecheck": "ngc --noEmit -p apps/gm-vocabulary/tsconfig.app.json && tsc --noEmit -p apps/gm-vocabulary/tsconfig.spec.json"
+    "typecheck": "ngc --noEmit -p apps/gm-vocabulary/tsconfig.app.json && tsc --noEmit -p apps/gm-vocabulary/tsconfig.spec.json && tsc --noEmit -p apps/api/tsconfig.app.json && tsc --noEmit -p apps/api/tsconfig.spec.json",
+    "test:boundaries": "node --test tools/eslint/folder-boundaries.test.mjs"
   },
   "prettier": {
     "printWidth": 100,

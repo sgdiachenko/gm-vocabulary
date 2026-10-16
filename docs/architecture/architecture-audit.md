@@ -1,5 +1,7 @@
 # GM Vocabulary — Architecture Audit
 
+> Historical pre-simplification audit. Current structure and results: [project structure](project-structure.md), [verification](simplification-verification.md).
+
 **Audit date:** 2026-09-03
 
 **2026-09-16 update:** Authentication now lives entirely under `api/auth`: `feature` owns signup/login and JWT handling, and `data-access` owns the `Auth` schema backed by the existing `users` collection. The former `api-users-feature` library was removed. See [current project structure](project-structure.md#authentication-boundary) for username behavior and API compatibility. The audit and validation figures below describe the original audit date.

@@ -1,0 +1,43 @@
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+
+import { AppError } from '../../shared/ui/snack-bar/app-error';
+
+export interface AuthState {
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: AppError | null;
+  token: string | null;
+  userId: string | null;
+  username: string | null;
+}
+
+export const initialState: AuthState = {
+  isAuthenticated: false,
+  isLoading: false,
+  error: null,
+  token: null,
+  userId: null,
+  username: null,
+};
+
+export const AuthStore = signalStore(
+  { providedIn: 'root' },
+  withState(initialState),
+  withMethods((store) => ({
+    setAuthState(isAuthenticated: boolean) {
+      patchState(store, { isAuthenticated });
+    },
+    setLoadingState(isLoading: boolean) {
+      patchState(store, { isLoading });
+    },
+    setError(error: AppError | null) {
+      patchState(store, { error });
+    },
+    setAuthData(token: string | null, userId: string | null, username: string | null = null) {
+      patchState(store, { token, userId, username });
+    },
+    resetStore() {
+      patchState(store, initialState);
+    },
+  })),
+);

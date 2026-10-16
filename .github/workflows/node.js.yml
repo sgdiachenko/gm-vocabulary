@@ -26,6 +26,8 @@ jobs:
         run: npm ci
       - name: Lint
         run: npm run lint
+      - name: Folder boundary regression tests
+        run: npm run test:boundaries
       - name: Type check
         run: npm run typecheck
       - name: Unit tests
@@ -76,7 +78,7 @@ jobs:
           --health-retries 5
 
     env:
-      MONGODB_URI: mongodb://127.0.0.1:27017/gm-vocabulary-e2e
+      MONGODB_URI: mongodb://127.0.0.1:27017/gm_structure_ci
       JWT_SECRET: github-actions-e2e-secret
 
     steps:
@@ -90,6 +92,8 @@ jobs:
         run: npm ci
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
+      - name: API integration tests
+        run: npm run test:api:e2e
       - name: Run Playwright tests
         run: npm run e2e
       - name: Upload Playwright report

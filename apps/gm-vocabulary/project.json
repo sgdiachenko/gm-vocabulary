@@ -10,7 +10,10 @@
   },
   "sourceRoot": "apps/gm-vocabulary/src",
   "prefix": "gm",
-  "tags": ["scope:gm-vocabulary", "type:app"],
+  "tags": [
+    "scope:gm-vocabulary",
+    "type:app"
+  ],
   "targets": {
     "build": {
       "executor": "@angular/build:application",
@@ -24,7 +27,10 @@
             "input": "apps/gm-vocabulary/public"
           }
         ],
-        "styles": ["apps/gm-vocabulary/src/tailwind.css", "apps/gm-vocabulary/src/styles.scss"],
+        "styles": [
+          "apps/gm-vocabulary/src/tailwind.css",
+          "apps/gm-vocabulary/src/styles.scss"
+        ],
         "outputPath": "dist/gm-vocabulary"
       },
       "configurations": {
@@ -48,22 +54,26 @@
           "extractLicenses": false,
           "fileReplacements": [
             {
-              "replace": "libs/shared/util-environments/src/lib/environment.ts",
-              "with": "libs/shared/util-environments/src/lib/environment.development.ts"
+              "replace": "apps/gm-vocabulary/src/environments/environment.ts",
+              "with": "apps/gm-vocabulary/src/environments/environment.development.ts"
             }
           ],
           "sourceMap": true
         }
       },
       "defaultConfiguration": "production",
-      "outputs": ["{options.outputPath}"]
+      "outputs": [
+        "{options.outputPath}"
+      ]
     },
     "serve": {
       "executor": "@angular/build:dev-server",
       "options": {
         "host": "0.0.0.0",
         "port": 4200,
-        "allowedHosts": ["host.docker.internal"]
+        "allowedHosts": [
+          "host.docker.internal"
+        ]
       },
       "configurations": {
         "production": {
@@ -78,7 +88,10 @@
     "test": {
       "executor": "@angular/build:unit-test",
       "options": {
-        "tsConfig": "apps/gm-vocabulary/tsconfig.spec.json"
+        "tsConfig": "apps/gm-vocabulary/tsconfig.spec.json",
+        "include": [
+          "**/*.spec.ts"
+        ]
       }
     }
   }
