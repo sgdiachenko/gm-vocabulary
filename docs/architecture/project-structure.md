@@ -67,6 +67,29 @@ Do not add a facade, repository abstraction, or library solely for symmetry.
 Keep services and stores separate until an independent behavior change justifies
 changing their responsibilities.
 
+## Runtime data flow and trust boundaries
+
+- Word/collection screens use an orchestration service, HTTP API client and
+  root-provided SignalStore. Responses update in-memory entities; filters derive
+  visible words from loaded data. See [word orchestration](../../apps/gm-vocabulary/src/app/features/vocabulary/words/words.service.ts)
+  and [store](../../apps/gm-vocabulary/src/app/features/vocabulary/words/words.store.ts).
+  Lists are not a server-paginated cache; refetch/reset semantics matter.
+- [Auth lifecycle](../../apps/gm-vocabulary/src/app/features/auth/auth.service.ts)
+  restores localStorage credentials/expiry into auth state, schedules logout and
+  clears auth state on logout. The route guard is navigation assistance;
+  [API JWT verification](../../apps/api/src/modules/auth/guards/jwt-auth.guard.ts)
+  and owner-scoped service operations are the server trust boundary.
+- Nest accepts requests under `/api`; the global ValidationPipe transforms DTOs,
+  whitelists fields and rejects non-whitelisted properties. Controllers call
+  domain services and Mongoose models; MongoDB is the persistence integration.
+  See [bootstrap](../../apps/api/src/main.ts) and
+  [word service](../../apps/api/src/modules/vocabulary/words/words.service.ts).
+- Collection reads populate associated words. Copying shared words creates new
+  owner-scoped records without the source collection reference; deletion and
+  word-to-collection integrity have unresolved policies/defects.
+  [Known issues](../known-issues.md) and [open questions](../open-questions.md)
+  distinguish these gaps from supported guarantees.
+
 ## Compilation, tests and cache
 
 `tsconfig.base.json` enables `strict` and `strictTemplates`; application and

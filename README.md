@@ -4,6 +4,9 @@ GM Vocabulary uses Angular 22, NestJS 12 and MongoDB/Mongoose in an Nx 23 worksp
 There are three projects: the browser application, the API and Playwright E2E.
 Product code lives in domain folders inside each application.
 
+Start with the [project context map](docs/README.md) for product scenarios,
+architecture decisions, known issues and open questions.
+
 ```text
 apps/gm-vocabulary/src/app/
   shell/                       layout and navigation
