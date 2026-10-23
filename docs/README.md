@@ -1,6 +1,6 @@
 # Project context
 
-Reviewed: 2026-10-17. Start here, then read only the section relevant to the task.
+Reviewed: 2026-10-23. Start here, then read only the section relevant to the task.
 These documents describe the current implementation, not a new approved roadmap.
 
 | Read when | Document |
@@ -32,7 +32,8 @@ contains historical results, not proof that checks pass on the current checkout.
 - One diagram answers one question. Its caption names the level (context,
   container, component) or "sequence".
 - List the source paths the diagram reflects, and use the project's glossary
-  terms for labels. Do not draw components that do not exist in the code.
+  terms for labels (see the
+  [glossary](../.claude/skills/ddd-conventions/references/glossary-and-contexts.md)). Do not draw components that do not exist in the code.
 - There is no local rendering check. Adding one is a dependency change and needs
   approval.
 

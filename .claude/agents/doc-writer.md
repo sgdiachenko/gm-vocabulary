@@ -73,6 +73,7 @@ Respond in the language of the request. Use exactly this structure.
 **Summary:** <1-3 sentences>
 
 ## Files changed
+<!-- repo-relative paths, never absolute or worktree paths -->
 | Path | Diátaxis type | Change |
 |------|---------------|--------|
 
