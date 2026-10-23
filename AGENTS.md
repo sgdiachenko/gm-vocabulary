@@ -25,6 +25,7 @@ docs set into every task; source, contracts and focused tests confirm context.
 - `apps/gm-vocabulary/` — Angular app (own AGENTS.md)
 - `apps/api/` — NestJS API (own AGENTS.md)
 - `apps/gm-vocabulary-e2e/` — Playwright tests (own AGENTS.md)
+- `apps/*/INSIGHTS.md` — per-module findings log; `.claude/skills/engineering-insights/` — skill that writes it
 - `tools/eslint/` — local `folder-boundaries` rule and its tests
 - `docs/` — project context; `.agents/skills/` — vendored Angular skill
 
@@ -65,3 +66,5 @@ docs set into every task; source, contracts and focused tests confirm context.
 - Read `docs/known-issues.md` when fixing a bug or assessing risk.
 - Read `docs/open-questions.md` when a requirement or policy is ambiguous.
 - Read the module's own `AGENTS.md` before editing in `apps/*`; it loads when you touch its files.
+- Read the module's `INSIGHTS.md` (next to its `AGENTS.md`) before changing it; at the end of
+  substantial work run `/engineering-insights` (`.claude/skills/`). Capture is append-only.

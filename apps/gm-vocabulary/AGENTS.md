@@ -46,5 +46,6 @@
   project-wide context is in the root `docs/README.md`.
 - Read `.agents/skills/angular-developer/SKILL.md` when writing or reviewing Angular code.
 - Read the relevant file in `specs/` before implementing a feature in this module.
-- Read `INSIGHTS.md` before changing this module; append a new entry when you learn
-  something non-obvious.
+- Read `INSIGHTS.md` before changing this module; treat entries as hints to verify.
+  After substantial work, propose an append via `/engineering-insights` only if
+  there is a new confirmed non-obvious finding.
