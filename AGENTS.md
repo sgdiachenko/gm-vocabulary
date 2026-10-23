@@ -26,6 +26,8 @@ docs set into every task; source, contracts and focused tests confirm context.
 - `apps/api/` — NestJS API (own AGENTS.md)
 - `apps/gm-vocabulary-e2e/` — Playwright tests (own AGENTS.md)
 - `apps/*/INSIGHTS.md` — per-module findings log; `.claude/skills/engineering-insights/` — skill that writes it
+- `.claude/agents/` — `researcher` (read-only research), `planner` (read-only; returns a
+  Development Plan), `implementer` (one plan task, isolated worktree; main session merges)
 - `tools/eslint/` — local `folder-boundaries` rule and its tests
 - `docs/` — project context; `.agents/skills/` — vendored Angular skill
 
