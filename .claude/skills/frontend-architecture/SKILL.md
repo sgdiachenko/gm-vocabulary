@@ -34,6 +34,9 @@ Existing code is not refactored on harness work. Follow these for new files; do 
 | Guards / interceptors | functional, in the feature that owns them |
 | Routes | `app.routes.ts`, lazy `loadComponent`; extract `<feature>.routes.ts` only when it grows unwieldy |
 
+## Domain language and contexts
+Use the terms and context boundaries from `ddd-conventions` (Identity vs Vocabulary). A business rule that is more than a field check is a named, framework-free function in its feature (no Angular imports), unit-tested; services and stores call it.
+
 ## Business logic
 Components do presentation: bind inputs/outputs, handle events, derive view state with `computed`. They hold no HTTP and no domain rules. Logic needing DI belongs in a service; logic that does not need DI is a pure function. Do not drive business logic from `effect`. Keep writable signals private; expose `asReadonly()` or `computed`; mutate through methods.
 

@@ -48,6 +48,8 @@
 - Read `docs/` here when it holds a file for the area you change (currently empty);
   project-wide context is in the root `docs/README.md`.
 - Read the relevant file in `specs/` before implementing a feature in this module.
+- Read `.claude/skills/nestjs-backend-architecture/SKILL.md` when adding or restructuring API code, and
+  `.claude/skills/ddd-conventions/SKILL.md` when naming domain concepts or adding business rules.
 - Read `INSIGHTS.md` before changing this module; treat entries as hints to verify.
   After substantial work, propose an append via `/engineering-insights` only if
   there is a new confirmed non-obvious finding.
