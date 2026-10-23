@@ -25,6 +25,17 @@ explicitly instead of rewriting its history. Small changes do not need an ADR.
 states. [Simplification verification](architecture/simplification-verification.md)
 contains historical results, not proof that checks pass on the current checkout.
 
+## Diagrams
+
+- A diagram is a Mermaid fenced block inside the Markdown document that owns it.
+  No binary or generated images.
+- One diagram answers one question. Its caption names the level (context,
+  container, component) or "sequence".
+- List the source paths the diagram reflects, and use the project's glossary
+  terms for labels. Do not draw components that do not exist in the code.
+- There is no local rendering check. Adding one is a dependency change and needs
+  approval.
+
 ## Keep the minimum current
 
 - A behavior change updates the relevant product scenario and code/tests together.

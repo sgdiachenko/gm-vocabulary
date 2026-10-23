@@ -13,13 +13,28 @@ Last verified against the files: 2026-10-23.
 | [`researcher`](researcher.md) | Finds and verifies information in the repo and in external sources; returns a cited report. | Read, Grep, Glob, WebSearch, WebFetch, AskUserQuestion, Notion read tools, Claude Docs read tools | No | sonnet |
 | [`planner`](planner.md) | Turns a requirement into a structured Development Plan (tasks, owned files, skills, insights, acceptance criteria, checks, parallel-safety). Returns the plan as text. | Read, Grep, Glob | No | opus |
 | [`implementer`](implementer.md) | Implements one approved plan task in an isolated git worktree, runs the task's checks, returns a report. Several can run in parallel on disjoint tasks. | Read, Grep, Glob, Edit, Write, Bash, Skill | Yes (only the task's owned files) | sonnet |
+| [`test-writer`](test-writer.md) | Writes unit, API integration and Playwright tests from a requirement or plan task in an isolated worktree; returns a requirement-to-test coverage report. | Read, Grep, Glob, Edit, Write, Bash, Skill | Yes (test files only) | sonnet |
+| [`architecture-reviewer`](architecture-reviewer.md) | Independent architecture review against the repo's skills and rules; returns findings with severity, rule broken, evidence and a verdict. | Read, Grep, Glob | No | opus |
+| [`plan-verifier`](plan-verifier.md) | Checks a completed Development Plan against the code and its own re-run of the checks; returns a Met / Partial / Not met / Unverifiable traceability matrix. | Read, Grep, Glob, Bash | No (runs checks in a worktree) | opus |
+| [`doc-writer`](doc-writer.md) | Documents implemented behavior and turns plans, decisions and research into docs, ADRs and Mermaid diagrams placed per `docs/README.md`. | Read, Grep, Glob, Edit, Write | Yes (documentation files only) | sonnet |
+| [`security-reviewer`](security-reviewer.md) | Reports only exploitable security issues with attacker path, severity, confidence and evidence; proposes regression tests instead of running exploits. | Read, Grep, Glob | No | opus |
+| [`brainstorm`](brainstorm.md) | Compares 2-4 solution options plus do-nothing with trade-offs and a recommendation before planning. Produces no plan. | Read, Grep, Glob, WebSearch, WebFetch | No | opus |
 
-Typical flow: `researcher` (optional, for open questions) → `planner` → user
-approves the plan → one `implementer` per task, parallel only within a wave →
-the main session merges the worktrees and runs `/pr-self-review`.
+Typical flow: `brainstorm` (optional, when several approaches are plausible) and
+`researcher` (optional, for open questions) → `planner` → user approves the
+plan → one writer per task (`implementer`, `test-writer` or `doc-writer`),
+parallel only within a wave → the main session merges the worktrees and commits →
+`plan-verifier` → `architecture-reviewer` and `security-reviewer` when their
+triggers apply (read-only, can run in parallel) → `/pr-self-review`.
 
 None of the agents can spawn other agents. No agent commits or pushes; the main
 session does. Only the `/engineering-insights` skill writes `INSIGHTS.md`.
+Agents that write files run in worktrees; reviewers and verifiers report and
+never fix. `security-reviewer` complements the built-in `security-review`
+command named in the `pr-self-review` routing; it does not replace it.
+
+`AskUserQuestion` is not available inside subagents, so agents without it return
+a `Clarification needed` section instead.
 
 ## Practices each agent relies on
 
@@ -46,6 +61,43 @@ session does. Only the `/engineering-insights` skill writes `INSIGHTS.md`.
 - Runs the task's checks and reports evidence (command and result), not assertions.
 - No `Agent` tool, no commits, no pushes, no dependency changes.
 
+**`test-writer`**
+- Tests are derived from the requirement and exercise the public surface; mocks only at boundaries; no sleeps.
+- Edits test files only; a needed production seam or a found bug is reported, not fixed.
+- Loads skills per track (frontend or backend, never mixed); reads `angular-developer` by path.
+- Integration and Playwright only against disposable loopback data.
+- Reports a requirement-to-test table and quotes command output.
+
+**`architecture-reviewer`**
+- No write tools and no shell; the caller supplies the diff.
+- A finding needs a cited rule and a `path:line`; no rule, no finding.
+- Reuses the `pr-self-review` severity scale, routing and verdict wording, but never runs that skill.
+- Reports considered-and-dismissed and not-reviewed items; existing issues do not affect the verdict.
+
+**`plan-verifier`**
+- Judges every acceptance criterion with its own evidence; implementer reports are claims.
+- Re-runs the plan's checks in CI order inside a worktree; Bash limited by prompt rules, since argument patterns are fragile.
+- `Met` needs code evidence and a passing run; a check that did not run is `Unverifiable`.
+- Compares changed files with owned files and `Do not touch` to find scope creep.
+- Uses opus so it does not share the implementer's model.
+
+**`doc-writer`**
+- Placement table follows `docs/README.md`; one Diátaxis type per page.
+- Every claim is checked against source; plans never appear as current behavior.
+- No shell and no `Skill` tool, so it cannot write `INSIGHTS.md`; accepted ADRs are superseded, not rewritten.
+- Diagram rule lives in `docs/README.md` (`## Diagrams`).
+
+**`security-reviewer`**
+- Exploitability bar: attacker, entry point, preconditions, steps, impact; otherwise dismissed.
+- Severity and confidence are reported separately; documented risks (KI/OQ) are assessed, not rediscovered.
+- No proof-of-concept runs; critical and major findings carry a reproduction proposal for `test-writer`.
+- Never reads `.env` and never reports secret values.
+
+**`brainstorm`**
+- Drivers first, then options; includes do-nothing and one non-obvious option; at most four options.
+- Each option checked against `AGENTS.md` conventions and Do not touch.
+- External facts are labelled Verified or Unverified; stops at a recommendation and hands off to `planner`.
+
 ## Sources
 
 Fetched and checked by the maintainer on 2026-10-23 unless stated otherwise.
@@ -69,6 +121,28 @@ Treat them as unverified until re-checked.
 The plan-task schema in `planner.md` and its output contracts are this
 project's own design. No official schema was found, and none is cited.
 Disjoint write sets for parallel tasks are likewise the project's inference.
+
+### `test-writer`, `architecture-reviewer`, `plan-verifier`, `doc-writer`, `security-reviewer`, `brainstorm`
+
+Researched by the `researcher` agent on 2026-10-23 and relayed; the maintainer
+has not re-opened them unless stated. The prompts, output contracts and the
+model choice (opus for read-and-judge agents, sonnet for edit-and-run agents)
+are this project's own design. No official model-selection rule was found.
+
+| Source | URL | What it supports | Status |
+|--------|-----|------------------|--------|
+| Create custom subagents | https://code.claude.com/docs/en/sub-agents | `skills` preloads but does not gate access; parent `permissionMode` can override the subagent's, so read-only is enforced via `tools`; `AskUserQuestion` removed in subagents; nesting depth | Not verified by the maintainer (relayed; last ~11,600 characters were not read) |
+| Code review standard (Google eng-practices) | https://google.github.io/eng-practices/review/reviewer/standard.html | Approve when a change improves overall code health; optional points marked as nits | Not verified by the maintainer (relayed as opened by `researcher`) |
+| Guiding principles (Testing Library) | https://testing-library.com/docs/guiding-principles/ | Tests should resemble how the software is used | Not verified by the maintainer (relayed as opened) |
+| Diátaxis | https://diataxis.fr/ | Four documentation forms: tutorial, how-to, reference, explanation | Not verified by the maintainer (relayed as opened) |
+| MADR | https://adr.github.io/madr/ | Decision record sections; options, drivers, consequences, revisit conditions | Not verified by the maintainer (relayed as opened) |
+| Building effective agents (Anthropic) | https://www.anthropic.com/engineering/building-effective-agents | Simplest solution first; clear evaluation criteria; tools hard to misuse | Not verified by the maintainer (relayed as opened) |
+| Writing tools for agents (Anthropic) | https://www.anthropic.com/engineering/writing-tools-for-agents | High-signal returns; actionable errors | Not verified by the maintainer (relayed as opened) |
+| OWASP ASVS, Top 10 and cheat sheets; NIST SSDF; CVSS; C4; Mermaid; Angular, NestJS and Vitest testing docs | not recorded | Security checklist, severity, diagram and testing conventions used in the prompts | Not verified: the content was not opened; taken from model knowledge, so no URLs are claimed |
+
+The security checklist in `security-reviewer.md`, the traceability statuses in
+`plan-verifier.md` and the anchoring-avoidance advice in `brainstorm.md` come
+from model knowledge, not from an opened source.
 
 ### `researcher`
 
