@@ -11,6 +11,7 @@ These documents describe the current implementation, not a new approved roadmap.
 | Investigating an existing defect or assessing risk | [Known issues and limitations](known-issues.md) |
 | A requirement, policy or design choice is unresolved | [Open questions](open-questions.md) |
 | Running the project or selecting checks | [Root README](../README.md) |
+| Comparing past agent/workflow runs (tokens, estimated cost, quality) | [Retro ledger](retros/ledger.md) |
 
 ## Architecture history
 
