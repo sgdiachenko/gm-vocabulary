@@ -1,6 +1,6 @@
 # Project context
 
-Reviewed: 2026-10-17. Start here, then read only the section relevant to the task.
+Reviewed: 2026-10-23. Start here, then read only the section relevant to the task.
 These documents describe the current implementation, not a new approved roadmap.
 
 | Read when | Document |
@@ -11,6 +11,7 @@ These documents describe the current implementation, not a new approved roadmap.
 | Investigating an existing defect or assessing risk | [Known issues and limitations](known-issues.md) |
 | A requirement, policy or design choice is unresolved | [Open questions](open-questions.md) |
 | Running the project or selecting checks | [Root README](../README.md) |
+| Comparing past agent/workflow runs (tokens, estimated cost, quality) | [Retro ledger](retros/ledger.md) |
 
 ## Architecture history
 
@@ -24,6 +25,18 @@ explicitly instead of rewriting its history. Small changes do not need an ADR.
 [simplification audit](architecture/simplification-audit.md) describe earlier
 states. [Simplification verification](architecture/simplification-verification.md)
 contains historical results, not proof that checks pass on the current checkout.
+
+## Diagrams
+
+- A diagram is a Mermaid fenced block inside the Markdown document that owns it.
+  No binary or generated images.
+- One diagram answers one question. Its caption names the level (context,
+  container, component) or "sequence".
+- List the source paths the diagram reflects, and use the project's glossary
+  terms for labels (see the
+  [glossary](../.claude/skills/ddd-conventions/references/glossary-and-contexts.md)). Do not draw components that do not exist in the code.
+- There is no local rendering check. Adding one is a dependency change and needs
+  approval.
 
 ## Keep the minimum current
 
