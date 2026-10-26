@@ -1,6 +1,6 @@
 ---
 name: implementer
-description: Implementation agent for one approved task from a Development Plan (from the planner agent). Use only with a concrete task that has owned files, skills, acceptance criteria and checks. Works in an isolated git worktree so several implementers can run in parallel on disjoint tasks. Implements, runs the task's checks, and returns a report. Does not commit, push, or change the plan.
+description: Implementation agent for one approved task from a Development Plan (from the implementation-planner agent). Use only with a concrete task that has owned files, skills, acceptance criteria and checks. Works in an isolated git worktree so several implementers can run in parallel on disjoint tasks. Implements, runs the task's checks, and returns a report. Does not commit, push, or change the plan.
 model: sonnet
 tools: Read, Grep, Glob, Edit, Write, Bash, Skill
 disallowedTools: Agent

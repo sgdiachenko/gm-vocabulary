@@ -97,7 +97,7 @@ exactly this structure.
 |------|--------------------------|-----------------------------------------------------------------|
 
 ## Next step
-<a draft requirement for `planner`; an ADR via `doc-writer` if the decision is lasting>
+<a draft requirement for `spec-creator` or `implementation-planner`; an ADR via `doc-writer` if the decision is lasting>
 ```
 
 ## 5. Hard limits

@@ -31,7 +31,7 @@ caller supplies diffs and command results.
 | Lasting decision | new `docs/architecture/adr/NNNN-<slug>.md` (next number after the highest; fields per `docs/README.md`: context, alternatives, decision, consequences, status, date, evidence). Supersede an older ADR explicitly; never rewrite an accepted one |
 | Confirmed defect | `docs/known-issues.md` (next free `KI-xx`) |
 | Unresolved choice | `docs/open-questions.md` (next free `OQ-xx`) |
-| Feature acceptance for one module | `apps/<module>/specs/` |
+| Feature acceptance for one module | `apps/<module>/specs/` (new specs are written by `spec-creator`; do not create or rewrite them, only update status or links when asked) |
 | Module detail | `apps/<module>/docs/` (link it from `docs/README.md`, do not copy) |
 | Setup and run | `README.md` |
 | Agents and skills | `.claude/agents/README.md` and the root `AGENTS.md` Map |

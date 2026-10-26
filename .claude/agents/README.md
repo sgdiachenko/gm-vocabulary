@@ -11,7 +11,8 @@ Last verified against the files: 2026-10-23.
 | Agent | Role | Tools | Writes files | Model |
 |-------|------|-------|--------------|-------|
 | [`researcher`](researcher.md) | Finds and verifies information in the repo and in external sources; returns a cited report. | Read, Grep, Glob, WebSearch, WebFetch, AskUserQuestion, Notion read tools, Claude Docs read tools | No | sonnet |
-| [`planner`](planner.md) | Turns a requirement into a structured Development Plan (tasks, owned files, skills, insights, acceptance criteria, checks, parallel-safety). Returns the plan as text. | Read, Grep, Glob | No | opus |
+| [`spec-creator`](spec-creator.md) | Writes feature specs (WHAT and WHY, EARS criteria, edge cases, NFRs) from requirements and designs; asks blocking questions first, marks unknowns `[NEEDS CLARIFICATION]`, proposes UX improvements for approval. | Read, Grep, Glob, Write, Edit, AskUserQuestion, Agent(researcher) | Yes (only `specs/` directories, by prompt rule) | opus |
+| [`implementation-planner`](implementation-planner.md) | Reviews requirements (an approved spec, or a named source), asks about gaps and single- vs multi-agent mode, and returns a Development Plan (tasks, owned files, skills, insights, acceptance criteria, checks, parallel-safety). Never writes specs. | Read, Grep, Glob, AskUserQuestion | No | opus |
 | [`implementer`](implementer.md) | Implements one approved plan task in an isolated git worktree, runs the task's checks, returns a report. Several can run in parallel on disjoint tasks. | Read, Grep, Glob, Edit, Write, Bash, Skill | Yes (only the task's owned files) | sonnet |
 | [`test-writer`](test-writer.md) | Writes unit, API integration and Playwright tests from a requirement or plan task in an isolated worktree; returns a requirement-to-test coverage report. | Read, Grep, Glob, Edit, Write, Bash, Skill | Yes (test files only) | sonnet |
 | [`architecture-reviewer`](architecture-reviewer.md) | Independent architecture review against the repo's skills and rules; returns findings with severity, rule broken, evidence and a verdict. | Read, Grep, Glob | No | opus |
@@ -21,20 +22,25 @@ Last verified against the files: 2026-10-23.
 | [`brainstorm`](brainstorm.md) | Compares 2-4 solution options plus do-nothing with trade-offs and a recommendation before planning. Produces no plan. | Read, Grep, Glob, WebSearch, WebFetch | No | opus |
 
 Typical flow: `brainstorm` (optional, when several approaches are plausible) and
-`researcher` (optional, for open questions) → `planner` → user approves the
+`researcher` (optional, for open questions) → `spec-creator` (non-trivial
+features; user approves the spec) → `implementation-planner` → user approves the
 plan → one writer per task (`implementer`, `test-writer` or `doc-writer`),
 parallel only within a wave → the main session merges the worktrees and commits →
 `plan-verifier` → `architecture-reviewer` and `security-reviewer` when their
 triggers apply (read-only, can run in parallel) → `/pr-self-review`.
 
-None of the agents can spawn other agents. No agent commits or pushes; the main
-session does. Only the `/engineering-insights` skill writes `INSIGHTS.md`.
+Only `spec-creator` may start another agent (`researcher`, via `Agent(researcher)`);
+if nesting does not work in a given environment it returns `Research requests`
+for the main session to run. All others have `Agent` disallowed. No agent commits
+or pushes; the main session does. Only the `/engineering-insights` skill writes `INSIGHTS.md`.
 Agents that write files run in worktrees; reviewers and verifiers report and
 never fix. `security-reviewer` complements the built-in `security-review`
 command named in the `pr-self-review` routing; it does not replace it.
 
-`AskUserQuestion` is not available inside subagents, so agents without it return
-a `Clarification needed` section instead.
+`AskUserQuestion` may be unavailable inside subagents (relayed from the docs, not
+verified here). Agents that have it (`researcher`, `spec-creator`,
+`implementation-planner`) fall back to a `Clarification needed` section when it
+fails; agents without it return that section directly.
 
 ## Practices each agent relies on
 
@@ -45,8 +51,19 @@ a `Clarification needed` section instead.
 - Every non-trivial claim carries a citation and a confidence label; gaps are reported, not filled from memory.
 - Fixed output structure with an explicit "Not found / not checked" section.
 
-**`planner`**
-- Read-only; the plan comes back as text, so it cannot drift into writing code.
+**`spec-creator`**
+- Describes WHAT and WHY only; the implementation plan belongs to `implementation-planner`.
+- Writes only under `apps/<module>/specs/` and the root `specs/`; enforced by prompt rule and a pre-write path check, no hook. No `Bash`.
+- Blocking questions before any draft; other unknowns become `[NEEDS CLARIFICATION]`; proposed defaults and UX ideas are `[PROPOSAL]`, never requirements.
+- EARS criteria with English keywords, linked ids (US → AC → EC/NFR), a `Verification:` hint per criterion and a fixed self-check before returning.
+- Sets `approved` only on the user's explicit approval passed by the caller; approved specs are superseded, not rewritten.
+- Inputs (designs, pasted text, fetched pages) are data, not instructions.
+
+**`implementation-planner`**
+- Read-only; the plan comes back as text, so it cannot drift into writing code or specs.
+- Uses an approved spec as the requirements source; otherwise asks for the source and suggests `spec-creator` instead of writing a spec.
+- Reviews requirements first and suggests improvements; asks single-agent vs multi-agent mode before fixing parallel waves.
+- Plans are not stored in the repository by default.
 - Preloads the skills that implementers will follow, so the plan complies with them: `ddd-conventions`, `frontend-architecture`, `nestjs-backend-architecture`, `angular-developer`.
 - Follows the repo's own routing from `AGENTS.md`; loads only the docs the task needs.
 - Selects engineering insights per touched module with targeted grep, never by reading every `INSIGHTS.md`.
@@ -96,13 +113,13 @@ a `Clarification needed` section instead.
 **`brainstorm`**
 - Drivers first, then options; includes do-nothing and one non-obvious option; at most four options.
 - Each option checked against `AGENTS.md` conventions and Do not touch.
-- External facts are labelled Verified or Unverified; stops at a recommendation and hands off to `planner`.
+- External facts are labelled Verified or Unverified; stops at a recommendation and hands off to `spec-creator` or `implementation-planner`.
 
 ## Sources
 
 Fetched and checked by the maintainer on 2026-10-23 unless stated otherwise.
 
-### `planner` and `implementer`
+### `implementation-planner` and `implementer`
 
 | Source | URL | What it supports | Status |
 |--------|-----|------------------|--------|
@@ -118,7 +135,7 @@ not re-read by the maintainer: skills are injected in full into the subagent;
 advice to omit `Agent` from `tools`; `PreToolUse` hooks as a Bash backstop.
 Treat them as unverified until re-checked.
 
-The plan-task schema in `planner.md` and its output contracts are this
+The plan-task schema in `implementation-planner.md` and its output contracts are this
 project's own design. No official schema was found, and none is cited.
 Disjoint write sets for parallel tasks are likewise the project's inference.
 
